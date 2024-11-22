@@ -16,9 +16,20 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   if (Array.isArray(message.result)) {
     analysisResultDiv.innerHTML = `
-    <ul>
-    ${message.result.map((res) => `<li>${res}</li>`).join('')}
-    </ul>`;
+    <table border="0" cellspacing="0">
+    ${message.result
+      .map(
+        (res) =>
+          `<tr>
+            <td>${res.score}</td>
+            <td>(${res.truePositivesNum}/${res.allNum})</td>
+            <td>
+              <a href="${res.src}" target="_blank">${res.src}</a>
+            </td>
+          </tr>`
+      )
+      .join('')}
+    </table>`;
   } else {
     analysisResultDiv.textContent = message.result;
   }

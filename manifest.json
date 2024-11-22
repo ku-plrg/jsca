@@ -11,7 +11,8 @@
   },
   "permissions": ["tabs", "scripting", "activeTab"],
   "background": {
-    "service_worker": "src/worker/background.js"
+    "service_worker": "src/worker/background.js",
+    "type": "module"
   },
   "action": {
     "default_title": "JSCA",
