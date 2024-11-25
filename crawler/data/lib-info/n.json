@@ -1,0 +1,6182 @@
+{
+  "normalize": {
+    "name": "normalize",
+    "versions": {
+      "0": {
+        "versions": [
+          "0",
+          "0.0.1"
+        ],
+        "files": [
+          "normalize.css",
+          "normalize.min.css"
+        ]
+      },
+      "1": {
+        "versions": [
+          "1.0.0",
+          "1.0.1",
+          "1.0.2",
+          "1.1.0",
+          "1.1.1",
+          "1.1.2",
+          "1.1.3"
+        ],
+        "files": [
+          "normalize.css",
+          "normalize.min.css"
+        ]
+      },
+      "2": {
+        "versions": [
+          "2.0.0",
+          "2.0.1",
+          "2.1.0",
+          "2.1.1",
+          "2.1.2",
+          "2.1.3"
+        ],
+        "files": [
+          "normalize.css",
+          "normalize.min.css"
+        ]
+      },
+      "3": {
+        "versions": [
+          "3.0.0",
+          "3.0.1",
+          "3.0.2",
+          "3.0.3"
+        ],
+        "files": [
+          "normalize.css",
+          "normalize.min.css"
+        ]
+      },
+      "4": {
+        "versions": [
+          "4.0.0",
+          "4.1.0",
+          "4.1.1",
+          "4.2.0"
+        ],
+        "files": [
+          "normalize.css",
+          "normalize.min.css",
+          "normalize.min.css.map"
+        ]
+      },
+      "5": {
+        "versions": [
+          "5.0.0"
+        ],
+        "files": [
+          "normalize.css",
+          "normalize.min.css",
+          "normalize.min.css.map"
+        ]
+      },
+      "6": {
+        "versions": [
+          "6.0.0"
+        ],
+        "files": [
+          "normalize.css",
+          "normalize.min.css",
+          "normalize.min.css.map"
+        ]
+      },
+      "7": {
+        "versions": [
+          "7.0.0"
+        ],
+        "files": [
+          "normalize.css",
+          "normalize.min.css",
+          "normalize.min.css.map"
+        ]
+      },
+      "8": {
+        "versions": [
+          "8.0.0",
+          "8.0.1"
+        ],
+        "files": [
+          "normalize.css",
+          "normalize.min.css",
+          "normalize.min.css.map"
+        ]
+      }
+    },
+    "filename": "normalize.min.css"
+  },
+  "nanoid": {
+    "name": "nanoid",
+    "versions": {
+      "3": {
+        "versions": [
+          "3.1.0",
+          "3.1.1",
+          "3.1.2",
+          "3.1.3",
+          "3.1.4",
+          "3.1.5",
+          "3.1.6",
+          "3.1.7",
+          "3.1.8",
+          "3.1.9",
+          "3.1.10",
+          "3.1.11",
+          "3.1.12",
+          "3.1.13",
+          "3.1.14",
+          "3.1.15",
+          "3.1.16",
+          "3.1.17",
+          "3.1.18",
+          "3.1.19",
+          "3.1.20",
+          "3.1.21",
+          "3.1.22",
+          "3.1.23",
+          "3.1.24",
+          "3.1.25",
+          "3.1.26",
+          "3.1.27",
+          "3.1.28",
+          "3.1.29",
+          "3.1.30",
+          "3.1.31",
+          "3.1.32",
+          "3.2.0",
+          "3.3.0",
+          "3.3.1",
+          "3.3.2",
+          "3.3.3",
+          "3.3.4",
+          "3.3.5",
+          "3.3.6",
+          "3.3.7"
+        ],
+        "files": [
+          "async/index.browser.js",
+          "async/index.browser.min.js",
+          "async/index.d.ts",
+          "async/index.js",
+          "async/index.min.js",
+          "index.browser.js",
+          "index.browser.min.js",
+          "index.d.ts",
+          "index.js",
+          "index.min.js",
+          "nanoid.js",
+          "nanoid.min.js",
+          "non-secure/index.d.ts",
+          "non-secure/index.js",
+          "non-secure/index.min.js"
+        ]
+      },
+      "4": {
+        "versions": [
+          "4.0.0",
+          "4.0.1",
+          "4.0.2"
+        ],
+        "files": [
+          "async/index.browser.js",
+          "async/index.browser.min.js",
+          "async/index.d.ts",
+          "async/index.js",
+          "async/index.min.js",
+          "async/index.native.js",
+          "async/index.native.min.js",
+          "index.browser.js",
+          "index.browser.min.js",
+          "index.d.ts",
+          "index.js",
+          "index.min.js",
+          "nanoid.js",
+          "nanoid.min.js",
+          "non-secure/index.d.ts",
+          "non-secure/index.js",
+          "non-secure/index.min.js"
+        ]
+      },
+      "5": {
+        "versions": [
+          "5.0.0",
+          "5.0.1",
+          "5.0.2",
+          "5.0.3",
+          "5.0.4",
+          "5.0.5",
+          "5.0.6",
+          "5.0.7",
+          "5.0.8"
+        ],
+        "files": [
+          "index.browser.js",
+          "index.browser.min.js",
+          "index.d.ts",
+          "index.js",
+          "index.min.js",
+          "nanoid.js",
+          "nanoid.min.js",
+          "non-secure/index.d.ts",
+          "non-secure/index.js",
+          "non-secure/index.min.js"
+        ]
+      }
+    },
+    "filename": "index.browser.js"
+  },
+  "nprogress": {
+    "name": "nprogress",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.1.2",
+          "0.1.3",
+          "0.1.4",
+          "0.1.5",
+          "0.1.6",
+          "0.2.0"
+        ],
+        "files": [
+          "nprogress.css",
+          "nprogress.js",
+          "nprogress.min.css",
+          "nprogress.min.js"
+        ]
+      },
+      "1": {
+        "versions": [
+          "1.0.0-0",
+          "1.0.0-1"
+        ],
+        "files": []
+      }
+    },
+    "filename": "nprogress.min.js"
+  },
+  "naive-ui": {
+    "name": "naive-ui",
+    "versions": {
+      "2": {
+        "versions": [
+          "2.33.1",
+          "2.33.2",
+          "2.33.3",
+          "2.33.4",
+          "2.33.5",
+          "2.34.0",
+          "2.34.1",
+          "2.34.2",
+          "2.34.3",
+          "2.34.4",
+          "2.35.0",
+          "2.36.0",
+          "2.37.0",
+          "2.37.1",
+          "2.37.2",
+          "2.37.3",
+          "2.38.0",
+          "2.38.1",
+          "2.38.2",
+          "2.39.0",
+          "2.40.0",
+          "2.40.1"
+        ],
+        "files": [
+          "index.js",
+          "index.min.js",
+          "index.prod.js",
+          "index.prod.min.js"
+        ]
+      }
+    },
+    "filename": "index.prod.js"
+  },
+  "nes.css": {
+    "name": "nes.css",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.0.1",
+          "0.0.2"
+        ],
+        "files": [
+          "css/nes.css",
+          "css/nes.css.map",
+          "css/nes.min.css"
+        ]
+      },
+      "1": {
+        "versions": [
+          "1.0.0"
+        ],
+        "files": [
+          "css/nes.css",
+          "css/nes.css.map",
+          "css/nes.min.css"
+        ]
+      },
+      "2": {
+        "versions": [
+          "2.0.0",
+          "2.1.0",
+          "2.1.1",
+          "2.2.0",
+          "2.2.1",
+          "2.3.0"
+        ],
+        "files": [
+          "css/nes-core.css",
+          "css/nes-core.css.map",
+          "css/nes-core.min.css",
+          "css/nes.css",
+          "css/nes.css.map",
+          "css/nes.min.css"
+        ]
+      }
+    },
+    "filename": "css/nes.min.css"
+  },
+  "nedb": {
+    "name": "nedb",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.8.0",
+          "0.8.1",
+          "0.8.2",
+          "0.8.3",
+          "0.8.4",
+          "0.8.5",
+          "0.8.6",
+          "0.8.7",
+          "0.8.8",
+          "0.8.9",
+          "0.8.10",
+          "0.8.11",
+          "0.8.12",
+          "0.8.13",
+          "0.9.1",
+          "0.9.2",
+          "0.9.3",
+          "0.9.4",
+          "0.10.0",
+          "0.10.1",
+          "0.10.2",
+          "0.10.3",
+          "0.10.4",
+          "0.10.5",
+          "0.10.6",
+          "0.10.7",
+          "0.10.9",
+          "0.10.10",
+          "0.10.11",
+          "0.11.0",
+          "0.11.1",
+          "0.11.2"
+        ],
+        "files": [
+          "nedb.js",
+          "nedb.min.js"
+        ]
+      },
+      "1": {
+        "versions": [
+          "1.0.0",
+          "1.0.1",
+          "1.0.2",
+          "1.1.0",
+          "1.1.1",
+          "1.1.2",
+          "1.1.3",
+          "1.1.4",
+          "1.2.0",
+          "1.2.1",
+          "1.3.0",
+          "1.4.0",
+          "1.5.0",
+          "1.5.1",
+          "1.6.0",
+          "1.6.1",
+          "1.6.2",
+          "1.7.1",
+          "1.7.2",
+          "1.7.3",
+          "1.7.4",
+          "1.8.0"
+        ],
+        "files": [
+          "nedb.js",
+          "nedb.min.js"
+        ]
+      }
+    },
+    "filename": "nedb.min.js"
+  },
+  "nlp_compromise": {
+    "name": "nlp_compromise",
+    "versions": {
+      "2": {
+        "versions": [
+          "2.0.0",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3"
+        ],
+        "files": [
+          "nlp_compromise.es5.js",
+          "nlp_compromise.es5.js.map",
+          "nlp_compromise.es5.min.js",
+          "nlp_compromise.es6.js"
+        ]
+      },
+      "3": {
+        "versions": [
+          "3.0.0",
+          "3.0.1",
+          "3.0.2",
+          "3.0.3",
+          "3.0.4",
+          "3.0.5",
+          "3.0.6",
+          "3.0.8"
+        ],
+        "files": [
+          "nlp-compromise.es5.js",
+          "nlp-compromise.es5.min.js"
+        ]
+      },
+      "4": {
+        "versions": [
+          "4.1.2",
+          "4.2.0",
+          "4.2.1",
+          "4.2.2",
+          "4.2.3",
+          "4.2.4",
+          "4.3.0",
+          "4.3.1",
+          "4.3.4",
+          "4.5.0",
+          "4.5.1",
+          "4.6.1",
+          "4.6.2",
+          "4.6.3",
+          "4.8.2",
+          "4.9.0",
+          "4.9.1",
+          "4.9.2",
+          "4.10.1",
+          "4.10.3",
+          "4.10.4",
+          "4.10.5",
+          "4.10.6",
+          "4.11.0",
+          "4.11.1",
+          "4.12.0",
+          "4.12.1"
+        ],
+        "files": [
+          "nlp_compromise.js",
+          "nlp_compromise.min.js"
+        ]
+      },
+      "5": {
+        "versions": [
+          "5.1.0",
+          "5.2.0"
+        ],
+        "files": [
+          "nlp_compromise.js",
+          "nlp_compromise.min.js"
+        ]
+      },
+      "6": {
+        "versions": [
+          "6.1.1",
+          "6.1.2",
+          "6.1.3",
+          "6.1.4",
+          "6.2.0",
+          "6.2.1",
+          "6.3.0",
+          "6.3.1",
+          "6.4.1",
+          "6.4.2",
+          "6.4.4",
+          "6.4.5",
+          "6.4.6",
+          "6.4.7",
+          "6.5.0",
+          "6.5.1",
+          "6.5.2",
+          "6.5.3",
+          "6.5.4",
+          "6.5.5"
+        ],
+        "files": [
+          "nlp_compromise.js",
+          "nlp_compromise.min.js"
+        ]
+      },
+      "7": {
+        "versions": [
+          "7.0.0-alpha1",
+          "7.0.0-alpha2",
+          "7.0.0-alpha3",
+          "7.0.0-alpha4",
+          "7.0.0-alpha5",
+          "7.0.0"
+        ],
+        "files": [
+          "nlp_compromise.js",
+          "nlp_compromise.min.js"
+        ]
+      }
+    },
+    "filename": "nlp_compromise.min.js"
+  },
+  "numeral.js": {
+    "name": "numeral.js",
+    "versions": {
+      "1": {
+        "versions": [
+          "1.0.1",
+          "1.0.2",
+          "1.0.3",
+          "1.0.4",
+          "1.1.0",
+          "1.2.1",
+          "1.2.2",
+          "1.2.3",
+          "1.2.5",
+          "1.3.1",
+          "1.3.2",
+          "1.3.3",
+          "1.4.0",
+          "1.4.1",
+          "1.4.5",
+          "1.4.6",
+          "1.4.7",
+          "1.4.8",
+          "1.5.0",
+          "1.5.1",
+          "1.5.2",
+          "1.5.3",
+          "1.5.4",
+          "1.5.5",
+          "1.5.6"
+        ],
+        "files": [
+          "numeral.min.js"
+        ]
+      },
+      "2": {
+        "versions": [
+          "2.0.0",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.0.4",
+          "2.0.5",
+          "2.0.6"
+        ],
+        "files": [
+          "locales.min.js",
+          "locales/be-nl.min.js",
+          "locales/bg.min.js",
+          "locales/chs.min.js",
+          "locales/cs.min.js",
+          "locales/da-dk.min.js",
+          "locales/de-ch.min.js",
+          "locales/de.min.js",
+          "locales/en-au.min.js",
+          "locales/en-gb.min.js",
+          "locales/en-za.min.js",
+          "locales/es-es.min.js",
+          "locales/es.min.js",
+          "locales/et.min.js",
+          "locales/fi.min.js",
+          "locales/fr-ca.min.js",
+          "locales/fr-ch.min.js",
+          "locales/fr.min.js",
+          "locales/hu.min.js",
+          "locales/it.min.js",
+          "locales/ja.min.js",
+          "locales/lv.min.js",
+          "locales/nl-nl.min.js",
+          "locales/no.min.js",
+          "locales/pl.min.js",
+          "locales/pt-br.min.js",
+          "locales/pt-pt.min.js",
+          "locales/ru-ua.min.js",
+          "locales/ru.min.js",
+          "locales/sk.min.js",
+          "locales/th.min.js",
+          "locales/tr.min.js",
+          "locales/uk-ua.min.js",
+          "numeral-with-locales.min.js",
+          "numeral.min.js"
+        ]
+      }
+    },
+    "filename": "numeral.min.js"
+  },
+  "nunjucks": {
+    "name": "nunjucks",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.1.0",
+          "0.1.1",
+          "0.1.2",
+          "0.1.4",
+          "0.1.5",
+          "0.1.6",
+          "0.1.7",
+          "0.1.8",
+          "0.1.9",
+          "0.1.10"
+        ],
+        "files": [
+          "nunjucks-dev.js",
+          "nunjucks-min.js",
+          "nunjucks.js"
+        ]
+      },
+      "1": {
+        "versions": [
+          "1.0.0",
+          "1.0.1",
+          "1.0.2",
+          "1.0.4",
+          "1.0.5",
+          "1.0.6",
+          "1.0.7",
+          "1.1.0",
+          "1.2.0",
+          "1.3.0",
+          "1.3.1",
+          "1.3.2",
+          "1.3.3",
+          "1.3.4"
+        ],
+        "files": [
+          "nunjucks-slim.js",
+          "nunjucks-slim.min.js",
+          "nunjucks.js",
+          "nunjucks.min.js"
+        ]
+      },
+      "2": {
+        "versions": [
+          "2.0.0",
+          "2.1.0",
+          "2.2.0",
+          "2.3.0",
+          "2.4.0",
+          "2.4.1",
+          "2.4.2",
+          "2.4.3",
+          "2.5.0",
+          "2.5.1",
+          "2.5.2"
+        ],
+        "files": [
+          "nunjucks-slim.js",
+          "nunjucks-slim.min.js",
+          "nunjucks.js",
+          "nunjucks.min.js"
+        ]
+      },
+      "3": {
+        "versions": [
+          "3.0.0",
+          "3.0.1",
+          "3.1.1",
+          "3.1.2",
+          "3.1.3",
+          "3.1.4",
+          "3.1.5",
+          "3.1.6",
+          "3.1.7",
+          "3.2.0",
+          "3.2.1",
+          "3.2.2",
+          "3.2.3",
+          "3.2.4"
+        ],
+        "files": [
+          "nunjucks-slim.js",
+          "nunjucks-slim.min.js",
+          "nunjucks.js",
+          "nunjucks.min.js"
+        ]
+      }
+    },
+    "filename": "nunjucks.min.js"
+  },
+  "ng-bootstrap": {
+    "name": "ng-bootstrap",
+    "versions": {
+      "1": {
+        "versions": [
+          "1.0.0-alpha.0",
+          "1.0.0-alpha.1",
+          "1.0.0-alpha.10",
+          "1.0.0-alpha.11",
+          "1.0.0-alpha.12",
+          "1.0.0-alpha.13",
+          "1.0.0-alpha.14",
+          "1.0.0-alpha.15",
+          "1.0.0-alpha.16",
+          "1.0.0-alpha.17",
+          "1.0.0-alpha.18",
+          "1.0.0-alpha.19",
+          "1.0.0-alpha.2",
+          "1.0.0-alpha.20",
+          "1.0.0-alpha.21",
+          "1.0.0-alpha.22",
+          "1.0.0-alpha.23",
+          "1.0.0-alpha.24",
+          "1.0.0-alpha.25",
+          "1.0.0-alpha.26",
+          "1.0.0-alpha.27",
+          "1.0.0-alpha.28",
+          "1.0.0-alpha.29",
+          "1.0.0-alpha.3",
+          "1.0.0-alpha.30",
+          "1.0.0-alpha.31",
+          "1.0.0-alpha.4",
+          "1.0.0-alpha.5",
+          "1.0.0-alpha.6",
+          "1.0.0-alpha.7",
+          "1.0.0-alpha.8",
+          "1.0.0-alpha.9",
+          "1.0.0-beta.1",
+          "1.0.0-beta.2",
+          "1.0.0-beta.3",
+          "1.0.0-beta.4",
+          "1.0.0-beta.5",
+          "1.0.0-beta.6",
+          "1.0.0-beta.7",
+          "1.0.0-beta.8",
+          "1.0.0-beta.9",
+          "1.0.0",
+          "1.0.1",
+          "1.0.2",
+          "1.0.3",
+          "1.0.4",
+          "1.1.0",
+          "1.1.1",
+          "1.1.2"
+        ],
+        "files": [
+          "ng-bootstrap.js",
+          "ng-bootstrap.min.js",
+          "ng-bootstrap.min.js.map"
+        ]
+      },
+      "2": {
+        "versions": [
+          "2.0.0-alpha.0",
+          "2.0.0",
+          "2.1.0",
+          "2.1.1",
+          "2.1.2",
+          "2.2.0",
+          "2.2.1",
+          "2.2.2"
+        ],
+        "files": [
+          "ng-bootstrap.js",
+          "ng-bootstrap.js.map",
+          "ng-bootstrap.min.js",
+          "ng-bootstrap.min.js.map"
+        ]
+      },
+      "3": {
+        "versions": [
+          "3.0.0-beta.1",
+          "3.0.0",
+          "3.1.0",
+          "3.2.0",
+          "3.2.1",
+          "3.2.2",
+          "3.3.0",
+          "3.3.1"
+        ],
+        "files": [
+          "ng-bootstrap.umd.js",
+          "ng-bootstrap.umd.js.map",
+          "ng-bootstrap.umd.min.js",
+          "ng-bootstrap.umd.min.js.map"
+        ]
+      },
+      "4": {
+        "versions": [
+          "4.0.0",
+          "4.0.1",
+          "4.0.2",
+          "4.0.3",
+          "4.0.4",
+          "4.0.5",
+          "4.1.0",
+          "4.1.1",
+          "4.1.2",
+          "4.1.3",
+          "4.2.0",
+          "4.2.1",
+          "4.2.2"
+        ],
+        "files": [
+          "ng-bootstrap.umd.js",
+          "ng-bootstrap.umd.js.map",
+          "ng-bootstrap.umd.min.js",
+          "ng-bootstrap.umd.min.js.map"
+        ]
+      },
+      "5": {
+        "versions": [
+          "5.0.0-rc.0",
+          "5.0.0-rc.1",
+          "5.0.0",
+          "5.1.0",
+          "5.1.1",
+          "5.1.2",
+          "5.1.3",
+          "5.1.4",
+          "5.2.1",
+          "5.2.2",
+          "5.2.3",
+          "5.3.0"
+        ],
+        "files": [
+          "ng-bootstrap.umd.js",
+          "ng-bootstrap.umd.js.map",
+          "ng-bootstrap.umd.min.js",
+          "ng-bootstrap.umd.min.js.map"
+        ]
+      },
+      "6": {
+        "versions": [
+          "6.0.0",
+          "6.0.1",
+          "6.0.2",
+          "6.0.3",
+          "6.1.0",
+          "6.2.0"
+        ],
+        "files": [
+          "ng-bootstrap.umd.js",
+          "ng-bootstrap.umd.js.map",
+          "ng-bootstrap.umd.min.js",
+          "ng-bootstrap.umd.min.js.map"
+        ]
+      },
+      "7": {
+        "versions": [
+          "7.0.0"
+        ],
+        "files": [
+          "ng-bootstrap.umd.js",
+          "ng-bootstrap.umd.js.map",
+          "ng-bootstrap.umd.min.js",
+          "ng-bootstrap.umd.min.js.map"
+        ]
+      },
+      "8": {
+        "versions": [
+          "8.0.0-beta.1",
+          "8.0.0",
+          "8.0.1",
+          "8.0.2",
+          "8.0.3",
+          "8.0.4"
+        ],
+        "files": [
+          "ng-bootstrap.umd.js",
+          "ng-bootstrap.umd.js.map",
+          "ng-bootstrap.umd.min.js",
+          "ng-bootstrap.umd.min.js.map"
+        ]
+      },
+      "9": {
+        "versions": [
+          "9.0.0",
+          "9.0.1",
+          "9.0.2",
+          "9.1.0",
+          "9.1.1",
+          "9.1.2",
+          "9.1.3"
+        ],
+        "files": [
+          "ng-bootstrap.umd.js",
+          "ng-bootstrap.umd.js.map",
+          "ng-bootstrap.umd.min.js",
+          "ng-bootstrap.umd.min.js.map"
+        ]
+      },
+      "10": {
+        "versions": [
+          "10.0.0"
+        ],
+        "files": [
+          "ng-bootstrap.umd.js",
+          "ng-bootstrap.umd.js.map",
+          "ng-bootstrap.umd.min.js"
+        ]
+      },
+      "11": {
+        "versions": [
+          "11.0.0-beta.1",
+          "11.0.0-beta.2",
+          "11.0.0-rc.0",
+          "11.0.0",
+          "11.0.1"
+        ],
+        "files": [
+          "ng-bootstrap.umd.js",
+          "ng-bootstrap.umd.js.map",
+          "ng-bootstrap.umd.min.js",
+          "ng-bootstrap.umd.min.js.map"
+        ]
+      },
+      "12": {
+        "versions": [
+          "12.0.0-beta.3",
+          "12.0.0-beta.4",
+          "12.0.0",
+          "12.0.1",
+          "12.0.2",
+          "12.1.0",
+          "12.1.1",
+          "12.1.2"
+        ],
+        "files": []
+      },
+      "13": {
+        "versions": [
+          "13.0.0-beta.1",
+          "13.0.0",
+          "13.1.0",
+          "13.1.1"
+        ],
+        "files": []
+      },
+      "14": {
+        "versions": [
+          "14.0.0-rc.0",
+          "14.0.0-rc.1",
+          "14.0.0",
+          "14.0.1",
+          "14.1.0",
+          "14.1.1",
+          "14.2.0"
+        ],
+        "files": []
+      },
+      "15": {
+        "versions": [
+          "15.0.0",
+          "15.0.1",
+          "15.1.0",
+          "15.1.1",
+          "15.1.2"
+        ],
+        "files": []
+      },
+      "16": {
+        "versions": [
+          "16.0.0-rc.0",
+          "16.0.0-rc.1",
+          "16.0.0-rc.2",
+          "16.0.0"
+        ],
+        "files": []
+      },
+      "17": {
+        "versions": [
+          "17.0.0",
+          "17.0.1"
+        ],
+        "files": []
+      }
+    },
+    "filename": "ng-bootstrap.umd.min.js"
+  },
+  "nvd3": {
+    "name": "nvd3",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.9"
+        ],
+        "files": [
+          "nv.d3.css",
+          "nv.d3.js",
+          "nv.d3.min.js"
+        ]
+      },
+      "1": {
+        "versions": [
+          "1.0.0-beta",
+          "1.1.13-beta",
+          "1.1.14-beta",
+          "1.1.15-beta",
+          "1.5.16",
+          "1.5.17",
+          "1.6.0",
+          "1.7.0",
+          "1.7.1",
+          "1.8.0-alpha",
+          "1.8.1-alpha",
+          "1.8.1",
+          "1.8.2",
+          "1.8.3",
+          "1.8.4",
+          "1.8.5",
+          "1.8.6"
+        ],
+        "files": [
+          "nv.d3.css",
+          "nv.d3.js",
+          "nv.d3.min.js"
+        ]
+      }
+    },
+    "filename": "nv.d3.min.js"
+  },
+  "noty": {
+    "name": "noty",
+    "versions": {
+      "3": {
+        "versions": [
+          "3.0.0",
+          "3.0.1",
+          "3.1.0-beta",
+          "3.1.0",
+          "3.1.1",
+          "3.1.2",
+          "3.1.3",
+          "3.1.4",
+          "3.2.0-beta",
+          "3.2.0-beta-deprecated"
+        ],
+        "files": [
+          "noty.css",
+          "noty.css.map",
+          "noty.js",
+          "noty.js.map",
+          "noty.min.css",
+          "noty.min.css.map",
+          "noty.min.js",
+          "noty.min.js.map"
+        ]
+      }
+    },
+    "filename": "noty.min.js"
+  },
+  "nutui": {
+    "name": "nutui",
+    "versions": {
+      "2": {
+        "versions": [
+          "2.3.14",
+          "2.3.15",
+          "2.3.16",
+          "2.3.17-beta.1",
+          "2.3.17-beta.2"
+        ],
+        "files": []
+      },
+      "3": {
+        "versions": [
+          "3.3.8-beta.1",
+          "3.3.8",
+          "3.3.9-beta.1"
+        ],
+        "files": [
+          "nutui.umd.js",
+          "nutui.umd.min.js",
+          "style.css",
+          "style.min.css"
+        ]
+      },
+      "4": {
+        "versions": [
+          "4.0.1-2.beta-1",
+          "4.0.6-beta.2",
+          "4.0.6-beta.3",
+          "4.0.6",
+          "4.0.7-beta.2",
+          "4.0.7",
+          "4.0.8-beta.1",
+          "4.0.8",
+          "4.0.9-beta.1",
+          "4.0.9-beta.2",
+          "4.0.9",
+          "4.0.10-beta.1",
+          "4.0.10",
+          "4.0.11",
+          "4.0.12-beta.1",
+          "4.0.12",
+          "4.1.0-beta.1",
+          "4.1.0-beta.2",
+          "4.1.0-beta.3",
+          "4.1.0-beta.4",
+          "4.1.0-beta.5",
+          "4.1.0-beta.6",
+          "4.1.0",
+          "4.1.1",
+          "4.1.2",
+          "4.1.3",
+          "4.1.4",
+          "4.1.5-beta.1",
+          "4.1.5-beta.2",
+          "4.1.5",
+          "4.1.6",
+          "4.1.7",
+          "4.1.8-beta.1",
+          "4.2.0",
+          "4.2.1",
+          "4.2.2-beta.1",
+          "4.2.2-beta.2",
+          "4.2.2-beta.3",
+          "4.2.2",
+          "4.2.3",
+          "4.2.4",
+          "4.2.5",
+          "4.2.6",
+          "4.2.7",
+          "4.2.8",
+          "4.2.9",
+          "4.3.0-beta.1",
+          "4.3.0-beta.2",
+          "4.3.0-beta.3",
+          "4.3.0-beta.4",
+          "4.3.0-beta.5",
+          "4.3.0-beta.6",
+          "4.3.0",
+          "4.3.1",
+          "4.3.2",
+          "4.3.3",
+          "4.3.4",
+          "4.3.5",
+          "4.3.6",
+          "4.3.7",
+          "4.3.8",
+          "4.3.9",
+          "4.3.10",
+          "4.3.11",
+          "4.3.12",
+          "4.3.13"
+        ],
+        "files": [
+          "nutui.umd.js",
+          "nutui.umd.min.js",
+          "style.css",
+          "style.min.css"
+        ]
+      }
+    },
+    "filename": "nutui.umd.js"
+  },
+  "notie": {
+    "name": "notie",
+    "versions": {
+      "2": {
+        "versions": [
+          "2.1.0"
+        ],
+        "files": [
+          "notie.js",
+          "notie.min.js"
+        ]
+      },
+      "3": {
+        "versions": [
+          "3.0.0",
+          "3.1.0",
+          "3.2.0",
+          "3.3.0",
+          "3.3.1",
+          "3.8.0",
+          "3.8.1",
+          "3.8.2",
+          "3.8.3",
+          "3.8.4",
+          "3.8.5",
+          "3.9.0",
+          "3.9.1",
+          "3.9.2",
+          "3.9.3",
+          "3.9.4",
+          "3.9.5"
+        ],
+        "files": [
+          "notie.css",
+          "notie.js",
+          "notie.min.css",
+          "notie.min.js"
+        ]
+      },
+      "4": {
+        "versions": [
+          "4.0.0-rc.1",
+          "4.0.0-rc.2",
+          "4.0.0-rc.3",
+          "4.0.0",
+          "4.1.0",
+          "4.2.0",
+          "4.2.1",
+          "4.3.0",
+          "4.3.1"
+        ],
+        "files": [
+          "notie.css",
+          "notie.js",
+          "notie.min.css",
+          "notie.min.js"
+        ]
+      }
+    },
+    "filename": "notie.min.js"
+  },
+  "noUiSlider": {
+    "name": "noUiSlider",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.9.8"
+        ],
+        "files": [
+          "jquery.nouislider.js",
+          "jquery.nouislider.min.js",
+          "nouislider.css",
+          "nouislider.min.css"
+        ]
+      },
+      "1": {
+        "versions": [
+          "1.1.7",
+          "1.2.2",
+          "1.2.8",
+          "1.3.1"
+        ],
+        "files": [
+          "jquery.nouislider.js",
+          "jquery.nouislider.min.js",
+          "nouislider.css",
+          "nouislider.min.css"
+        ]
+      },
+      "2": {
+        "versions": [
+          "2.0.0",
+          "2.0.4",
+          "2.1.3",
+          "2.1.4",
+          "2.5.0",
+          "2.5.1",
+          "2.5.2",
+          "2.5.3",
+          "2.5.4",
+          "2.5.5"
+        ],
+        "files": [
+          "jquery.nouislider.js",
+          "jquery.nouislider.min.js",
+          "nouislider.css",
+          "nouislider.min.css"
+        ]
+      },
+      "3": {
+        "versions": [
+          "3.0.0",
+          "3.0.1",
+          "3.0.2",
+          "3.0.4",
+          "3.0.6",
+          "3.0.7",
+          "3.0.9",
+          "3.1.1",
+          "3.2.0",
+          "3.2.1"
+        ],
+        "files": [
+          "jquery.nouislider.js",
+          "jquery.nouislider.min.js",
+          "nouislider.fox.css",
+          "nouislider.fox.min.css",
+          "nouislider.space.css",
+          "nouislider.space.min.css"
+        ]
+      },
+      "4": {
+        "versions": [
+          "4.0.0",
+          "4.0.1",
+          "4.0.2",
+          "4.0.3",
+          "4.1.0",
+          "4.2.0",
+          "4.2.2",
+          "4.3.0"
+        ],
+        "files": [
+          "jquery.nouislider.css",
+          "jquery.nouislider.js",
+          "jquery.nouislider.min.css",
+          "jquery.nouislider.min.js"
+        ]
+      },
+      "5": {
+        "versions": [
+          "5.0.0"
+        ],
+        "files": [
+          "jquery.nouislider.css",
+          "jquery.nouislider.js",
+          "jquery.nouislider.min.css",
+          "jquery.nouislider.min.js"
+        ]
+      },
+      "6": {
+        "versions": [
+          "6.0.0",
+          "6.1.0",
+          "6.1.1",
+          "6.2.0"
+        ],
+        "files": [
+          "jquery.nouislider.css",
+          "jquery.nouislider.js",
+          "jquery.nouislider.min.css",
+          "jquery.nouislider.min.js"
+        ]
+      },
+      "7": {
+        "versions": [
+          "7.0.0",
+          "7.0.1",
+          "7.0.3",
+          "7.0.4",
+          "7.0.5",
+          "7.0.6",
+          "7.0.7",
+          "7.0.8",
+          "7.0.9",
+          "7.0.10"
+        ],
+        "files": [
+          "jquery.nouislider.css",
+          "jquery.nouislider.full.min.js",
+          "jquery.nouislider.min.js",
+          "jquery.nouislider.pips.css"
+        ]
+      },
+      "8": {
+        "versions": [
+          "8.0.0",
+          "8.0.1",
+          "8.0.2",
+          "8.1.0",
+          "8.2.0",
+          "8.2.1",
+          "8.3.0",
+          "8.4.0",
+          "8.5.0",
+          "8.5.1"
+        ],
+        "files": [
+          "nouislider.js",
+          "nouislider.min.css",
+          "nouislider.min.js"
+        ]
+      },
+      "9": {
+        "versions": [
+          "9.0.0",
+          "9.1.0",
+          "9.2.0"
+        ],
+        "files": [
+          "nouislider.css",
+          "nouislider.js",
+          "nouislider.min.css",
+          "nouislider.min.js"
+        ]
+      },
+      "10": {
+        "versions": [
+          "10.0.0",
+          "10.1.0"
+        ],
+        "files": [
+          "nouislider.css",
+          "nouislider.js",
+          "nouislider.min.css",
+          "nouislider.min.js"
+        ]
+      },
+      "11": {
+        "versions": [
+          "11.0.0",
+          "11.0.1",
+          "11.0.2",
+          "11.0.3",
+          "11.1.0"
+        ],
+        "files": [
+          "nouislider.css",
+          "nouislider.js",
+          "nouislider.min.css",
+          "nouislider.min.js"
+        ]
+      },
+      "12": {
+        "versions": [
+          "12.0.0",
+          "12.1.0"
+        ],
+        "files": [
+          "nouislider.css",
+          "nouislider.js",
+          "nouislider.min.css",
+          "nouislider.min.js"
+        ]
+      },
+      "13": {
+        "versions": [
+          "13.0.0",
+          "13.1.0",
+          "13.1.1",
+          "13.1.2",
+          "13.1.3",
+          "13.1.4",
+          "13.1.5"
+        ],
+        "files": [
+          "nouislider.css",
+          "nouislider.js",
+          "nouislider.min.css",
+          "nouislider.min.js"
+        ]
+      },
+      "14": {
+        "versions": [
+          "14.0.0",
+          "14.0.1",
+          "14.0.2",
+          "14.0.3",
+          "14.1.0",
+          "14.1.1",
+          "14.2.0",
+          "14.3.0",
+          "14.4.0",
+          "14.5.0",
+          "14.6.0",
+          "14.6.1",
+          "14.6.2",
+          "14.6.3",
+          "14.6.4",
+          "14.7.0"
+        ],
+        "files": [
+          "nouislider.css",
+          "nouislider.js",
+          "nouislider.min.css",
+          "nouislider.min.js"
+        ]
+      },
+      "15": {
+        "versions": [
+          "15.0.0",
+          "15.1.0",
+          "15.1.1",
+          "15.2.0",
+          "15.3.0",
+          "15.4.0",
+          "15.5.0",
+          "15.5.1",
+          "15.6.0",
+          "15.6.1",
+          "15.7.0",
+          "15.7.1",
+          "15.7.2",
+          "15.8.0",
+          "15.8.1"
+        ],
+        "files": [
+          "nouislider.css",
+          "nouislider.d.ts",
+          "nouislider.js",
+          "nouislider.min.css",
+          "nouislider.min.js"
+        ]
+      }
+    },
+    "filename": "nouislider.min.js"
+  },
+  "ng-grid": {
+    "name": "ng-grid",
+    "versions": {
+      "2": {
+        "versions": [
+          "2.0.7",
+          "2.0.8",
+          "2.0.9",
+          "2.0.10",
+          "2.0.11"
+        ],
+        "files": [
+          "ng-grid-csv-export.js",
+          "ng-grid-csv-export.min.js",
+          "ng-grid-flexible-height.js",
+          "ng-grid-flexible-height.min.js",
+          "ng-grid-layout.js",
+          "ng-grid-layout.min.js",
+          "ng-grid-reorderable.js",
+          "ng-grid-reorderable.min.js",
+          "ng-grid-wysiwyg-export.js",
+          "ng-grid-wysiwyg-export.min.js",
+          "ng-grid.css",
+          "ng-grid.js",
+          "ng-grid.min.css",
+          "ng-grid.min.js"
+        ]
+      }
+    },
+    "filename": "ng-grid.min.js"
+  },
+  "ng2-bootstrap": {
+    "name": "ng2-bootstrap",
+    "versions": {
+      "1": {
+        "versions": [
+          "1.0.1-beta.2",
+          "1.0.2-beta.0",
+          "1.0.2-beta.1",
+          "1.0.2-beta.2",
+          "1.0.3",
+          "1.0.4",
+          "1.0.5",
+          "1.0.6",
+          "1.0.7",
+          "1.0.8",
+          "1.0.9",
+          "1.0.10",
+          "1.0.11",
+          "1.0.12",
+          "1.0.13",
+          "1.0.14",
+          "1.0.15",
+          "1.0.16",
+          "1.0.17",
+          "1.0.18",
+          "1.0.19",
+          "1.0.20",
+          "1.0.21",
+          "1.0.22",
+          "1.0.23",
+          "1.0.24",
+          "1.1.0",
+          "1.1.1",
+          "1.1.2",
+          "1.1.3",
+          "1.1.4",
+          "1.1.5",
+          "1.1.6",
+          "1.1.7",
+          "1.1.8",
+          "1.1.9",
+          "1.1.10",
+          "1.1.11",
+          "1.1.12",
+          "1.1.13",
+          "1.1.13-0",
+          "1.1.13-1",
+          "1.1.14",
+          "1.1.14-0",
+          "1.1.14-1",
+          "1.1.15",
+          "1.1.16",
+          "1.1.16-3",
+          "1.1.16-4",
+          "1.1.16-6",
+          "1.1.16-7",
+          "1.1.16-8",
+          "1.1.16-9",
+          "1.1.16-10",
+          "1.1.16-11",
+          "1.1.17",
+          "1.2.0",
+          "1.2.1",
+          "1.2.2",
+          "1.2.3",
+          "1.2.4",
+          "1.2.5",
+          "1.2.6",
+          "1.3.0",
+          "1.3.1",
+          "1.3.2",
+          "1.3.3",
+          "1.4.0-beta.0",
+          "1.4.0-beta.1",
+          "1.4.0-beta.2",
+          "1.4.0-beta.3",
+          "1.4.0-beta.4",
+          "1.4.0-beta.5",
+          "1.4.0-beta.6",
+          "1.4.0",
+          "1.4.1",
+          "1.4.2",
+          "1.5.0",
+          "1.6.0",
+          "1.6.1",
+          "1.6.2",
+          "1.6.3"
+        ],
+        "files": [
+          "ng2-bootstrap.js",
+          "ng2-bootstrap.min.js",
+          "ng2-bootstrap.min.js.map"
+        ]
+      },
+      "2": {
+        "versions": [
+          "2.0.0-beta.0",
+          "2.0.0-rc.0"
+        ],
+        "files": [
+          "ng2-bootstrap.umd.js",
+          "ng2-bootstrap.umd.js.map",
+          "ng2-bootstrap.umd.min.js"
+        ]
+      }
+    },
+    "filename": "ng2-bootstrap.umd.min.js"
+  },
+  "Nestable": {
+    "name": "Nestable",
+    "versions": {
+      "2012": {
+        "versions": [
+          "2012-06-27",
+          "2012-10-15"
+        ],
+        "files": [
+          "jquery.nestable.js",
+          "jquery.nestable.min.js",
+          "jquery.nestable.min.js.map"
+        ]
+      }
+    },
+    "filename": "jquery.nestable.min.js"
+  },
+  "node-polyglot": {
+    "name": "node-polyglot",
+    "versions": {
+      "2": {
+        "versions": [
+          "2.1.0",
+          "2.1.1",
+          "2.1.2",
+          "2.1.3",
+          "2.2.0",
+          "2.2.1",
+          "2.2.2",
+          "2.3.0",
+          "2.3.1",
+          "2.4.0",
+          "2.4.1",
+          "2.4.2",
+          "2.5.0",
+          "2.6.0"
+        ],
+        "files": [
+          "index.js",
+          "index.min.js"
+        ]
+      }
+    },
+    "filename": "index.js"
+  },
+  "ng-cordova": {
+    "name": "ng-cordova",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.1.0-alpha",
+          "0.1.1-alpha",
+          "0.1.2-alpha",
+          "0.1.3-alpha",
+          "0.1.4-alpha",
+          "0.1.5-alpha",
+          "0.1.6-alpha",
+          "0.1.7-alpha",
+          "0.1.8-alpha",
+          "0.1.9-alpha",
+          "0.1.10-alpha",
+          "0.1.11-alpha",
+          "0.1.12-alpha",
+          "0.1.14-alpha",
+          "0.1.15-alpha",
+          "0.1.16-alpha",
+          "0.1.17-alpha",
+          "0.1.18-alpha",
+          "0.1.19-alpha",
+          "0.1.20-alpha",
+          "0.1.21-alpha",
+          "0.1.22-alpha",
+          "0.1.23-alpha",
+          "0.1.24-alpha",
+          "0.1.25-alpha",
+          "0.1.26-alpha",
+          "0.1.27-alpha"
+        ],
+        "files": [
+          "ng-cordova.js",
+          "ng-cordova.min.js"
+        ]
+      }
+    },
+    "filename": "ng-cordova.min.js"
+  },
+  "node-waves": {
+    "name": "node-waves",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.4.0",
+          "0.4.1",
+          "0.4.2",
+          "0.5.0",
+          "0.5.1",
+          "0.5.2",
+          "0.5.3",
+          "0.5.4",
+          "0.5.5",
+          "0.6.0",
+          "0.6.1",
+          "0.6.2",
+          "0.6.3",
+          "0.6.4",
+          "0.6.5",
+          "0.6.6",
+          "0.7.0",
+          "0.7.1",
+          "0.7.2",
+          "0.7.3",
+          "0.7.4",
+          "0.7.5",
+          "0.7.6"
+        ],
+        "files": [
+          "waves.css",
+          "waves.js",
+          "waves.min.css",
+          "waves.min.js",
+          "waves.min.js.map"
+        ]
+      }
+    },
+    "filename": "waves.min.js"
+  },
+  "ng-dialog": {
+    "name": "ng-dialog",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.1.5",
+          "0.1.6",
+          "0.1.7",
+          "0.1.8",
+          "0.2.2",
+          "0.2.3",
+          "0.2.6",
+          "0.2.10",
+          "0.2.11",
+          "0.2.13",
+          "0.2.14",
+          "0.3.0",
+          "0.3.2",
+          "0.3.3",
+          "0.3.4",
+          "0.3.5",
+          "0.3.6",
+          "0.3.7",
+          "0.3.8",
+          "0.3.10",
+          "0.3.11",
+          "0.3.12",
+          "0.4.0",
+          "0.5.0",
+          "0.5.1",
+          "0.5.4",
+          "0.5.5",
+          "0.5.6",
+          "0.5.7",
+          "0.5.8",
+          "0.5.9",
+          "0.6.0",
+          "0.6.1",
+          "0.6.2",
+          "0.6.3",
+          "0.6.4",
+          "0.6.6"
+        ],
+        "files": [
+          "ng-dialog-theme-default.css",
+          "ng-dialog-theme-default.min.css",
+          "ng-dialog-theme-plain.css",
+          "ng-dialog-theme-plain.min.css",
+          "ng-dialog.css",
+          "ng-dialog.js",
+          "ng-dialog.min.css",
+          "ng-dialog.min.js"
+        ]
+      },
+      "1": {
+        "versions": [
+          "1.0.0",
+          "1.0.1",
+          "1.1.0",
+          "1.3.0",
+          "1.4.0"
+        ],
+        "files": [
+          "css/ngDialog-theme-default.css",
+          "css/ngDialog-theme-default.min.css",
+          "css/ngDialog-theme-plain.css",
+          "css/ngDialog-theme-plain.min.css",
+          "css/ngDialog.css",
+          "css/ngDialog.min.css",
+          "js/ngDialog.js",
+          "js/ngDialog.min.js"
+        ]
+      }
+    },
+    "filename": "js/ngDialog.min.js"
+  },
+  "node-open": {
+    "name": "node-open",
+    "versions": {
+      "6": {
+        "versions": [
+          "6.0.0",
+          "6.1.0",
+          "6.2.0",
+          "6.3.0",
+          "6.4.0"
+        ],
+        "files": [
+          "index.js",
+          "index.min.js"
+        ]
+      },
+      "7": {
+        "versions": [
+          "7.0.0",
+          "7.0.1",
+          "7.0.2",
+          "7.0.3",
+          "7.0.4",
+          "7.1.0",
+          "7.2.0",
+          "7.2.1",
+          "7.3.0",
+          "7.3.1",
+          "7.4.0",
+          "7.4.1",
+          "7.4.2"
+        ],
+        "files": [
+          "index.d.ts",
+          "index.js",
+          "index.min.js"
+        ]
+      },
+      "8": {
+        "versions": [
+          "8.0.0",
+          "8.0.1",
+          "8.0.2",
+          "8.0.3",
+          "8.0.4",
+          "8.0.5",
+          "8.0.6",
+          "8.0.7",
+          "8.0.8",
+          "8.0.9",
+          "8.1.0",
+          "8.2.0",
+          "8.2.1",
+          "8.3.0",
+          "8.4.0",
+          "8.4.1",
+          "8.4.2"
+        ],
+        "files": [
+          "index.d.ts",
+          "index.js"
+        ]
+      },
+      "9": {
+        "versions": [
+          "9.0.0",
+          "9.1.0"
+        ],
+        "files": [
+          "index.d.ts",
+          "index.js",
+          "index.min.js"
+        ]
+      },
+      "10": {
+        "versions": [
+          "10.0.0",
+          "10.0.1",
+          "10.0.2",
+          "10.0.3",
+          "10.0.4",
+          "10.1.0"
+        ],
+        "files": [
+          "index.d.ts",
+          "index.js",
+          "index.min.js"
+        ]
+      }
+    },
+    "filename": "index.js"
+  },
+  "ngInfiniteScroll": {
+    "name": "ngInfiniteScroll",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.1.0",
+          "0.2.0"
+        ],
+        "files": [
+          "ng-infinite-scroll.js",
+          "ng-infinite-scroll.min.js"
+        ]
+      },
+      "1": {
+        "versions": [
+          "1.0.0",
+          "1.1.0",
+          "1.1.1",
+          "1.1.2",
+          "1.2.0",
+          "1.2.1",
+          "1.2.2",
+          "1.3.0",
+          "1.3.1",
+          "1.3.2",
+          "1.3.3",
+          "1.3.4"
+        ],
+        "files": [
+          "ng-infinite-scroll.js",
+          "ng-infinite-scroll.min.js"
+        ]
+      }
+    },
+    "filename": "ng-infinite-scroll.min.js"
+  },
+  "ng-table": {
+    "name": "ng-table",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.2.0",
+          "0.2.1",
+          "0.2.2",
+          "0.3.0",
+          "0.3.1",
+          "0.3.2",
+          "0.3.3",
+          "0.4.1",
+          "0.4.2",
+          "0.4.3",
+          "0.5.0",
+          "0.5.1",
+          "0.5.2",
+          "0.5.3",
+          "0.5.4",
+          "0.5.5",
+          "0.6.0",
+          "0.7.0",
+          "0.7.1",
+          "0.8.0",
+          "0.8.1",
+          "0.8.2",
+          "0.8.3"
+        ],
+        "files": [
+          "ng-table.css",
+          "ng-table.js",
+          "ng-table.map",
+          "ng-table.min.css",
+          "ng-table.min.js"
+        ]
+      },
+      "1": {
+        "versions": [
+          "1.0.0-alpha",
+          "1.0.0-alpha.1",
+          "1.0.0-alpha.2",
+          "1.0.0-alpha.3",
+          "1.0.0-alpha.4",
+          "1.0.0-alpha.5",
+          "1.0.0-alpha.6",
+          "1.0.0-alpha.7",
+          "1.0.0-alpha.8",
+          "1.0.0-beta.1",
+          "1.0.0-beta.2",
+          "1.0.0-beta.3",
+          "1.0.0-beta.4",
+          "1.0.0-beta.5",
+          "1.0.0-beta.6",
+          "1.0.0-beta.7",
+          "1.0.0-beta.8",
+          "1.0.0-beta.9",
+          "1.0.0"
+        ],
+        "files": [
+          "ng-table.css",
+          "ng-table.js",
+          "ng-table.min.css",
+          "ng-table.min.js",
+          "ng-table.min.js.map"
+        ]
+      },
+      "2": {
+        "versions": [
+          "2.0.0",
+          "2.0.1",
+          "2.0.2",
+          "2.1.0",
+          "2.2.0"
+        ],
+        "files": []
+      },
+      "3": {
+        "versions": [
+          "3.0.0",
+          "3.0.1",
+          "3.1.0"
+        ],
+        "files": []
+      },
+      "4": {
+        "versions": [
+          "4.0.0"
+        ],
+        "files": []
+      }
+    },
+    "filename": "ng-table.min.js"
+  },
+  "nanobar": {
+    "name": "nanobar",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.0.4",
+          "0.0.5",
+          "0.0.6",
+          "0.0.8",
+          "0.1.0",
+          "0.2.0",
+          "0.2.1",
+          "0.4.0",
+          "0.4.1",
+          "0.4.2"
+        ],
+        "files": [
+          "nanobar.js",
+          "nanobar.min.js"
+        ]
+      }
+    },
+    "filename": "nanobar.min.js"
+  },
+  "ngreact": {
+    "name": "ngreact",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.0.1",
+          "0.0.2",
+          "0.1.0",
+          "0.1.1",
+          "0.1.2",
+          "0.1.3",
+          "0.1.4",
+          "0.1.5",
+          "0.1.6",
+          "0.1.7",
+          "0.2.0",
+          "0.3.0",
+          "0.4.0",
+          "0.4.1",
+          "0.5.0",
+          "0.5.1",
+          "0.5.2"
+        ],
+        "files": [
+          "ngReact.js",
+          "ngReact.min.js"
+        ]
+      }
+    },
+    "filename": "ngReact.min.js"
+  },
+  "ngStorage": {
+    "name": "ngStorage",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.1.0",
+          "0.2.0",
+          "0.2.1",
+          "0.2.2",
+          "0.2.3",
+          "0.3.0",
+          "0.3.3",
+          "0.3.4",
+          "0.3.5",
+          "0.3.6",
+          "0.3.7",
+          "0.3.8",
+          "0.3.9",
+          "0.3.10",
+          "0.3.11"
+        ],
+        "files": [
+          "ngStorage.js",
+          "ngStorage.min.js"
+        ]
+      }
+    },
+    "filename": "ngStorage.min.js"
+  },
+  "navigo": {
+    "name": "navigo",
+    "versions": {
+      "5": {
+        "versions": [
+          "5.3.1",
+          "5.3.2",
+          "5.3.3"
+        ],
+        "files": [
+          "navigo.js",
+          "navigo.js.map",
+          "navigo.min.js",
+          "navigo.min.js.map"
+        ]
+      },
+      "6": {
+        "versions": [
+          "6.0.0",
+          "6.0.1",
+          "6.0.2"
+        ],
+        "files": [
+          "navigo.js",
+          "navigo.js.map",
+          "navigo.min.js",
+          "navigo.min.js.map"
+        ]
+      },
+      "7": {
+        "versions": [
+          "7.0.0",
+          "7.1.0",
+          "7.1.1",
+          "7.1.2",
+          "7.1.3"
+        ],
+        "files": [
+          "navigo.js",
+          "navigo.js.map",
+          "navigo.min.js",
+          "navigo.min.js.map"
+        ]
+      },
+      "8": {
+        "versions": [
+          "8.0.0-beta.1",
+          "8.0.0-beta.10",
+          "8.0.0-beta.11",
+          "8.0.0-beta.12",
+          "8.0.0-beta.13",
+          "8.0.0-beta.14",
+          "8.0.0-beta.15",
+          "8.0.0-beta.16",
+          "8.0.0-beta.17",
+          "8.0.0-beta.18",
+          "8.0.0-beta.19",
+          "8.0.0-beta.2",
+          "8.0.0-beta.20",
+          "8.0.0-beta.21",
+          "8.0.0-beta.22",
+          "8.0.0-beta.23",
+          "8.0.0-beta.24",
+          "8.0.0-beta.25",
+          "8.0.0-beta.26",
+          "8.0.0-beta.27",
+          "8.0.0-beta.28",
+          "8.0.0-beta.29",
+          "8.0.0-beta.30",
+          "8.0.0-beta.31",
+          "8.0.0-beta.32",
+          "8.0.0-beta.4",
+          "8.0.0-beta.5",
+          "8.0.0-beta.6",
+          "8.0.0-beta.7",
+          "8.0.0-beta.8",
+          "8.0.0-beta.9",
+          "8.0.0",
+          "8.0.1",
+          "8.1.0",
+          "8.1.1",
+          "8.2.0",
+          "8.3.0",
+          "8.3.1",
+          "8.3.2",
+          "8.4.0",
+          "8.4.1",
+          "8.4.2",
+          "8.4.3",
+          "8.4.4",
+          "8.5.0",
+          "8.6.0",
+          "8.6.1",
+          "8.6.2",
+          "8.6.3",
+          "8.6.4",
+          "8.6.5",
+          "8.7.0",
+          "8.7.1",
+          "8.7.2",
+          "8.7.3",
+          "8.8.0",
+          "8.8.1",
+          "8.8.2",
+          "8.8.3",
+          "8.8.4",
+          "8.8.5",
+          "8.8.6",
+          "8.8.7",
+          "8.8.8",
+          "8.8.9",
+          "8.8.10",
+          "8.8.11",
+          "8.8.12",
+          "8.9.0",
+          "8.9.1",
+          "8.10.0",
+          "8.10.1",
+          "8.11.0",
+          "8.11.1"
+        ],
+        "files": [
+          "navigo.amd.js",
+          "navigo.amd.js.map",
+          "navigo.amd.min.js",
+          "navigo.amd.min.js.map",
+          "navigo.js",
+          "navigo.js.map",
+          "navigo.min.js",
+          "navigo.min.js.map"
+        ]
+      }
+    },
+    "filename": "navigo.min.js"
+  },
+  "notyf": {
+    "name": "notyf",
+    "versions": {
+      "3": {
+        "versions": [
+          "3.2.0",
+          "3.3.0",
+          "3.4.0",
+          "3.5.0",
+          "3.5.1",
+          "3.6.0",
+          "3.7.0",
+          "3.8.0",
+          "3.9.0",
+          "3.10.0"
+        ],
+        "files": [
+          "notyf.es.js",
+          "notyf.es.min.js",
+          "notyf.js",
+          "notyf.min.css",
+          "notyf.min.js"
+        ]
+      }
+    },
+    "filename": "notyf.min.js"
+  },
+  "nuclear-js": {
+    "name": "nuclear-js",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.6.0"
+        ],
+        "files": [
+          "nuclear.js",
+          "nuclear.min.js"
+        ]
+      },
+      "1": {
+        "versions": [
+          "1.0.0",
+          "1.0.1",
+          "1.0.2",
+          "1.0.3",
+          "1.0.5",
+          "1.1.0-rc",
+          "1.1.0-rc2",
+          "1.1.0",
+          "1.1.1",
+          "1.1.2",
+          "1.2.0",
+          "1.2.1",
+          "1.3.0",
+          "1.4.0"
+        ],
+        "files": [
+          "nuclear.js",
+          "nuclear.min.js"
+        ]
+      }
+    },
+    "filename": "nuclear.min.js"
+  },
+  "node-vibrant": {
+    "name": "node-vibrant",
+    "versions": {
+      "3": {
+        "versions": [
+          "3.1.0-alpha.1",
+          "3.1.0-0",
+          "3.1.1",
+          "3.1.2",
+          "3.1.3",
+          "3.1.4",
+          "3.1.5",
+          "3.1.6",
+          "3.2.0-alpha",
+          "3.2.1-alpha.1"
+        ],
+        "files": [
+          "e1f32031c2d77075d63e.worker.js",
+          "e1f32031c2d77075d63e.worker.min.js",
+          "vibrant.js",
+          "vibrant.min.js",
+          "vibrant.worker.js",
+          "vibrant.worker.min.js"
+        ]
+      }
+    },
+    "filename": "vibrant.min.js"
+  },
+  "nomnoml": {
+    "name": "nomnoml",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.0.1",
+          "0.0.2",
+          "0.0.3",
+          "0.0.4",
+          "0.1.0",
+          "0.1.1",
+          "0.2.0",
+          "0.3.0",
+          "0.4.0",
+          "0.5.0",
+          "0.6.0",
+          "0.6.1",
+          "0.6.2",
+          "0.7.0",
+          "0.7.1",
+          "0.7.2",
+          "0.7.3",
+          "0.8.0",
+          "0.9.0",
+          "0.10.0",
+          "0.11.0-beta",
+          "0.11.0-beta2"
+        ],
+        "files": [
+          "nomnoml.js",
+          "nomnoml.min.js"
+        ]
+      },
+      "1": {
+        "versions": [
+          "1.0.0",
+          "1.0.1",
+          "1.1.0",
+          "1.1.1",
+          "1.2.0",
+          "1.3.0",
+          "1.3.1",
+          "1.4.0",
+          "1.5.0",
+          "1.5.1",
+          "1.5.2",
+          "1.5.3",
+          "1.6.0",
+          "1.6.1",
+          "1.6.2"
+        ],
+        "files": [
+          "nomnoml.js",
+          "nomnoml.min.js",
+          "nomnoml.web.js",
+          "nomnoml.web.min.js",
+          "webapp.js",
+          "webapp.min.js"
+        ]
+      }
+    },
+    "filename": "nomnoml.min.js"
+  },
+  "numjs": {
+    "name": "numjs",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.1.0",
+          "0.2.0",
+          "0.3.0",
+          "0.4.0",
+          "0.5.0",
+          "0.5.1",
+          "0.5.2",
+          "0.6.0",
+          "0.7.0",
+          "0.8.0",
+          "0.9.0",
+          "0.10.0",
+          "0.11.0",
+          "0.11.1",
+          "0.11.2",
+          "0.11.3",
+          "0.11.4",
+          "0.11.5",
+          "0.11.6",
+          "0.12.0",
+          "0.12.1",
+          "0.12.2",
+          "0.12.4",
+          "0.13.0",
+          "0.13.1",
+          "0.14.2",
+          "0.15.0",
+          "0.15.1",
+          "0.16.0",
+          "0.16.1"
+        ],
+        "files": [
+          "numjs.js",
+          "numjs.min.js"
+        ]
+      }
+    },
+    "filename": "numjs.min.js"
+  },
+  "ng-token-auth": {
+    "name": "ng-token-auth",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.0.1",
+          "0.0.2",
+          "0.0.3",
+          "0.0.4",
+          "0.0.5",
+          "0.0.6",
+          "0.0.7",
+          "0.0.8",
+          "0.0.9",
+          "0.0.10",
+          "0.0.11",
+          "0.0.12",
+          "0.0.13",
+          "0.0.15",
+          "0.0.16",
+          "0.0.17-alpha.1",
+          "0.0.17",
+          "0.0.18",
+          "0.0.19-beta1",
+          "0.0.19",
+          "0.0.20-beta1",
+          "0.0.20-beta2",
+          "0.0.20-beta3",
+          "0.0.20",
+          "0.0.21-beta1",
+          "0.0.21-beta2",
+          "0.0.21",
+          "0.0.22-beta1",
+          "0.0.22-beta2",
+          "0.0.22-beta3",
+          "0.0.22-beta4",
+          "0.0.22-beta5",
+          "0.0.22-beta7",
+          "0.0.22",
+          "0.0.23-beta1",
+          "0.0.23-beta2",
+          "0.0.23",
+          "0.0.24-beta1",
+          "0.0.24-beta2",
+          "0.0.24-beta4",
+          "0.0.24-beta6",
+          "0.0.24-beta7",
+          "0.0.24",
+          "0.0.25-beta1",
+          "0.0.25",
+          "0.0.27",
+          "0.0.28",
+          "0.0.29-beta1",
+          "0.0.29",
+          "0.0.30"
+        ],
+        "files": [
+          "ng-token-auth.js",
+          "ng-token-auth.min.js"
+        ]
+      }
+    },
+    "filename": "ng-token-auth.min.js"
+  },
+  "notify": {
+    "name": "notify",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.3.1",
+          "0.3.2",
+          "0.3.3",
+          "0.3.4",
+          "0.4.0",
+          "0.4.2"
+        ],
+        "files": [
+          "notify-combined.js",
+          "notify-combined.min.js",
+          "notify.js",
+          "notify.min.js",
+          "styles/bootstrap/notify-bootstrap.js",
+          "styles/bootstrap/notify-bootstrap.min.js",
+          "styles/metro/notify-metro.css",
+          "styles/metro/notify-metro.js",
+          "styles/metro/notify-metro.min.css",
+          "styles/metro/notify-metro.min.js"
+        ]
+      }
+    },
+    "filename": "notify.min.js"
+  },
+  "nipplejs": {
+    "name": "nipplejs",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.1.0",
+          "0.1.1",
+          "0.2.0",
+          "0.2.1",
+          "0.3.0",
+          "0.3.1",
+          "0.4.0",
+          "0.4.1",
+          "0.4.2",
+          "0.5.0",
+          "0.5.1",
+          "0.5.2",
+          "0.5.3",
+          "0.5.4",
+          "0.5.5",
+          "0.5.6",
+          "0.6.0",
+          "0.6.1",
+          "0.6.2",
+          "0.6.3",
+          "0.6.4",
+          "0.6.5",
+          "0.6.6",
+          "0.6.7",
+          "0.6.8",
+          "0.7.0",
+          "0.7.1",
+          "0.7.2",
+          "0.7.3",
+          "0.8.0",
+          "0.8.1",
+          "0.8.2",
+          "0.8.3",
+          "0.8.4",
+          "0.8.5",
+          "0.8.6",
+          "0.8.7",
+          "0.9.0",
+          "0.9.1",
+          "0.10.0",
+          "0.10.1",
+          "0.10.2"
+        ],
+        "files": [
+          "nipplejs.js",
+          "nipplejs.min.js"
+        ]
+      }
+    },
+    "filename": "nipplejs.js"
+  },
+  "ng-tags-input": {
+    "name": "ng-tags-input",
+    "versions": {
+      "1": {
+        "versions": [
+          "1.1.1"
+        ],
+        "files": [
+          "ng-tags-input.css",
+          "ng-tags-input.js",
+          "ng-tags-input.min.css",
+          "ng-tags-input.min.js"
+        ]
+      },
+      "2": {
+        "versions": [
+          "2.0.0",
+          "2.0.1",
+          "2.1.1",
+          "2.1.1-1",
+          "2.2.0",
+          "2.3.0"
+        ],
+        "files": [
+          "ng-tags-input.css",
+          "ng-tags-input.js",
+          "ng-tags-input.min.css",
+          "ng-tags-input.min.js"
+        ]
+      },
+      "3": {
+        "versions": [
+          "3.0.0",
+          "3.1.0",
+          "3.1.1",
+          "3.1.2",
+          "3.2.0"
+        ],
+        "files": [
+          "ng-tags-input.bootstrap.css",
+          "ng-tags-input.bootstrap.min.css",
+          "ng-tags-input.css",
+          "ng-tags-input.js",
+          "ng-tags-input.min.css",
+          "ng-tags-input.min.js"
+        ]
+      }
+    },
+    "filename": "ng-tags-input.min.js"
+  },
+  "numbers.js": {
+    "name": "numbers.js",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.0.2",
+          "0.4.0",
+          "0.5.0",
+          "0.6.0",
+          "0.7.0"
+        ],
+        "files": [
+          "numbers.js",
+          "numbers.min.js"
+        ]
+      }
+    },
+    "filename": "numbers.min.js"
+  },
+  "ng2-formly": {
+    "name": "ng2-formly",
+    "versions": {
+      "2": {
+        "versions": [
+          "2.0.0-alpha.2",
+          "2.0.0-alpha.3",
+          "2.0.0-alpha.4",
+          "2.0.0-alpha.5",
+          "2.0.0-beta.1",
+          "2.0.0-beta.10",
+          "2.0.0-beta.11",
+          "2.0.0-beta.12",
+          "2.0.0-beta.13",
+          "2.0.0-beta.14",
+          "2.0.0-beta.2",
+          "2.0.0-beta.3",
+          "2.0.0-beta.4",
+          "2.0.0-beta.5",
+          "2.0.0-beta.6",
+          "2.0.0-beta.7",
+          "2.0.0-beta.8",
+          "2.0.0-beta.9"
+        ],
+        "files": [
+          "ng2-formly.js",
+          "ng2-formly.min.js"
+        ]
+      }
+    },
+    "filename": "ng2-formly.umd.min.js"
+  },
+  "ngprogress": {
+    "name": "ngprogress",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.0.1",
+          "0.0.2",
+          "0.0.3"
+        ],
+        "files": [
+          "ngProgress.js",
+          "ngProgress.min.js"
+        ]
+      },
+      "1": {
+        "versions": [
+          "1.0.1",
+          "1.0.2",
+          "1.0.3",
+          "1.0.4",
+          "1.0.5",
+          "1.0.6",
+          "1.0.7",
+          "1.1.0",
+          "1.1.0_alpha",
+          "1.1.1",
+          "1.1.2",
+          "1.1.3"
+        ],
+        "files": [
+          "ngProgress.js",
+          "ngProgress.min.js"
+        ]
+      }
+    },
+    "filename": "ngprogress.min.js"
+  },
+  "ng-flow": {
+    "name": "ng-flow",
+    "versions": {
+      "2": {
+        "versions": [
+          "2.1.3",
+          "2.1.4",
+          "2.2.0",
+          "2.3.0",
+          "2.3.1",
+          "2.3.2",
+          "2.4.0",
+          "2.4.1",
+          "2.4.2",
+          "2.4.3",
+          "2.5.0",
+          "2.5.1",
+          "2.6.0",
+          "2.6.1",
+          "2.7.0",
+          "2.7.1",
+          "2.7.3",
+          "2.7.4",
+          "2.7.6",
+          "2.7.7",
+          "2.7.8"
+        ],
+        "files": [
+          "ng-flow.js",
+          "ng-flow.min.js"
+        ]
+      }
+    },
+    "filename": "ng-flow-standalone.min.js"
+  },
+  "nosleep": {
+    "name": "nosleep",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.1.0",
+          "0.2.0",
+          "0.3.0",
+          "0.4.0",
+          "0.5.0",
+          "0.6.0",
+          "0.7.0",
+          "0.7.1",
+          "0.8.0",
+          "0.9.0",
+          "0.10.0",
+          "0.11.0",
+          "0.12.0"
+        ],
+        "files": [
+          "NoSleep.js",
+          "NoSleep.min.js",
+          "NoSleep.min.js.map"
+        ]
+      }
+    },
+    "filename": "NoSleep.min.js"
+  },
+  "numeric": {
+    "name": "numeric",
+    "versions": {
+      "1": {
+        "versions": [
+          "1.0.2",
+          "1.1.0",
+          "1.1.1",
+          "1.1.2",
+          "1.1.3",
+          "1.1.4",
+          "1.1.5",
+          "1.1.6",
+          "1.1.7",
+          "1.1.8",
+          "1.2.0",
+          "1.2.1",
+          "1.2.2",
+          "1.2.3",
+          "1.2.4",
+          "1.2.5",
+          "1.2.6"
+        ],
+        "files": [
+          "numeric.js",
+          "numeric.min.js"
+        ]
+      }
+    },
+    "filename": "numeric.min.js"
+  },
+  "notify.js": {
+    "name": "notify.js",
+    "versions": {
+      "1": {
+        "versions": [
+          "1.2.1",
+          "1.2.2",
+          "1.2.3",
+          "1.2.4",
+          "1.2.5",
+          "1.2.6",
+          "1.2.7",
+          "1.2.8",
+          "1.3.0"
+        ],
+        "files": [
+          "notify.js",
+          "notify.min.js",
+          "notify.min.js.map"
+        ]
+      },
+      "2": {
+        "versions": [
+          "2.0.0",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3"
+        ],
+        "files": [
+          "notify.js",
+          "notify.min.js",
+          "notify.min.js.map"
+        ]
+      },
+      "3": {
+        "versions": [
+          "3.0.0"
+        ],
+        "files": [
+          "notify.js",
+          "notify.min.js",
+          "notify.min.js.map"
+        ]
+      }
+    },
+    "filename": "notify.min.js"
+  },
+  "ng-sortable": {
+    "name": "ng-sortable",
+    "versions": {
+      "1": {
+        "versions": [
+          "1.2.0",
+          "1.2.2",
+          "1.3.0",
+          "1.3.1",
+          "1.3.2",
+          "1.3.3",
+          "1.3.4",
+          "1.3.5",
+          "1.3.6",
+          "1.3.7",
+          "1.3.8"
+        ],
+        "files": [
+          "ng-sortable.css",
+          "ng-sortable.js",
+          "ng-sortable.min.css",
+          "ng-sortable.min.js",
+          "ng-sortable.style.css",
+          "ng-sortable.style.min.css"
+        ]
+      }
+    },
+    "filename": "ng-sortable.min.js"
+  },
+  "ng-img-crop": {
+    "name": "ng-img-crop",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.1.0",
+          "0.2.0",
+          "0.3.0",
+          "0.3.1",
+          "0.3.2"
+        ],
+        "files": [
+          "ng-img-crop.css",
+          "ng-img-crop.js"
+        ]
+      }
+    },
+    "filename": "ng-img-crop.js"
+  },
+  "numbro": {
+    "name": "numbro",
+    "versions": {
+      "1": {
+        "versions": [
+          "1.0.5",
+          "1.1.0",
+          "1.1.1",
+          "1.2.0",
+          "1.2.1",
+          "1.2.2",
+          "1.3.0",
+          "1.3.1",
+          "1.3.2",
+          "1.3.3",
+          "1.4.0",
+          "1.5.0",
+          "1.5.1",
+          "1.5.2",
+          "1.6.0",
+          "1.6.1",
+          "1.6.2",
+          "1.7.0",
+          "1.7.1",
+          "1.8.0",
+          "1.8.1",
+          "1.9.0",
+          "1.9.1",
+          "1.9.2",
+          "1.9.3",
+          "1.10.0",
+          "1.10.1",
+          "1.11.0",
+          "1.11.1"
+        ],
+        "files": [
+          "languages.js",
+          "min/languages.min.js",
+          "min/languages/cs-CZ.min.js",
+          "min/languages/da-DK.min.js",
+          "min/languages/de-DE.min.js",
+          "min/languages/de-ch.min.js",
+          "min/languages/en-GB.min.js",
+          "min/languages/es-AR.min.js",
+          "min/languages/es-ES.min.js",
+          "min/languages/et-EE.min.js",
+          "min/languages/fi-FI.min.js",
+          "min/languages/fr-CA.min.js",
+          "min/languages/fr-CH.min.js",
+          "min/languages/fr-FR.min.js",
+          "min/languages/hu-HU.min.js",
+          "min/languages/it-IT.min.js",
+          "min/languages/ja-JP.min.js",
+          "min/languages/lv-LV.min.js",
+          "min/languages/nb-NO.min.js",
+          "min/languages/nl-BE.min.js",
+          "min/languages/nl-NL.min.js",
+          "min/languages/pl-PL.min.js",
+          "min/languages/pt-BR.min.js",
+          "min/languages/pt-PT.min.js",
+          "min/languages/ru-RU.min.js",
+          "min/languages/ru-UA.min.js",
+          "min/languages/sk-SK.min.js",
+          "min/languages/sv-SE.min.js",
+          "min/languages/th-TH.min.js",
+          "min/languages/tr-TR.min.js",
+          "min/languages/uk-UA.min.js",
+          "min/languages/zh-CN.min.js",
+          "min/numbro.min.js",
+          "min/numeral.min.js"
+        ]
+      },
+      "2": {
+        "versions": [
+          "2.0.0",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.0.4",
+          "2.0.5",
+          "2.0.6",
+          "2.1.0",
+          "2.1.1",
+          "2.1.2",
+          "2.2.0",
+          "2.3.0",
+          "2.3.1",
+          "2.3.2",
+          "2.3.3",
+          "2.3.4",
+          "2.3.5",
+          "2.3.6",
+          "2.4.0",
+          "2.5.0"
+        ],
+        "files": [
+          "languages.min.js",
+          "languages/bg.min.js",
+          "languages/bg.min.js.map",
+          "languages/cs-CZ.min.js",
+          "languages/cs-CZ.min.js.map",
+          "languages/da-DK.min.js",
+          "languages/da-DK.min.js.map",
+          "languages/de-AT.min.js",
+          "languages/de-AT.min.js.map",
+          "languages/de-CH.min.js",
+          "languages/de-CH.min.js.map",
+          "languages/de-DE.min.js",
+          "languages/de-DE.min.js.map",
+          "languages/de-LI.min.js",
+          "languages/de-LI.min.js.map",
+          "languages/el.min.js",
+          "languages/el.min.js.map",
+          "languages/en-AU.min.js",
+          "languages/en-AU.min.js.map",
+          "languages/en-GB.min.js",
+          "languages/en-GB.min.js.map",
+          "languages/en-IE.min.js",
+          "languages/en-IE.min.js.map",
+          "languages/en-NZ.min.js",
+          "languages/en-NZ.min.js.map",
+          "languages/en-ZA.min.js",
+          "languages/en-ZA.min.js.map",
+          "languages/es-AR.min.js",
+          "languages/es-AR.min.js.map",
+          "languages/es-CL.min.js",
+          "languages/es-CL.min.js.map",
+          "languages/es-CO.min.js",
+          "languages/es-CO.min.js.map",
+          "languages/es-CR.min.js",
+          "languages/es-CR.min.js.map",
+          "languages/es-ES.min.js",
+          "languages/es-ES.min.js.map",
+          "languages/es-MX.min.js",
+          "languages/es-MX.min.js.map",
+          "languages/es-NI.min.js",
+          "languages/es-NI.min.js.map",
+          "languages/es-PE.min.js",
+          "languages/es-PE.min.js.map",
+          "languages/es-PR.min.js",
+          "languages/es-PR.min.js.map",
+          "languages/es-SV.min.js",
+          "languages/es-SV.min.js.map",
+          "languages/et-EE.min.js",
+          "languages/et-EE.min.js.map",
+          "languages/fa-IR.min.js",
+          "languages/fa-IR.min.js.map",
+          "languages/fi-FI.min.js",
+          "languages/fi-FI.min.js.map",
+          "languages/fil-PH.min.js",
+          "languages/fil-PH.min.js.map",
+          "languages/fr-CA.min.js",
+          "languages/fr-CA.min.js.map",
+          "languages/fr-CH.min.js",
+          "languages/fr-CH.min.js.map",
+          "languages/fr-FR.min.js",
+          "languages/fr-FR.min.js.map",
+          "languages/he-IL.min.js",
+          "languages/he-IL.min.js.map",
+          "languages/hu-HU.min.js",
+          "languages/hu-HU.min.js.map",
+          "languages/id.min.js",
+          "languages/id.min.js.map",
+          "languages/it-CH.min.js",
+          "languages/it-CH.min.js.map",
+          "languages/it-IT.min.js",
+          "languages/it-IT.min.js.map",
+          "languages/ja-JP.min.js",
+          "languages/ja-JP.min.js.map",
+          "languages/ko-KR.min.js",
+          "languages/ko-KR.min.js.map",
+          "languages/lv-LV.min.js",
+          "languages/lv-LV.min.js.map",
+          "languages/nb-NO.min.js",
+          "languages/nb-NO.min.js.map",
+          "languages/nb.min.js",
+          "languages/nb.min.js.map",
+          "languages/nl-BE.min.js",
+          "languages/nl-BE.min.js.map",
+          "languages/nl-NL.min.js",
+          "languages/nl-NL.min.js.map",
+          "languages/nn.min.js",
+          "languages/nn.min.js.map",
+          "languages/pl-PL.min.js",
+          "languages/pl-PL.min.js.map",
+          "languages/pt-BR.min.js",
+          "languages/pt-BR.min.js.map",
+          "languages/pt-PT.min.js",
+          "languages/pt-PT.min.js.map",
+          "languages/ro-RO.min.js",
+          "languages/ro-RO.min.js.map",
+          "languages/ro.min.js",
+          "languages/ro.min.js.map",
+          "languages/ru-RU.min.js",
+          "languages/ru-RU.min.js.map",
+          "languages/ru-UA.min.js",
+          "languages/ru-UA.min.js.map",
+          "languages/sk-SK.min.js",
+          "languages/sk-SK.min.js.map",
+          "languages/sl.min.js",
+          "languages/sl.min.js.map",
+          "languages/sr-Cyrl-RS.min.js",
+          "languages/sr-Cyrl-RS.min.js.map",
+          "languages/sv-SE.min.js",
+          "languages/sv-SE.min.js.map",
+          "languages/th-TH.min.js",
+          "languages/th-TH.min.js.map",
+          "languages/tr-TR.min.js",
+          "languages/tr-TR.min.js.map",
+          "languages/uk-UA.min.js",
+          "languages/uk-UA.min.js.map",
+          "languages/zh-CN.min.js",
+          "languages/zh-CN.min.js.map",
+          "languages/zh-MO.min.js",
+          "languages/zh-MO.min.js.map",
+          "languages/zh-SG.min.js",
+          "languages/zh-SG.min.js.map",
+          "languages/zh-TW.min.js",
+          "languages/zh-TW.min.js.map",
+          "numbro.js",
+          "numbro.min.js",
+          "numbro.min.js.map"
+        ]
+      }
+    },
+    "filename": "numbro.min.js"
+  },
+  "neataptic": {
+    "name": "neataptic",
+    "versions": {
+      "1": {
+        "versions": [
+          "1.3.6",
+          "1.3.7",
+          "1.3.8",
+          "1.3.9",
+          "1.4.0",
+          "1.4.1",
+          "1.4.4",
+          "1.4.5",
+          "1.4.6",
+          "1.4.7"
+        ],
+        "files": [
+          "neataptic.js",
+          "neataptic.min.js"
+        ]
+      }
+    },
+    "filename": "neataptic.js"
+  },
+  "ndarray": {
+    "name": "ndarray",
+    "versions": {
+      "1": {
+        "versions": [
+          "1.0.10",
+          "1.0.11",
+          "1.0.12",
+          "1.0.13",
+          "1.0.14",
+          "1.0.15",
+          "1.0.16",
+          "1.0.17",
+          "1.0.18",
+          "1.0.19"
+        ],
+        "files": [
+          "ndarray.js",
+          "ndarray.min.js"
+        ]
+      }
+    },
+    "filename": "ndarray.js"
+  },
+  "notificon": {
+    "name": "notificon",
+    "versions": {
+      "1": {
+        "versions": [
+          "1.0.0",
+          "1.0.1",
+          "1.0.2",
+          "1.0.4"
+        ],
+        "files": [
+          "notificon.js",
+          "notificon.min.js"
+        ]
+      }
+    },
+    "filename": "notificon.min.js"
+  },
+  "normalize-opentype.css": {
+    "name": "normalize-opentype.css",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.2.3",
+          "0.2.4"
+        ],
+        "files": [
+          "assets/download.png",
+          "assets/download.svg",
+          "assets/example-1.png",
+          "assets/example-2.png",
+          "assets/example-3.png",
+          "assets/example-4.png",
+          "assets/example-5.png",
+          "assets/wordmark.png",
+          "assets/wordmark.svg",
+          "normalize-opentype.css",
+          "normalize-opentype.min.css",
+          "normalize-opentype.scss"
+        ]
+      }
+    },
+    "filename": "normalize-opentype.css"
+  },
+  "noisy": {
+    "name": "noisy",
+    "versions": {
+      "1": {
+        "versions": [
+          "1.0",
+          "1.1",
+          "1.1.1",
+          "1.2"
+        ],
+        "files": [
+          "jquery.noisy.min.js"
+        ]
+      }
+    },
+    "filename": "jquery.noisy.min.js"
+  },
+  "native-promise-only": {
+    "name": "native-promise-only",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.0.0-a",
+          "0.0.1-a",
+          "0.0.2-a",
+          "0.0.3-a",
+          "0.0.4-a",
+          "0.0.5-a",
+          "0.1.0-a",
+          "0.1.1-a",
+          "0.2.0-a",
+          "0.2.1-a",
+          "0.2.1-b",
+          "0.2.1-c",
+          "0.3.0-a",
+          "0.3.1-a",
+          "0.4.0-a",
+          "0.4.0-b",
+          "0.4.0-c",
+          "0.4.0-d",
+          "0.4.0-e",
+          "0.4.0-f",
+          "0.4.0-g",
+          "0.4.0-h",
+          "0.4.1-a",
+          "0.4.1-b",
+          "0.4.1-c",
+          "0.4.1-d",
+          "0.4.1-e",
+          "0.4.1-f",
+          "0.4.1-g",
+          "0.4.2-a",
+          "0.5.0-a",
+          "0.6.0-a",
+          "0.7.0-a",
+          "0.7.1-a",
+          "0.7.2-a",
+          "0.7.3-a",
+          "0.7.3-b",
+          "0.7.3-c",
+          "0.7.4-a",
+          "0.7.5-a",
+          "0.7.5-b",
+          "0.7.5-c",
+          "0.7.5-d",
+          "0.7.5-e",
+          "0.7.6-a",
+          "0.7.7-a",
+          "0.7.8-a",
+          "0.8.0-a",
+          "0.8.1"
+        ],
+        "files": [
+          "npo.src.js"
+        ]
+      }
+    },
+    "filename": "npo.js"
+  },
+  "ng-notify": {
+    "name": "ng-notify",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.2.0",
+          "0.2.1",
+          "0.3.0",
+          "0.4.0",
+          "0.4.1",
+          "0.4.2",
+          "0.5.0",
+          "0.5.1",
+          "0.5.2",
+          "0.5.3",
+          "0.6.0",
+          "0.6.1",
+          "0.6.2",
+          "0.6.3",
+          "0.7.0",
+          "0.7.1",
+          "0.7.2",
+          "0.8.0"
+        ],
+        "files": [
+          "ng-notify.min.css",
+          "ng-notify.min.js"
+        ]
+      }
+    },
+    "filename": "ng-notify.min.js"
+  },
+  "ngl": {
+    "name": "ngl",
+    "versions": {
+      "2": {
+        "versions": [
+          "2.0.0-dev.29",
+          "2.0.0-dev.30",
+          "2.0.0-dev.31",
+          "2.0.0-dev.32",
+          "2.0.0-dev.33",
+          "2.0.0-dev.34",
+          "2.0.0-dev.35",
+          "2.0.0-dev.36",
+          "2.0.0-dev.37",
+          "2.0.0-dev.38",
+          "2.0.0-dev.39",
+          "2.0.0-dev.40",
+          "2.0.0-dev0.0",
+          "2.0.1",
+          "2.0.2",
+          "2.1.0",
+          "2.1.0-0",
+          "2.1.1",
+          "2.2.0",
+          "2.2.1",
+          "2.2.2",
+          "2.3.0",
+          "2.3.1",
+          "2.4.0"
+        ],
+        "files": [
+          "ngl.esm.js",
+          "ngl.esm.min.js",
+          "ngl.js",
+          "ngl.min.js"
+        ]
+      }
+    },
+    "filename": "ngl.js"
+  },
+  "ngDraggable": {
+    "name": "ngDraggable",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.0.2",
+          "0.0.3",
+          "0.0.3.1",
+          "0.0.4",
+          "0.0.4.1",
+          "0.1.0",
+          "0.1.1",
+          "0.1.2",
+          "0.1.3",
+          "0.1.4",
+          "0.1.5",
+          "0.1.6",
+          "0.1.7",
+          "0.1.8",
+          "0.1.9",
+          "0.1.10",
+          "0.1.11"
+        ],
+        "files": [
+          "ngDraggable.js",
+          "ngDraggable.min.js",
+          "ngDraggable.min.js.map"
+        ]
+      }
+    },
+    "filename": "ngDraggable.min.js"
+  },
+  "nestedSortable": {
+    "name": "nestedSortable",
+    "versions": {
+      "1": {
+        "versions": [
+          "1.3.3",
+          "1.3.4"
+        ],
+        "files": [
+          "jquery.ui.nestedSortable.js",
+          "jquery.ui.nestedSortable.min.js"
+        ]
+      },
+      "2": {
+        "versions": [
+          "2.0.0"
+        ],
+        "files": [
+          "jquery.mjs.nestedSortable.js",
+          "jquery.mjs.nestedSortable.min.js",
+          "jquery.mjs.nestedSortable.min.js.map"
+        ]
+      }
+    },
+    "filename": "jquery.mjs.nestedSortable.min.js"
+  },
+  "neo-async": {
+    "name": "neo-async",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.4.8",
+          "0.4.9",
+          "0.5.0",
+          "0.5.1",
+          "0.5.2",
+          "0.5.3",
+          "0.6.0",
+          "0.6.1",
+          "0.6.2",
+          "0.6.3",
+          "0.6.4",
+          "0.6.5"
+        ],
+        "files": [
+          "async.min.js"
+        ]
+      },
+      "1": {
+        "versions": [
+          "1.0.0",
+          "1.0.1",
+          "1.1.0",
+          "1.1.1",
+          "1.1.2",
+          "1.2.0",
+          "1.2.1",
+          "1.3.0",
+          "1.3.1",
+          "1.3.2",
+          "1.4.0",
+          "1.4.1",
+          "1.5.0",
+          "1.5.1",
+          "1.6.0",
+          "1.7.0",
+          "1.7.1",
+          "1.7.2",
+          "1.7.3",
+          "1.7.4",
+          "1.7.5",
+          "1.8.0",
+          "1.8.1",
+          "1.8.2"
+        ],
+        "files": [
+          "async.js",
+          "async.min.js"
+        ]
+      },
+      "2": {
+        "versions": [
+          "2.0.0-rc.1",
+          "2.0.0",
+          "2.0.1",
+          "2.1.0",
+          "2.2.0",
+          "2.2.2",
+          "2.3.0",
+          "2.4.0",
+          "2.4.0-0",
+          "2.5.0",
+          "2.5.1",
+          "2.5.2",
+          "2.6.0",
+          "2.6.1",
+          "2.6.2"
+        ],
+        "files": [
+          "async.js",
+          "async.min.js"
+        ]
+      }
+    },
+    "filename": "async.min.js"
+  },
+  "ng-csv": {
+    "name": "ng-csv",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.2.3",
+          "0.2.4",
+          "0.2.5",
+          "0.2.6",
+          "0.3.1",
+          "0.3.2",
+          "0.3.3",
+          "0.3.5",
+          "0.3.6"
+        ],
+        "files": [
+          "ng-csv.js",
+          "ng-csv.min.js"
+        ]
+      }
+    },
+    "filename": "ng-csv.min.js"
+  },
+  "nice-validator": {
+    "name": "nice-validator",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.10.0",
+          "0.10.1",
+          "0.10.2",
+          "0.10.3",
+          "0.10.4",
+          "0.10.5",
+          "0.10.8",
+          "0.10.9",
+          "0.10.11"
+        ],
+        "files": [
+          "images/loading.gif",
+          "images/validator_default.png",
+          "images/validator_simple.png",
+          "jquery.validator.css",
+          "jquery.validator.js",
+          "jquery.validator.min.css",
+          "jquery.validator.min.js",
+          "local/en.js",
+          "local/en.min.js",
+          "local/ja.js",
+          "local/ja.min.js",
+          "local/zh-CN.js",
+          "local/zh-CN.min.js",
+          "local/zh-TW.js",
+          "local/zh-TW.min.js"
+        ]
+      },
+      "1": {
+        "versions": [
+          "1.0.0",
+          "1.0.1",
+          "1.0.2",
+          "1.0.3",
+          "1.0.4",
+          "1.0.5",
+          "1.0.6",
+          "1.0.7",
+          "1.0.8",
+          "1.0.9",
+          "1.0.10",
+          "1.1.0",
+          "1.1.1",
+          "1.1.2",
+          "1.1.3",
+          "1.1.4",
+          "1.1.5"
+        ],
+        "files": [
+          "images/loading.gif",
+          "images/validator_default.png",
+          "images/validator_simple.png",
+          "jquery.validator.css",
+          "jquery.validator.js",
+          "jquery.validator.min.css",
+          "jquery.validator.min.css.map",
+          "jquery.validator.min.js",
+          "local/en.js",
+          "local/en.min.js",
+          "local/en.min.js.map",
+          "local/ja.js",
+          "local/ja.min.js",
+          "local/ja.min.js.map",
+          "local/zh-CN.js",
+          "local/zh-CN.min.js",
+          "local/zh-CN.min.js.map",
+          "local/zh-TW.js",
+          "local/zh-TW.min.js",
+          "local/zh-TW.min.js.map"
+        ]
+      }
+    },
+    "filename": "jquery.validator.min.js"
+  },
+  "node-rules": {
+    "name": "node-rules",
+    "versions": {
+      "4": {
+        "versions": [
+          "4.0.0",
+          "4.0.1",
+          "4.0.2"
+        ],
+        "files": [
+          "node-rules.min.js"
+        ]
+      },
+      "5": {
+        "versions": [
+          "5.0.0",
+          "5.1.0",
+          "5.2.0"
+        ],
+        "files": [
+          "node-rules.min.js"
+        ]
+      },
+      "6": {
+        "versions": [
+          "6.0.0",
+          "6.1.0",
+          "6.2.0",
+          "6.3.0"
+        ],
+        "files": [
+          "node-rules.min.js"
+        ]
+      },
+      "7": {
+        "versions": [
+          "7.0.0",
+          "7.1.0",
+          "7.2.0"
+        ],
+        "files": [
+          "node-rules.min.js"
+        ]
+      },
+      "8": {
+        "versions": [
+          "8.0.0",
+          "8.1.0"
+        ],
+        "files": [
+          "node-rules.min.js"
+        ]
+      },
+      "9": {
+        "versions": [
+          "9.0.0-beta.0",
+          "9.0.0",
+          "9.1.0",
+          "9.1.1"
+        ],
+        "files": [
+          "index.js",
+          "index.min.js",
+          "node-rules.min.js"
+        ]
+      }
+    },
+    "filename": "node-rules.min.js"
+  },
+  "ng-idle": {
+    "name": "ng-idle",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.1",
+          "0.2",
+          "0.2.1",
+          "0.2.2",
+          "0.2.3",
+          "0.3.0",
+          "0.3.1",
+          "0.3.2",
+          "0.3.4",
+          "0.3.5"
+        ],
+        "files": [
+          "angular-idle.js",
+          "angular-idle.min.js"
+        ]
+      },
+      "1": {
+        "versions": [
+          "1.0.0",
+          "1.0.1",
+          "1.0.2",
+          "1.0.3",
+          "1.0.4",
+          "1.1.0",
+          "1.1.1",
+          "1.2.0",
+          "1.2.1",
+          "1.2.2",
+          "1.3.0",
+          "1.3.1",
+          "1.3.2"
+        ],
+        "files": [
+          "angular-idle.js",
+          "angular-idle.map",
+          "angular-idle.min.js"
+        ]
+      }
+    },
+    "filename": "angular-idle.min.js"
+  },
+  "nes": {
+    "name": "nes",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.3.0",
+          "0.4.0"
+        ],
+        "files": [
+          "client.js",
+          "client.min.js"
+        ]
+      },
+      "1": {
+        "versions": [
+          "1.0.0",
+          "1.1.0",
+          "1.1.1",
+          "1.1.2",
+          "1.2.0",
+          "1.2.1",
+          "1.2.2"
+        ],
+        "files": [
+          "client.js",
+          "client.min.js"
+        ]
+      },
+      "2": {
+        "versions": [
+          "2.0.0",
+          "2.0.1",
+          "2.0.2",
+          "2.1.0",
+          "2.2.0",
+          "2.3.0",
+          "2.3.1"
+        ],
+        "files": [
+          "client.js",
+          "client.min.js"
+        ]
+      },
+      "3": {
+        "versions": [
+          "3.0.0",
+          "3.1.0",
+          "3.1.1",
+          "3.1.2"
+        ],
+        "files": [
+          "client.js",
+          "client.min.js"
+        ]
+      },
+      "4": {
+        "versions": [
+          "4.0.0",
+          "4.1.0",
+          "4.2.0",
+          "4.2.1",
+          "4.3.0",
+          "4.4.0",
+          "4.4.1",
+          "4.5.0",
+          "4.6.0"
+        ],
+        "files": [
+          "client.js",
+          "client.min.js"
+        ]
+      },
+      "5": {
+        "versions": [
+          "5.0.0",
+          "5.0.1",
+          "5.0.2",
+          "5.0.3"
+        ],
+        "files": [
+          "client.js",
+          "client.min.js",
+          "client.min.js.map"
+        ]
+      },
+      "6": {
+        "versions": [
+          "6.0.0",
+          "6.0.1",
+          "6.0.2",
+          "6.1.0",
+          "6.1.1",
+          "6.1.2",
+          "6.2.0",
+          "6.2.1",
+          "6.2.2",
+          "6.2.4",
+          "6.2.5",
+          "6.3.0",
+          "6.3.1",
+          "6.3.2",
+          "6.4.0",
+          "6.4.1",
+          "6.4.2",
+          "6.4.3",
+          "6.5.0",
+          "6.5.1",
+          "6.5.2"
+        ],
+        "files": [
+          "client.js",
+          "client.min.js",
+          "client.min.js.map"
+        ]
+      },
+      "7": {
+        "versions": [
+          "7.0.0",
+          "7.0.1",
+          "7.0.2",
+          "7.0.3",
+          "7.0.4",
+          "7.1.0",
+          "7.2.0"
+        ],
+        "files": [
+          "client.js"
+        ]
+      },
+      "8": {
+        "versions": [
+          "8.0.0",
+          "8.0.1",
+          "8.1.0"
+        ],
+        "files": [
+          "client.js"
+        ]
+      },
+      "9": {
+        "versions": [
+          "9.0.0",
+          "9.0.1",
+          "9.0.2",
+          "9.1.0"
+        ],
+        "files": [
+          "client.js"
+        ]
+      },
+      "10": {
+        "versions": [
+          "10.0.0",
+          "10.0.1",
+          "10.0.2"
+        ],
+        "files": [
+          "client.js"
+        ]
+      }
+    },
+    "filename": "client.js"
+  },
+  "nanogallery2": {
+    "name": "nanogallery2",
+    "versions": {
+      "1": {
+        "versions": [
+          "1.3.0",
+          "1.4.0",
+          "1.4.1",
+          "1.5.0"
+        ],
+        "files": [
+          "css/font/ngy2_icon_font.woff",
+          "css/font/ngy2_icon_font.woff2",
+          "css/nanogallery2.min.css",
+          "css/nanogallery2.woff.min.css",
+          "css/nanogallery2_logo.png",
+          "jquery.nanogallery2.core.min.js",
+          "jquery.nanogallery2.data_flickr.min.js",
+          "jquery.nanogallery2.data_google2.min.js",
+          "jquery.nanogallery2.data_nano_photos_provider2.min.js",
+          "jquery.nanogallery2.js",
+          "jquery.nanogallery2.min.js"
+        ]
+      },
+      "2": {
+        "versions": [
+          "2.0.0",
+          "2.1.0",
+          "2.2.0",
+          "2.3.0",
+          "2.4.1",
+          "2.4.2"
+        ],
+        "files": [
+          "css/font/ngy2_icon_font.woff",
+          "css/font/ngy2_icon_font.woff2",
+          "css/nanogallery2.min.css",
+          "css/nanogallery2.woff.min.css",
+          "css/nanogallery2_logo.png",
+          "jquery.nanogallery2.core.min.js",
+          "jquery.nanogallery2.data_flickr.min.js",
+          "jquery.nanogallery2.data_google2.min.js",
+          "jquery.nanogallery2.data_nano_photos_provider2.min.js",
+          "jquery.nanogallery2.js",
+          "jquery.nanogallery2.min.js"
+        ]
+      },
+      "3": {
+        "versions": [
+          "3.0.0",
+          "3.0.1",
+          "3.0.2",
+          "3.0.3",
+          "3.0.4",
+          "3.0.5"
+        ],
+        "files": [
+          "css/font/ngy2_icon_font.woff",
+          "css/font/ngy2_icon_font.woff2",
+          "css/nanogallery2.min.css",
+          "css/nanogallery2.woff.min.css",
+          "jquery.nanogallery2.core.min.js",
+          "jquery.nanogallery2.data_flickr.min.js",
+          "jquery.nanogallery2.data_google3.min.js",
+          "jquery.nanogallery2.data_nano_photos_provider2.min.js",
+          "jquery.nanogallery2.js",
+          "jquery.nanogallery2.min.js"
+        ]
+      }
+    },
+    "filename": "jquery.nanogallery2.min.js"
+  },
+  "nanogallery": {
+    "name": "nanogallery",
+    "versions": {
+      "4": {
+        "versions": [
+          "4.4.0",
+          "4.4.1",
+          "4.4.2"
+        ],
+        "files": [
+          "css/font/nano_icon_font.eot",
+          "css/font/nano_icon_font.svg",
+          "css/font/nano_icon_font.ttf",
+          "css/font/nano_icon_font.woff",
+          "css/loading.gif",
+          "css/nano_gallery.png",
+          "css/nano_image.png",
+          "css/nano_logo.png",
+          "css/nanogallery.css",
+          "css/themes/clean/font/nano_icon_font.eot",
+          "css/themes/clean/font/nano_icon_font.svg",
+          "css/themes/clean/font/nano_icon_font.ttf",
+          "css/themes/clean/font/nano_icon_font.woff",
+          "css/themes/clean/loading.gif",
+          "css/themes/clean/nano_gallery.png",
+          "css/themes/clean/nano_image.png",
+          "css/themes/clean/nano_logo.png",
+          "css/themes/clean/nanogallery_clean.css",
+          "css/themes/light/font/nano_icon_font.eot",
+          "css/themes/light/font/nano_icon_font.svg",
+          "css/themes/light/font/nano_icon_font.ttf",
+          "css/themes/light/font/nano_icon_font.woff",
+          "css/themes/light/loading.gif",
+          "css/themes/light/nano_gallery.png",
+          "css/themes/light/nano_image.png",
+          "css/themes/light/nano_logo.png",
+          "css/themes/light/nanogallery_light.css",
+          "jquery.nanogallery.min.js",
+          "third.party/hammer.js/hammer.min.js",
+          "third.party/hammer.js/jquery.hammer.min.map",
+          "third.party/imagesloaded/imagesloaded.pkgd.min.js",
+          "third.party/transit/jquery.transit.min.js"
+        ]
+      },
+      "5": {
+        "versions": [
+          "5.0.0",
+          "5.0.1",
+          "5.0.2",
+          "5.0.3",
+          "5.1.0",
+          "5.1.1",
+          "5.2.0",
+          "5.2.1",
+          "5.2.2",
+          "5.2.3",
+          "5.3.0",
+          "5.4.0",
+          "5.5.0",
+          "5.5.1",
+          "5.5.2",
+          "5.5.3",
+          "5.5.4",
+          "5.6.0",
+          "5.7.0",
+          "5.8.0",
+          "5.9.0",
+          "5.9.1",
+          "5.10.0",
+          "5.10.1",
+          "5.10.2",
+          "5.10.3"
+        ],
+        "files": [
+          "css/font/nano_icon_font3.eot",
+          "css/font/nano_icon_font3.svg",
+          "css/font/nano_icon_font3.ttf",
+          "css/font/nano_icon_font3.woff",
+          "css/loading.gif",
+          "css/nano_gallery.png",
+          "css/nano_image.png",
+          "css/nano_logo.png",
+          "css/nanogallery.min.css",
+          "css/themes/clean/font/nano_icon_font3.eot",
+          "css/themes/clean/font/nano_icon_font3.svg",
+          "css/themes/clean/font/nano_icon_font3.ttf",
+          "css/themes/clean/font/nano_icon_font3.woff",
+          "css/themes/clean/loading.gif",
+          "css/themes/clean/nano_gallery.png",
+          "css/themes/clean/nano_image.png",
+          "css/themes/clean/nano_logo.png",
+          "css/themes/clean/nanogallery_clean.min.css",
+          "css/themes/light/font/nano_icon_font3.eot",
+          "css/themes/light/font/nano_icon_font3.svg",
+          "css/themes/light/font/nano_icon_font3.ttf",
+          "css/themes/light/font/nano_icon_font3.woff",
+          "css/themes/light/loading.gif",
+          "css/themes/light/nano_gallery.png",
+          "css/themes/light/nano_image.png",
+          "css/themes/light/nano_logo.png",
+          "css/themes/light/nanogallery_light.min.css",
+          "jquery.nanogallery.min.js"
+        ]
+      }
+    },
+    "filename": "jquery.nanogallery.min.js"
+  },
+  "ng-tasty": {
+    "name": "ng-tasty",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.2.4",
+          "0.2.5",
+          "0.2.6",
+          "0.2.7",
+          "0.3.0",
+          "0.3.1",
+          "0.3.3",
+          "0.4.0",
+          "0.4.1",
+          "0.4.2",
+          "0.4.3",
+          "0.4.4",
+          "0.4.5",
+          "0.4.6",
+          "0.4.7",
+          "0.4.8",
+          "0.5.0",
+          "0.5.1",
+          "0.5.2",
+          "0.5.3",
+          "0.5.4",
+          "0.5.5",
+          "0.5.6",
+          "0.5.7",
+          "0.5.8",
+          "0.5.91",
+          "0.6.0",
+          "0.6.1"
+        ],
+        "files": [
+          "ng-tasty-tpls.js",
+          "ng-tasty-tpls.min.js",
+          "ng-tasty.js",
+          "ng-tasty.min.js"
+        ]
+      }
+    },
+    "filename": "ng-tasty-tpls.min.js"
+  },
+  "ngHandsontable": {
+    "name": "ngHandsontable",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.3.4",
+          "0.3.5",
+          "0.3.6",
+          "0.3.9",
+          "0.3.10",
+          "0.3.11",
+          "0.3.12",
+          "0.3.13",
+          "0.3.14",
+          "0.3.15",
+          "0.3.16",
+          "0.3.17",
+          "0.4.0",
+          "0.5.0",
+          "0.5.1",
+          "0.5.2",
+          "0.6.0",
+          "0.7.0-beta1",
+          "0.7.0-beta2",
+          "0.7.0-beta3",
+          "0.7.0",
+          "0.8.0",
+          "0.9.0",
+          "0.10.0",
+          "0.11.0",
+          "0.11.1",
+          "0.12.0",
+          "0.13.0",
+          "0.13.1",
+          "0.13.2"
+        ],
+        "files": [
+          "angular-ui-handsontable.full.css",
+          "angular-ui-handsontable.full.js",
+          "angular-ui-handsontable.full.min.css",
+          "angular-ui-handsontable.full.min.js"
+        ]
+      }
+    },
+    "filename": "ngHandsontable.min.js"
+  },
+  "ngMask": {
+    "name": "ngMask",
+    "versions": {
+      "1": {
+        "versions": [
+          "1.0.0"
+        ],
+        "files": [
+          "ngMask.js",
+          "ngMask.min.js",
+          "ngMask.min.map"
+        ]
+      },
+      "2": {
+        "versions": [
+          "2.0.0"
+        ],
+        "files": [
+          "ngMask.js",
+          "ngMask.min.js",
+          "ngMask.min.map"
+        ]
+      },
+      "3": {
+        "versions": [
+          "3.0.0",
+          "3.0.1",
+          "3.0.2",
+          "3.0.3",
+          "3.0.5",
+          "3.0.6",
+          "3.0.7",
+          "3.0.8",
+          "3.0.11",
+          "3.0.12",
+          "3.0.16",
+          "3.1.0",
+          "3.1.1"
+        ],
+        "files": [
+          "ngMask.js",
+          "ngMask.min.js",
+          "ngMask.min.map"
+        ]
+      }
+    },
+    "filename": "ngMask.min.js"
+  },
+  "nod": {
+    "name": "nod",
+    "versions": {
+      "2": {
+        "versions": [
+          "2.0.2",
+          "2.0.11",
+          "2.0.12"
+        ],
+        "files": [
+          "nod.js",
+          "nod.min.js"
+        ]
+      }
+    },
+    "filename": "nod.min.js"
+  },
+  "ngclipboard": {
+    "name": "ngclipboard",
+    "versions": {
+      "1": {
+        "versions": [
+          "1.0.0",
+          "1.1.0",
+          "1.1.1",
+          "1.1.2"
+        ],
+        "files": [
+          "ngclipboard.js",
+          "ngclipboard.min.js"
+        ]
+      },
+      "2": {
+        "versions": [
+          "2.0.0"
+        ],
+        "files": [
+          "ngclipboard.js",
+          "ngclipboard.min.js"
+        ]
+      }
+    },
+    "filename": "ngclipboard.min.js"
+  },
+  "ngCart": {
+    "name": "ngCart",
+    "versions": {
+      "1": {
+        "versions": [
+          "1.0.0"
+        ],
+        "files": [
+          "ngCart.js",
+          "ngCart.min.js"
+        ]
+      }
+    },
+    "filename": "ngCart.min.js"
+  },
+  "ng-toast": {
+    "name": "ng-toast",
+    "versions": {
+      "1": {
+        "versions": [
+          "1.0.0",
+          "1.0.1",
+          "1.1.0",
+          "1.2.0",
+          "1.2.1",
+          "1.3.0",
+          "1.4.0",
+          "1.5.0",
+          "1.5.1",
+          "1.5.2",
+          "1.5.3",
+          "1.5.4",
+          "1.5.5",
+          "1.5.6"
+        ],
+        "files": [
+          "ngToast.css",
+          "ngToast.js",
+          "ngToast.min.css",
+          "ngToast.min.js"
+        ]
+      },
+      "2": {
+        "versions": [
+          "2.0.0"
+        ],
+        "files": [
+          "ngToast-animations.css",
+          "ngToast-animations.min.css",
+          "ngToast.css",
+          "ngToast.js",
+          "ngToast.min.css",
+          "ngToast.min.js"
+        ]
+      }
+    },
+    "filename": "ngToast.min.js"
+  },
+  "nwmatcher": {
+    "name": "nwmatcher",
+    "versions": {
+      "1": {
+        "versions": [
+          "1.2.5",
+          "1.3.0",
+          "1.3.1",
+          "1.3.3",
+          "1.3.4",
+          "1.3.6",
+          "1.4.0",
+          "1.4.1",
+          "1.4.2"
+        ],
+        "files": [
+          "nwmatcher.js",
+          "nwmatcher.min.js"
+        ]
+      }
+    },
+    "filename": "nwmatcher.min.js"
+  },
+  "network-js": {
+    "name": "network-js",
+    "versions": {
+      "2": {
+        "versions": [
+          "2.0.0-alpha1",
+          "2.0.0-alpha2",
+          "2.0.0-alpha3",
+          "2.0.0-alpha4",
+          "2.0.0",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.1.0"
+        ],
+        "files": [
+          "network.js",
+          "network.js.map",
+          "network.min.js",
+          "network.min.js.map"
+        ]
+      }
+    },
+    "filename": "network.min.js"
+  },
+  "numl": {
+    "name": "numl",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.12.0-beta.10",
+          "0.12.0-beta.9"
+        ],
+        "files": [
+          "action-71bd5531.js",
+          "active-2c0423b0.js",
+          "appear-aa7a1726.js",
+          "code-36639546.js",
+          "component-199db042.js",
+          "component-199db042.min.js",
+          "control-74c18d00.js",
+          "converter-d0d772a0.js",
+          "converter-d0d772a0.min.js",
+          "dateinput-74ae7ec5.js",
+          "dateinput-ec5a0805.js",
+          "datepicker-85823731.js",
+          "datepicker-b66ae5df.js",
+          "datetime-19ce73a5.js",
+          "debug-0ef4e4f5.js",
+          "debugger-5e486df5.js",
+          "debugger-72af4510.js",
+          "eva-icons-52227108.js",
+          "eva-icons-52227108.min.js",
+          "fileinput-0fcb1319.js",
+          "focusable-013b2a26.js",
+          "form-ca26f080.js",
+          "formatter-1e84491b.js",
+          "formatter-1e84491b.min.js",
+          "icon-999101cb.js",
+          "icons-05940bef.js",
+          "icons-05940bef.min.js",
+          "image-cfb5583b.js",
+          "index-79d93a95.js",
+          "index-79d93a95.min.js",
+          "index-b7a67c28.js",
+          "index-b7a67c28.min.js",
+          "index-f1a98d77.js",
+          "index.js",
+          "index.min.js",
+          "input-7ed4a80a.js",
+          "inputgroup-775e9ab4.js",
+          "label-4f2bf5cf.js",
+          "listbox-e4e5748f.js",
+          "markdown-a6ea28e3.js",
+          "menu-6e58f3bf.js",
+          "menuitem-e972d3fb.js",
+          "number-4adb4dcf.js",
+          "number-4adb4dcf.min.js",
+          "number-e1fdcc9f.js",
+          "numinput-5dfe9c24.js",
+          "offset-13d249a9.js",
+          "option-1bce235e.js",
+          "orient-ab29bb4d.js",
+          "popup-35b38149.js",
+          "progressbar-11bc93f8.js",
+          "radiogroup-ceb5bccd.js",
+          "slider-cf1ea399.js",
+          "svg-7ef9cb75.js",
+          "textarea-9f5f7184.js",
+          "tooltip-0fd22726.js",
+          "validator-c1621783.js",
+          "value-81aa11a2.js"
+        ]
+      },
+      "1": {
+        "versions": [
+          "1.0.0-beta.1",
+          "1.0.0-beta.10",
+          "1.0.0-beta.11",
+          "1.0.0-beta.12",
+          "1.0.0-beta.13",
+          "1.0.0-beta.14",
+          "1.0.0-beta.15",
+          "1.0.0-beta.16",
+          "1.0.0-beta.17",
+          "1.0.0-beta.18",
+          "1.0.0-beta.19",
+          "1.0.0-beta.2",
+          "1.0.0-beta.20",
+          "1.0.0-beta.21",
+          "1.0.0-beta.22",
+          "1.0.0-beta.23",
+          "1.0.0-beta.24",
+          "1.0.0-beta.25",
+          "1.0.0-beta.26",
+          "1.0.0-beta.4",
+          "1.0.0-beta.5",
+          "1.0.0-beta.6",
+          "1.0.0-beta.7",
+          "1.0.0-beta.8",
+          "1.0.0-beta.9",
+          "1.0.0",
+          "1.0.1",
+          "1.1.0",
+          "1.1.1",
+          "1.1.2",
+          "1.1.3"
+        ],
+        "files": [
+          "action-5af50fae.js",
+          "active-8d345c03.js",
+          "appear-7d69b96b.js",
+          "browser-fixes-ad0e4ba1.js",
+          "browser-fixes-ad0e4ba1.min.js",
+          "code-10954dc0.js",
+          "component-d6059ba2.js",
+          "component-d6059ba2.min.js",
+          "control-9628fc2d.js",
+          "converter-218f6a20.js",
+          "converter-218f6a20.min.js",
+          "dateinput-720dd174.js",
+          "dateinput-f099bed4.js",
+          "datepicker-2e17c402.js",
+          "datepicker-483de385.js",
+          "datetime-aac6d85b.js",
+          "debug-06dbb470.js",
+          "debugger-72af4510.js",
+          "debugger-fbacd37f.js",
+          "eva-icons-52227108.js",
+          "eva-icons-52227108.min.js",
+          "fileinput-ed7e4e58.js",
+          "focus-7013ccbb.js",
+          "form-03387fcd.js",
+          "formatter-8483d4d1.js",
+          "formatter-8483d4d1.min.js",
+          "hover-35b994dd.js",
+          "icon-f3fa424c.js",
+          "icons-05940bef.js",
+          "icons-05940bef.min.js",
+          "image-bdb08d41.js",
+          "index-76f02c55.js",
+          "index-79d93a95.js",
+          "index-79d93a95.min.js",
+          "index-7ef6987f.js",
+          "index-7ef6987f.min.js",
+          "index.js",
+          "index.min.js",
+          "input-2d1b2225.js",
+          "inputgroup-c20f3d79.js",
+          "label-0db71964.js",
+          "listbox-b696b301.js",
+          "markdown-59461986.js",
+          "menu-91ac670c.js",
+          "menuitem-7a0204ff.js",
+          "number-3ef36351.js",
+          "number-4a8ef86d.js",
+          "number-4a8ef86d.min.js",
+          "numinput-b68c5bdd.js",
+          "offset-bae6883a.js",
+          "option-4802c0b1.js",
+          "orient-a666d36f.js",
+          "popup-6d5c3854.js",
+          "progressbar-dffe61a7.js",
+          "radiogroup-85c66b61.js",
+          "slider-8db55f0a.js",
+          "svg-e696ff35.js",
+          "textarea-d3d72cef.js",
+          "tooltip-532813cc.js",
+          "validator-3ce7b618.js",
+          "value-51d0b375.js"
+        ]
+      }
+    },
+    "filename": "index.js"
+  },
+  "ng-droplet": {
+    "name": "ng-droplet",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.1.1",
+          "0.1.2",
+          "0.1.3",
+          "0.1.4",
+          "0.1.5",
+          "0.1.6",
+          "0.1.7",
+          "0.1.8",
+          "0.1.9",
+          "0.2.0",
+          "0.2.1",
+          "0.2.3",
+          "0.2.4",
+          "0.2.5",
+          "0.2.6",
+          "0.2.7",
+          "0.2.9",
+          "0.3.0",
+          "0.3.1",
+          "0.3.2",
+          "0.3.3",
+          "0.3.4",
+          "0.3.5",
+          "0.3.6",
+          "0.3.7",
+          "0.3.8",
+          "0.3.9",
+          "0.3.10",
+          "0.3.11",
+          "0.4.0",
+          "0.4.1",
+          "0.4.2",
+          "0.5.0",
+          "0.5.1",
+          "0.5.2",
+          "0.5.3",
+          "0.5.4",
+          "0.5.5",
+          "0.5.6",
+          "0.5.7",
+          "0.5.8",
+          "0.5.9",
+          "0.5.10",
+          "0.5.11",
+          "0.5.12",
+          "0.5.13",
+          "0.5.14",
+          "0.5.15",
+          "0.5.16",
+          "0.5.17",
+          "0.6.0",
+          "0.7.0",
+          "0.7.1"
+        ],
+        "files": [
+          "ng-droplet.js",
+          "ng-droplet.min.js"
+        ]
+      }
+    },
+    "filename": "ng-droplet.min.js"
+  },
+  "ninjaui": {
+    "name": "ninjaui",
+    "versions": {
+      "1": {
+        "versions": [
+          "1.0.0",
+          "1.0.1"
+        ],
+        "files": [
+          "jquery.ninjaui.min.js"
+        ]
+      }
+    },
+    "filename": "jquery.ninjaui.min.js"
+  },
+  "ng-clip": {
+    "name": "ng-clip",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.2.4",
+          "0.2.5",
+          "0.2.6"
+        ],
+        "files": [
+          "ng-clip.js",
+          "ng-clip.min.js"
+        ]
+      }
+    },
+    "filename": "ng-clip.min.js"
+  },
+  "ng-ckeditor": {
+    "name": "ng-ckeditor",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.1",
+          "0.2",
+          "0.2.1"
+        ],
+        "files": [
+          "ng-ckeditor.css",
+          "ng-ckeditor.js",
+          "ng-ckeditor.map",
+          "ng-ckeditor.src.js"
+        ]
+      }
+    },
+    "filename": "ng-ckeditor.min.js"
+  },
+  "node-uuid": {
+    "name": "node-uuid",
+    "versions": {
+      "1": {
+        "versions": [
+          "1.0.0",
+          "1.1.0",
+          "1.2.0",
+          "1.3.0",
+          "1.3.1",
+          "1.3.2",
+          "1.3.3",
+          "1.4.0",
+          "1.4.1",
+          "1.4.2",
+          "1.4.3",
+          "1.4.6",
+          "1.4.7",
+          "1.4.8"
+        ],
+        "files": [
+          "uuid.js",
+          "uuid.min.js",
+          "uuid.min.js.map"
+        ]
+      }
+    },
+    "filename": "uuid.min.js"
+  },
+  "nestable2": {
+    "name": "nestable2",
+    "versions": {
+      "1": {
+        "versions": [
+          "1.2.1",
+          "1.2.2",
+          "1.2.3",
+          "1.2.4",
+          "1.2.5",
+          "1.2.6",
+          "1.2.7",
+          "1.2.8",
+          "1.2.9",
+          "1.3.0",
+          "1.3.1",
+          "1.4.0",
+          "1.5.0",
+          "1.6.0"
+        ],
+        "files": [
+          "jquery.nestable.js",
+          "jquery.nestable.min.js"
+        ]
+      }
+    },
+    "filename": "jquery.nestable.min.js"
+  },
+  "ng-bs-daterangepicker": {
+    "name": "ng-bs-daterangepicker",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.0.1",
+          "0.0.2",
+          "0.0.3",
+          "0.0.4",
+          "0.0.5",
+          "0.0.6"
+        ],
+        "files": [
+          "ng-bs-daterangepicker.js",
+          "ng-bs-daterangepicker.min.js"
+        ]
+      }
+    },
+    "filename": "ng-bs-daterangepicker.min.js"
+  },
+  "ng-device-detector": {
+    "name": "ng-device-detector",
+    "versions": {
+      "1": {
+        "versions": [
+          "1.0.0",
+          "1.1.0",
+          "1.1.1",
+          "1.1.2",
+          "1.1.3",
+          "1.1.4",
+          "1.1.5",
+          "1.1.6",
+          "1.1.7",
+          "1.1.8",
+          "1.1.8.1",
+          "1.1.9"
+        ],
+        "files": [
+          "ng-device-detector.js",
+          "ng-device-detector.min.js"
+        ]
+      },
+      "2": {
+        "versions": [
+          "2.0.0",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3"
+        ],
+        "files": [
+          "ng-device-detector.js",
+          "ng-device-detector.min.js"
+        ]
+      },
+      "3": {
+        "versions": [
+          "3.0.1"
+        ],
+        "files": [
+          "ng-device-detector.js",
+          "ng-device-detector.min.js"
+        ]
+      },
+      "4": {
+        "versions": [
+          "4.0.0",
+          "4.0.3"
+        ],
+        "files": [
+          "ng-device-detector.js",
+          "ng-device-detector.min.js"
+        ]
+      },
+      "5": {
+        "versions": [
+          "5.0.1",
+          "5.0.2",
+          "5.1.1",
+          "5.1.2",
+          "5.1.3",
+          "5.1.4"
+        ],
+        "files": [
+          "ng-device-detector.js",
+          "ng-device-detector.min.js"
+        ]
+      }
+    },
+    "filename": "ng-device-detector.min.js"
+  },
+  "nanoajax": {
+    "name": "nanoajax",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.0.0",
+          "0.1.0",
+          "0.1.1",
+          "0.2.0",
+          "0.2.1",
+          "0.2.2",
+          "0.2.3",
+          "0.2.4",
+          "0.3.0",
+          "0.3.1",
+          "0.4.0",
+          "0.4.1",
+          "0.4.2",
+          "0.4.3"
+        ],
+        "files": [
+          "nanoajax.min.js"
+        ]
+      }
+    },
+    "filename": "nanoajax.min.js"
+  },
+  "nearest-color": {
+    "name": "nearest-color",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.1.0",
+          "0.2.0",
+          "0.3.0",
+          "0.3.1",
+          "0.4.0",
+          "0.4.1",
+          "0.4.2",
+          "0.4.3",
+          "0.4.4"
+        ],
+        "files": [
+          "nearestColor.js",
+          "nearestColor.min.js",
+          "test.js",
+          "test.min.js"
+        ]
+      }
+    },
+    "filename": "nearestColor.js"
+  },
+  "ng-fittext": {
+    "name": "ng-fittext",
+    "versions": {
+      "3": {
+        "versions": [
+          "3.0.0",
+          "3.1.0",
+          "3.1.1",
+          "3.2.0",
+          "3.3.0",
+          "3.3.1",
+          "3.3.2",
+          "3.3.3"
+        ],
+        "files": [
+          "ng-FitText.js",
+          "ng-FitText.min.js"
+        ]
+      },
+      "4": {
+        "versions": [
+          "4.0.0",
+          "4.1.0",
+          "4.1.1",
+          "4.2.0",
+          "4.2.1",
+          "4.2.3"
+        ],
+        "files": [
+          "ng-FitText.js",
+          "ng-FitText.min.js"
+        ]
+      }
+    },
+    "filename": "ng-FitText.min.js"
+  },
+  "ng-quill": {
+    "name": "ng-quill",
+    "versions": {
+      "1": {
+        "versions": [
+          "1.0.10",
+          "1.0.11",
+          "1.0.12",
+          "1.1.0",
+          "1.1.1",
+          "1.2.0",
+          "1.3.0",
+          "1.4.0",
+          "1.4.1",
+          "1.4.2",
+          "1.4.3",
+          "1.4.4",
+          "1.5.0",
+          "1.5.1",
+          "1.5.2",
+          "1.5.3"
+        ],
+        "files": [
+          "ng-quill.js",
+          "ng-quill.min.js"
+        ]
+      },
+      "2": {
+        "versions": [
+          "2.0.0",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.1.0",
+          "2.2.0",
+          "2.2.1",
+          "2.2.2",
+          "2.2.3",
+          "2.2.4",
+          "2.2.5",
+          "2.3.0"
+        ],
+        "files": [
+          "ng-quill.js",
+          "ng-quill.min.js"
+        ]
+      },
+      "3": {
+        "versions": [
+          "3.0.0",
+          "3.0.1",
+          "3.0.2",
+          "3.1.0",
+          "3.1.1",
+          "3.2.0",
+          "3.2.1",
+          "3.2.2",
+          "3.3.0",
+          "3.3.1",
+          "3.4.0",
+          "3.5.0",
+          "3.5.1",
+          "3.5.2",
+          "3.6.0",
+          "3.7.0",
+          "3.7.1",
+          "3.8.0"
+        ],
+        "files": [
+          "ng-quill.js",
+          "ng-quill.min.js",
+          "ng-quill.min.js.map"
+        ]
+      },
+      "4": {
+        "versions": [
+          "4.0.0",
+          "4.0.1",
+          "4.1.0",
+          "4.2.0",
+          "4.3.0",
+          "4.3.1",
+          "4.4.0",
+          "4.5.0",
+          "4.5.1",
+          "4.5.2",
+          "4.5.3"
+        ],
+        "files": [
+          "ng-quill.js",
+          "ng-quill.min.js",
+          "ng-quill.min.js.map"
+        ]
+      }
+    },
+    "filename": "ng-quill.min.js"
+  },
+  "node-snackbar": {
+    "name": "node-snackbar",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.1.7",
+          "0.1.8",
+          "0.1.9",
+          "0.1.10",
+          "0.1.11",
+          "0.1.12",
+          "0.1.13",
+          "0.1.14",
+          "0.1.15",
+          "0.1.16"
+        ],
+        "files": [
+          "snackbar.css",
+          "snackbar.css.map",
+          "snackbar.js",
+          "snackbar.min.css",
+          "snackbar.min.js",
+          "snackbar.min.js.map"
+        ]
+      }
+    },
+    "filename": "snackbar.min.js"
+  },
+  "ng-pdfviewer": {
+    "name": "ng-pdfviewer",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.1.0",
+          "0.2.0",
+          "0.2.1"
+        ],
+        "files": [
+          "ng-pdfviewer.min.js"
+        ]
+      }
+    },
+    "filename": "ng-pdfviewer.min.js"
+  },
+  "ng-i18next": {
+    "name": "ng-i18next",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.2.6",
+          "0.2.7",
+          "0.2.8",
+          "0.2.9",
+          "0.3.0",
+          "0.3.1",
+          "0.3.2",
+          "0.3.3",
+          "0.3.4",
+          "0.3.5",
+          "0.3.6",
+          "0.4.0",
+          "0.4.1",
+          "0.4.2",
+          "0.5.0",
+          "0.5.1",
+          "0.5.2",
+          "0.5.4"
+        ],
+        "files": [
+          "ng-i18next.js",
+          "ng-i18next.min.js"
+        ]
+      },
+      "1": {
+        "versions": [
+          "1.0.0",
+          "1.0.1",
+          "1.0.2",
+          "1.0.3",
+          "1.0.4"
+        ],
+        "files": [
+          "ng-i18next.js",
+          "ng-i18next.min.js"
+        ]
+      }
+    },
+    "filename": "ng-i18next.min.js"
+  },
+  "ng-currency": {
+    "name": "ng-currency",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.7.0",
+          "0.7.1",
+          "0.7.2",
+          "0.7.3",
+          "0.7.4",
+          "0.7.5",
+          "0.7.6",
+          "0.7.7",
+          "0.7.8",
+          "0.7.9",
+          "0.7.10",
+          "0.7.11",
+          "0.7.12",
+          "0.7.13",
+          "0.7.14",
+          "0.8.1",
+          "0.8.2",
+          "0.8.3",
+          "0.8.4",
+          "0.8.5",
+          "0.8.6",
+          "0.8.7",
+          "0.8.8",
+          "0.8.9",
+          "0.8.10",
+          "0.8.11",
+          "0.8.12",
+          "0.8.13",
+          "0.9.1",
+          "0.9.2",
+          "0.9.3",
+          "0.9.4",
+          "0.9.5",
+          "0.9.6",
+          "0.10.0",
+          "0.10.1",
+          "0.11.0",
+          "0.11.1",
+          "0.11.2",
+          "0.11.3"
+        ],
+        "files": [
+          "ng-currency.js",
+          "ng-currency.min.js"
+        ]
+      },
+      "1": {
+        "versions": [
+          "1.0.0",
+          "1.1.0",
+          "1.1.1",
+          "1.1.2",
+          "1.1.3",
+          "1.1.4",
+          "1.1.5",
+          "1.1.6",
+          "1.1.7",
+          "1.2.0",
+          "1.2.1",
+          "1.2.2",
+          "1.2.3",
+          "1.2.4",
+          "1.2.5",
+          "1.2.6",
+          "1.2.7",
+          "1.2.8",
+          "1.2.9"
+        ],
+        "files": [
+          "ng-currency.js",
+          "ng-currency.js.map"
+        ]
+      }
+    },
+    "filename": "ng-currency.min.js"
+  },
+  "nivo-lightbox": {
+    "name": "nivo-lightbox",
+    "versions": {
+      "1": {
+        "versions": [
+          "1.0",
+          "1.1",
+          "1.2.0",
+          "1.3.0",
+          "1.3.1"
+        ],
+        "files": [
+          "nivo-lightbox.css",
+          "nivo-lightbox.js",
+          "nivo-lightbox.min.css",
+          "nivo-lightbox.min.css.map",
+          "nivo-lightbox.min.js",
+          "themes/default/close.png",
+          "themes/default/close@2x.png",
+          "themes/default/default.css",
+          "themes/default/default.min.css",
+          "themes/default/default.min.css.map",
+          "themes/default/loading.gif",
+          "themes/default/loading@2x.gif",
+          "themes/default/next.png",
+          "themes/default/next@2x.png",
+          "themes/default/prev.png",
+          "themes/default/prev@2x.png"
+        ]
+      }
+    },
+    "filename": "nivo-lightbox.min.js"
+  },
+  "ng-meta": {
+    "name": "ng-meta",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.1.0",
+          "0.2.0",
+          "0.2.1",
+          "0.3.0",
+          "0.3.1",
+          "0.3.2",
+          "0.3.3",
+          "0.3.4",
+          "0.3.5",
+          "0.3.6",
+          "0.3.7",
+          "0.3.8",
+          "0.3.9",
+          "0.3.10"
+        ],
+        "files": [
+          "ngMeta.js",
+          "ngMeta.min.js"
+        ]
+      },
+      "1": {
+        "versions": [
+          "1.0.0",
+          "1.0.1",
+          "1.0.2",
+          "1.0.3"
+        ],
+        "files": [
+          "ngMeta.js",
+          "ngMeta.min.js"
+        ]
+      }
+    },
+    "filename": "ngMeta.min.js"
+  },
+  "ng-slider": {
+    "name": "ng-slider",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.0.1",
+          "0.0.2",
+          "0.0.3",
+          "0.0.4",
+          "0.0.5",
+          "0.0.6",
+          "0.0.7",
+          "0.0.8",
+          "0.0.9",
+          "0.1.0",
+          "0.1.1",
+          "0.1.2",
+          "0.1.3",
+          "0.1.4",
+          "0.1.5",
+          "0.1.6",
+          "0.1.7"
+        ],
+        "files": [
+          "css/ng-slider.min.css",
+          "img/jslider.blue.png",
+          "img/jslider.plastic.png",
+          "img/jslider.png",
+          "img/jslider.round.plastic.png",
+          "img/jslider.round.png",
+          "ng-slider.min.js"
+        ]
+      },
+      "2": {
+        "versions": [
+          "2.0.0",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.0.4",
+          "2.0.5",
+          "2.0.6",
+          "2.0.7",
+          "2.0.8",
+          "2.0.9",
+          "2.1.0",
+          "2.1.1",
+          "2.1.2",
+          "2.1.3",
+          "2.1.4",
+          "2.1.5",
+          "2.1.6",
+          "2.1.7",
+          "2.1.8",
+          "2.1.9",
+          "2.2.0",
+          "2.2.1",
+          "2.2.2",
+          "2.2.3",
+          "2.2.4",
+          "2.2.5",
+          "2.2.6"
+        ],
+        "files": [
+          "css/ng-slider.min.css",
+          "img/jslider.blue.png",
+          "img/jslider.plastic.png",
+          "img/jslider.png",
+          "img/jslider.round.plastic.png",
+          "img/jslider.round.png",
+          "ng-slider.min.js"
+        ]
+      }
+    },
+    "filename": "ng-slider.min.js"
+  },
+  "nightly.js": {
+    "name": "nightly.js",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.1"
+        ],
+        "files": [
+          "nightly.js",
+          "nightly.min.js"
+        ]
+      },
+      "1": {
+        "versions": [
+          "1.0",
+          "1.1",
+          "1.1.0"
+        ],
+        "files": [
+          "nightly.js",
+          "nightly.min.js"
+        ]
+      },
+      "2": {
+        "versions": [
+          "2.0.0",
+          "2.0.1"
+        ],
+        "files": [
+          "nightly.js",
+          "nightly.min.js",
+          "nightly.min.js.map"
+        ]
+      }
+    },
+    "filename": "nightly.min.js"
+  },
+  "ns-popover": {
+    "name": "ns-popover",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.0.1",
+          "0.0.2",
+          "0.2.0",
+          "0.3.0",
+          "0.4.0",
+          "0.5.0",
+          "0.5.1",
+          "0.5.2",
+          "0.5.3",
+          "0.5.4",
+          "0.5.5",
+          "0.5.6",
+          "0.5.7",
+          "0.5.8",
+          "0.6.0",
+          "0.6.1",
+          "0.6.2",
+          "0.6.3",
+          "0.6.4",
+          "0.6.5",
+          "0.6.6",
+          "0.6.7",
+          "0.6.8"
+        ],
+        "files": [
+          "nsPopover.js",
+          "nsPopover.min.js",
+          "nsPopover.min.js.map"
+        ]
+      }
+    },
+    "filename": "nsPopover.min.js"
+  },
+  "ng-embed": {
+    "name": "ng-embed",
+    "versions": {
+      "2": {
+        "versions": [
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.0.4",
+          "2.1.0",
+          "2.1.1",
+          "2.2.0"
+        ],
+        "files": [
+          "ng-embed.min.css",
+          "ng-embed.min.js"
+        ]
+      }
+    },
+    "filename": "ng-embed.min.js"
+  },
+  "ng-dropzone": {
+    "name": "ng-dropzone",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.0.1",
+          "0.0.2"
+        ],
+        "files": [
+          "ngDropzone.js",
+          "ngDropzone.min.js"
+        ]
+      },
+      "1": {
+        "versions": [
+          "1.0.0",
+          "1.0.1",
+          "1.0.2",
+          "1.0.3",
+          "1.0.4",
+          "1.0.5"
+        ],
+        "files": [
+          "ngDropzone.js",
+          "ngDropzone.min.js"
+        ]
+      },
+      "2": {
+        "versions": [
+          "2.0.0",
+          "2.0.1",
+          "2.0.2"
+        ],
+        "files": [
+          "ng-dropzone.css",
+          "ng-dropzone.js",
+          "ng-dropzone.min.css",
+          "ng-dropzone.min.css.map",
+          "ng-dropzone.min.js",
+          "ng-dropzone.min.js.map"
+        ]
+      }
+    },
+    "filename": "ng-dropzone.min.js"
+  },
+  "ng-knob": {
+    "name": "ng-knob",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.1.0",
+          "0.1.1",
+          "0.1.2",
+          "0.1.3"
+        ],
+        "files": [
+          "ng-knob.js",
+          "ng-knob.min.js"
+        ]
+      }
+    },
+    "filename": "ng-knob.min.js"
+  },
+  "ng-wig": {
+    "name": "ng-wig",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.7.1",
+          "0.7.2",
+          "0.7.3",
+          "0.7.7",
+          "0.7.8",
+          "0.7.9",
+          "0.8.0",
+          "0.8.1",
+          "0.8.2",
+          "0.8.3",
+          "0.8.4",
+          "0.8.5",
+          "0.8.6",
+          "0.8.7",
+          "0.8.8",
+          "0.8.9",
+          "0.8.10",
+          "0.8.11",
+          "0.8.12"
+        ],
+        "files": [
+          "css/main.css",
+          "css/main.min.css",
+          "ng-wig.js",
+          "ng-wig.min.js"
+        ]
+      },
+      "1": {
+        "versions": [
+          "1.0.1",
+          "1.0.2",
+          "1.0.3",
+          "1.1.1",
+          "1.1.2",
+          "1.1.3",
+          "1.1.4",
+          "1.1.5",
+          "1.1.6",
+          "1.1.7",
+          "1.1.8",
+          "1.1.9",
+          "1.1.10",
+          "1.1.11"
+        ],
+        "files": [
+          "css/ng-wig.css",
+          "css/ng-wig.min.css",
+          "ng-wig.js",
+          "ng-wig.min.js"
+        ]
+      },
+      "2": {
+        "versions": [
+          "2.0.0",
+          "2.0.1",
+          "2.1.0",
+          "2.1.1",
+          "2.2.0",
+          "2.2.1",
+          "2.3.1",
+          "2.3.2",
+          "2.3.3",
+          "2.3.4",
+          "2.3.5",
+          "2.3.6",
+          "2.3.7"
+        ],
+        "files": [
+          "css/ng-wig.css",
+          "css/ng-wig.min.css",
+          "ng-wig.js",
+          "ng-wig.min.js"
+        ]
+      },
+      "3": {
+        "versions": [
+          "3.0.0-rc1",
+          "3.0.0-rc2",
+          "3.0.1",
+          "3.0.2",
+          "3.0.3",
+          "3.0.4",
+          "3.0.6",
+          "3.0.7",
+          "3.0.8",
+          "3.0.9",
+          "3.0.10",
+          "3.0.11",
+          "3.0.12",
+          "3.0.13",
+          "3.0.14",
+          "3.0.16",
+          "3.0.19",
+          "3.1.0",
+          "3.1.1"
+        ],
+        "files": [
+          "css/ng-wig.css",
+          "css/ng-wig.min.css",
+          "ng-wig.js",
+          "ng-wig.js.map",
+          "ng-wig.min.js",
+          "plugins/forecolor.ngWig.js",
+          "plugins/forecolor.ngWig.min.js",
+          "plugins/formats.ngWig.js"
+        ]
+      }
+    },
+    "filename": "ng-wig.min.js"
+  },
+  "ng-showdown": {
+    "name": "ng-showdown",
+    "versions": {
+      "1": {
+        "versions": [
+          "1.0.0",
+          "1.0.1",
+          "1.1.0"
+        ],
+        "files": [
+          "ng-showdown.js",
+          "ng-showdown.js.map",
+          "ng-showdown.min.js",
+          "ng-showdown.min.js.map"
+        ]
+      }
+    },
+    "filename": "ng-showdown.min.js"
+  },
+  "NicEdit": {
+    "name": "NicEdit",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.93"
+        ],
+        "files": [
+          "nicEdit.js",
+          "nicEdit.min.js",
+          "nicEdit.min.js.map",
+          "nicEditorIcons.gif"
+        ]
+      }
+    },
+    "filename": "nicEdit.min.js"
+  },
+  "ng-jsoneditor": {
+    "name": "ng-jsoneditor",
+    "versions": {
+      "1": {
+        "versions": [
+          "1.0.0",
+          "1.2",
+          "1.5",
+          "1.31",
+          "1.32",
+          "1.48",
+          "1.49",
+          "1.51"
+        ],
+        "files": [
+          "ng-jsoneditor.js",
+          "ng-jsoneditor.min.js"
+        ]
+      }
+    },
+    "filename": "ng-jsoneditor.min.js"
+  },
+  "ng-inline-edit": {
+    "name": "ng-inline-edit",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.1.0",
+          "0.2.0",
+          "0.3.0",
+          "0.4.0",
+          "0.5.0",
+          "0.5.1",
+          "0.5.2",
+          "0.5.3",
+          "0.6.0",
+          "0.7.0"
+        ],
+        "files": [
+          "ng-inline-edit.css",
+          "ng-inline-edit.js",
+          "ng-inline-edit.min.css",
+          "ng-inline-edit.min.js"
+        ]
+      }
+    },
+    "filename": "ng-inline-edit.min.js"
+  },
+  "ng-prettyjson": {
+    "name": "ng-prettyjson",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.0.1",
+          "0.0.2",
+          "0.0.3",
+          "0.0.4",
+          "0.0.5",
+          "0.0.6",
+          "0.0.7",
+          "0.1.0",
+          "0.1.1",
+          "0.1.3",
+          "0.1.4",
+          "0.1.5",
+          "0.1.6",
+          "0.1.7",
+          "0.1.8",
+          "0.1.9",
+          "0.2.0"
+        ],
+        "files": [
+          "ng-prettyjson.css",
+          "ng-prettyjson.js",
+          "ng-prettyjson.min.css",
+          "ng-prettyjson.min.js"
+        ]
+      }
+    },
+    "filename": "ng-prettyjson.min.js"
+  },
+  "ng-parallax": {
+    "name": "ng-parallax",
+    "versions": {
+      "1": {
+        "versions": [
+          "1.0.0",
+          "1.0.1",
+          "1.1.3"
+        ],
+        "files": [
+          "ngParallax.js",
+          "ngParallax.min.js"
+        ]
+      }
+    },
+    "filename": "ngParallax.min.js"
+  },
+  "ng-browser-info": {
+    "name": "ng-browser-info",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.1.0",
+          "0.1.1",
+          "0.1.2",
+          "0.1.3",
+          "0.1.4",
+          "0.1.5",
+          "0.1.6"
+        ],
+        "files": [
+          "ngBrowserInfo.js",
+          "ngBrowserInfo.min.js"
+        ]
+      }
+    },
+    "filename": "ngBrowserInfo.min.js"
+  },
+  "ng.ckeditor": {
+    "name": "ng.ckeditor",
+    "versions": {
+      "2": {
+        "versions": [
+          "2.0.0",
+          "2.0.1",
+          "2.0.2",
+          "2.0.3",
+          "2.0.4",
+          "2.0.5",
+          "2.1.0"
+        ],
+        "files": [
+          "ng-ckeditor.js",
+          "ng-ckeditor.min.js",
+          "ng-ckeditor.min.js.map"
+        ]
+      }
+    },
+    "filename": "ng-ckeditor.min.js"
+  },
+  "ngmodeloptions": {
+    "name": "ngmodeloptions",
+    "versions": {
+      "1": {
+        "versions": [
+          "1.0.1"
+        ],
+        "files": [
+          "ngModelOptions.js",
+          "ngModelOptions.min.js"
+        ]
+      }
+    },
+    "filename": "ngModelOptions.min.js"
+  },
+  "numbered": {
+    "name": "numbered",
+    "versions": {
+      "1": {
+        "versions": [
+          "1.1.0"
+        ],
+        "files": [
+          "index.js",
+          "index.min.js",
+          "index.min.js.map"
+        ]
+      }
+    },
+    "filename": "index.min.js"
+  },
+  "najaxjs": {
+    "name": "najaxjs",
+    "versions": {
+      "1": {
+        "versions": [
+          "1.0.0-beta2",
+          "1.0.0",
+          "1.0.2",
+          "1.0.3",
+          "1.0.4",
+          "1.0.5",
+          "1.0.6",
+          "1.1.0"
+        ],
+        "files": [
+          "najax-tiny.js",
+          "najax-tiny.min.js",
+          "najax.js",
+          "najax.min.js",
+          "rlk.js",
+          "rlk.min.js"
+        ]
+      }
+    },
+    "filename": "najax.min.js"
+  },
+  "next-theme-pjax": {
+    "name": "next-theme-pjax",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.4.0",
+          "0.5.0",
+          "0.6.0"
+        ],
+        "files": [
+          "pjax.js",
+          "pjax.min.js"
+        ]
+      }
+    },
+    "filename": "pjax.min.js"
+  },
+  "ngOfficeUiFabric": {
+    "name": "ngOfficeUiFabric",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.1.1",
+          "0.1.2",
+          "0.1.3",
+          "0.2.0",
+          "0.3.0",
+          "0.4.0",
+          "0.4.1",
+          "0.5.0",
+          "0.5.1",
+          "0.6.0",
+          "0.7.0",
+          "0.7.1",
+          "0.7.2",
+          "0.7.3",
+          "0.7.4",
+          "0.8.0",
+          "0.8.1",
+          "0.8.2",
+          "0.8.3",
+          "0.8.4",
+          "0.9.0",
+          "0.10.0",
+          "0.10.1",
+          "0.10.2",
+          "0.10.3",
+          "0.11.0",
+          "0.12.0",
+          "0.12.1",
+          "0.12.2",
+          "0.12.3",
+          "0.12.4",
+          "0.12.6",
+          "0.12.7",
+          "0.12.8",
+          "0.12.9",
+          "0.12.10",
+          "0.12.11",
+          "0.12.12",
+          "0.12.13",
+          "0.13.0",
+          "0.13.1",
+          "0.13.2",
+          "0.13.3",
+          "0.14.0",
+          "0.15.0",
+          "0.15.1",
+          "0.15.2",
+          "0.15.3",
+          "0.15.4",
+          "0.16.0",
+          "0.16.1"
+        ],
+        "files": [
+          "ngOfficeUiFabric.js",
+          "ngOfficeUiFabric.min.js"
+        ]
+      }
+    },
+    "filename": "ngOfficeUiFabric.min.js"
+  },
+  "natsort": {
+    "name": "natsort",
+    "versions": {
+      "2": {
+        "versions": [
+          "2.0.2",
+          "2.0.3"
+        ],
+        "files": [
+          "natsort.min.js"
+        ]
+      }
+    },
+    "filename": "natsort.min.js"
+  },
+  "ngAnalytics": {
+    "name": "ngAnalytics",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.9.0"
+        ],
+        "files": [
+          "ng-analytics.js",
+          "ng-analytics.min.js"
+        ]
+      },
+      "1": {
+        "versions": [
+          "1.0.0",
+          "1.0.1",
+          "1.0.2",
+          "1.0.3",
+          "1.1.0",
+          "1.1.1",
+          "1.1.2",
+          "1.1.3",
+          "1.1.4"
+        ],
+        "files": [
+          "ng-analytics.js",
+          "ng-analytics.min.js"
+        ]
+      }
+    },
+    "filename": "ng-analytics.min.js"
+  },
+  "ngn-chassis-components": {
+    "name": "ngn-chassis-components",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.0.7",
+          "0.0.14",
+          "0.0.15",
+          "0.0.16",
+          "0.0.17",
+          "0.0.18",
+          "0.0.19",
+          "0.0.20",
+          "0.0.21",
+          "0.0.22",
+          "0.0.25",
+          "0.0.27",
+          "0.0.30",
+          "0.0.31",
+          "0.0.32",
+          "0.0.33",
+          "0.0.34",
+          "0.0.36",
+          "0.0.37",
+          "0.0.38",
+          "0.0.39",
+          "0.0.40",
+          "0.0.41",
+          "0.0.42",
+          "0.0.43",
+          "0.0.44",
+          "0.0.45",
+          "0.0.46",
+          "0.0.47"
+        ],
+        "files": [
+          "ngn-cycle.js",
+          "ngn-cycle.min.js"
+        ]
+      },
+      "1": {
+        "versions": [
+          "1.0.2",
+          "1.0.3",
+          "1.0.4",
+          "1.0.5"
+        ],
+        "files": [
+          "chassis-cycle.min.js",
+          "chassis-layout.min.js",
+          "chassis-list.min.js",
+          "chassis-overlay.min.js"
+        ]
+      }
+    },
+    "filename": "chassis-cycle.min.js"
+  },
+  "ng-context-menu": {
+    "name": "ng-context-menu",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.0.2",
+          "0.0.3",
+          "0.0.4",
+          "0.0.5",
+          "0.0.6",
+          "0.0.7",
+          "0.0.8",
+          "0.0.9",
+          "0.1.0",
+          "0.1.1",
+          "0.1.2",
+          "0.1.3",
+          "0.1.4",
+          "0.1.5",
+          "0.1.6",
+          "0.1.7"
+        ],
+        "files": [
+          "ng-context-menu.js",
+          "ng-context-menu.min.js"
+        ]
+      },
+      "1": {
+        "versions": [
+          "1.0.0",
+          "1.0.1",
+          "1.0.2"
+        ],
+        "files": [
+          "ng-context-menu.js",
+          "ng-context-menu.min.js"
+        ]
+      },
+      "NaN": {
+        "versions": [
+          "v1.0.1"
+        ],
+        "files": [
+          "ng-context-menu.js",
+          "ng-context-menu.min.js"
+        ]
+      }
+    },
+    "filename": "ng-context-menu.min.js"
+  },
+  "noti.js": {
+    "name": "noti.js",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.9-beta.5"
+        ],
+        "files": [
+          "noti.js",
+          "noti.min.js"
+        ]
+      },
+      "1": {
+        "versions": [
+          "1.0.1",
+          "1.0.2"
+        ],
+        "files": [
+          "noti.js",
+          "noti.min.js"
+        ]
+      }
+    },
+    "filename": "noti.min.js"
+  },
+  "notifxi": {
+    "name": "notifxi",
+    "versions": {
+      "0": {
+        "versions": [
+          "0.2.2"
+        ],
+        "files": [
+          "notifxi.min.js"
+        ]
+      }
+    },
+    "filename": "notifxi.min.js"
+  },
+  "nviewjs": {
+    "name": "nviewjs",
+    "versions": {
+      "1": {
+        "versions": [
+          "1.0.0-beta2",
+          "1.0.0",
+          "1.0.2",
+          "1.0.3"
+        ],
+        "files": [
+          "nview.css",
+          "nview.js",
+          "nview.min.css",
+          "nview.min.js"
+        ]
+      }
+    },
+    "filename": "nview.min.js"
+  }
+}
