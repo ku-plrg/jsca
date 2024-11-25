@@ -22,9 +22,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         (res) =>
           `<tr>
             <td>${res.score}</td>
-            <td>(${res.truePositivesNum}/${res.allNum})</td>
+            <td>(${res.count}/${res.all})</td>
             <td>
-              <a href="${res.src}" target="_blank">${res.src}</a>
+              <a href="${res.src}" target="_blank">${res.name} v${res.version}</a>
             </td>
           </tr>`
       )
