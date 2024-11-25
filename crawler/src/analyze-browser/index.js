@@ -1,7 +1,7 @@
 import { dirname } from 'path';
 import puppeteer from 'puppeteer';
 import { fileURLToPath } from 'url';
-import { jQuery } from './constants.js';
+import { getCdnPaths } from './cdn-paths.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -9,12 +9,10 @@ const __dirname = dirname(__filename);
 const results = [];
 
 (async () => {
-  // console.log('| cdn | nodes | children |');
-  // console.log('| --- | --- | --- |');
+  const libraries = getCdnPaths(['jquery']);
 
-  const libraries = jQuery.versions.map(jQuery.cdnUrlTemplate);
-
-  for (const library of libraries) {
+  // todo : apply this for loop for all libraries
+  for (const library of libraries.jquery) {
     const browser = await puppeteer.launch({
       headless: true,
       args: ['--disable-web-security', '--allow-file-access-from-files'],
@@ -22,7 +20,6 @@ const results = [];
 
     try {
       const page = await browser.newPage();
-
       await page.goto(`file://${__dirname}/index.html`);
 
       const result = await new Promise((resolve, reject) => {
@@ -39,26 +36,27 @@ const results = [];
         });
 
         page
-          .evaluate((url) => {
-            return new Promise((_resolve) => {
-              const script = document.createElement('script');
-              script.src = url;
-              script.id = 'dynamic-cdn';
-              script.onload = _resolve;
-              document.head.appendChild(script);
-            });
-          }, library)
+          .evaluate(
+            ({ library }) => {
+              return new Promise((_resolve) => {
+                window.originalGlobalVariables = JSON.stringify(
+                  Object.getOwnPropertyNames(window)
+                );
+                const script = document.createElement('script');
+                script.src = library;
+                script.id = 'dynamic-cdn';
+                script.onload = _resolve;
+                document.head.appendChild(script);
+              });
+            },
+            { library }
+          )
           .then(() => {
             page.click('button');
           })
           .catch(reject);
       });
 
-      // console.log(
-      //   `| ${result.src} | ${result.directChildrenNum} | ${JSON.stringify(
-      //     result.directChildren,
-      //   )} |`,
-      // );
       results.push(result);
     } catch (e) {
       console.error(`Error processing ${library}:`, e);
