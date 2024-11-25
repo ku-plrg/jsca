@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "get-versions-for-one-package": "node utils/get-library-versions/index.js",
     "get-ogv": "node utils/get-original-global-variables/index.js >> data/original-global-variables.json"
   },
   "author": "",

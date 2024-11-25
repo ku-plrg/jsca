@@ -13,11 +13,11 @@ npm install
 node index.js >> data.json
 ```
 
-### get minor release versions of specific library
-- patch releases are deleted
+### get release versions of specific library
 - library-name must be valid in [cdnjs platform](https://cdnjs.com/)
 
 ```
+npm run get-versions-for-one-package -- --library-name <library-name> --version-filter <major|minor|patch>
 ```
 
 ### get global variables in default puppeteer browser
