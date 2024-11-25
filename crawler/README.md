@@ -8,23 +8,16 @@
 npm install
 ```
 
-### save results into json file
+### get library info from cdn
 ```
-node index.js >> data.json
-```
-
-### get release versions of specific library
-- library-name must be valid in [cdnjs platform](https://cdnjs.com/)
-
-```
-npm run get-versions-for-one-package -- --library-name <library-name> --version-filter <major|minor|patch>
+npm run update-library-info
 ```
 
-### get global variables in default puppeteer browser
+### analyze browser
+```
+npm run analyze-browser
+```
 
-```
-npm run get-ogv
-```
 
 ## File descriptions
 
