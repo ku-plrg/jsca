@@ -18,7 +18,12 @@ node index.js >> data.json
 - library-name must be valid in [cdnjs platform](https://cdnjs.com/)
 
 ```
-node utils/index.js library-name
+```
+
+### get global variables in default puppeteer browser
+
+```
+npm run get-ogv
 ```
 
 ## File descriptions
