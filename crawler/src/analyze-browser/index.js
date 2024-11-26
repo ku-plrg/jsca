@@ -17,8 +17,12 @@ const targets = ['jquery'];
   const libraries = getCdnPaths(targets); // Record<string,{version:string, src:string, idx:number}[]>
 
   for (const [libName, libVersionInfos] of Object.entries(libraries)) {
-    allTrees[libName] = {};
+    allTrees[libName] = {
+      src: {},
+      tree: {},
+    };
     for (const libVersionInfo of libVersionInfos) {
+      allTrees[libName].src[libVersionInfo.version] = libVersionInfo.src;
       // library: {version:string, src:string, idx:number}
       const browser = await puppeteer.launch({
         headless: true,
@@ -30,8 +34,8 @@ const targets = ['jquery'];
         await page.goto(`file://${__dirname}/index.html`);
         const result = await extractTree(page, libVersionInfo.src);
         // result: {src:string, tree: Record<string,string[]>, directChildrenNum:number}
-        allTrees[libName] = getCompressedTree(
-          allTrees[libName],
+        allTrees[libName].tree = getCompressedTree(
+          allTrees[libName].tree,
           result.tree,
           libVersionInfo.idx
         );
