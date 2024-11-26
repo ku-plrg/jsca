@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CDN TEST PAGE</title>
+  </head>
+  <body>
+    <div id="root">
+      <button onclick="location.reload()">Refresh</button>
+      <form
+        action="javascript:void(0);"
+        onsubmit="cdns.push(document.querySelector('#input-cdn-link').value)"
+      >
+        <input type="text" id="input-cdn-link" />
+        <input type="submit" value="Add Script" />
+      </form>
+      <div id="div-cdn-container"></div>
+    </div>
+    <script>
+      const ogv = [...Object.getOwnPropertyNames(window)];
+
+      const cdns = {
+        links: [],
+        setContents: () => {
+          const divCdnContainer = document.getElementById('div-cdn-container');
+          divCdnContainer.innerHTML = `
+            ${cdns.links
+              .map(
+                (link) =>
+                  `<div><span>${link}</span><button onclick="cdns.remove('${link}')">❌</button></div>`
+              )
+              .join('')}
+            `;
+        },
+        injectScripts: () => {
+          cdns.links.forEach((link) => {
+            const script = document.createElement('script');
+            script.src = link;
+            document.head.appendChild(script);
+          });
+        },
+        get: function () {
+          return cdns.links;
+        },
+        set: function (newLinks) {
+          cdns.links = newLinks;
+          localStorage.setItem('cdnLinks', JSON.stringify(cdns.links));
+          this.setContents();
+          this.injectScripts();
+        },
+        push(link) {
+          console.log('push', link);
+          this.set([...cdns.links, link]);
+        },
+        remove(link) {
+          this.set(cdns.links.filter((l) => l !== link));
+        },
+      };
+      cdns.set(JSON.parse(localStorage.getItem('cdnLinks') ?? '[]'));
+    </script>
+  </body>
+</html>
