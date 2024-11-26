@@ -11,32 +11,18 @@ function getTwoDepthVariableTree() {
         gv !== 'originalGlobalVariables' && gv !== 'getTwoDepthVariableTree'
     );
 
-  const directChildren = variablesByCdnScripts.map((variable) => {
-    return {
-      [variable]: Object.getOwnPropertyNames(window[variable]),
-    };
-    // TODO : function body나 object property도 저장하도록 수정
-    // console.log(variable, Object.getOwnPropertyNames(window[variable]));
-    // return {
-    //   [variable]: Object.getOwnPropertyNames(window[variable]).map((pn) => {
-    //     return {
-    //       name: pn,
-    //       value:
-    //         typeof window[variable][pn] === 'object'
-    //           ? JSON.stringify(window[variable][pn])
-    //           : window[variable][pn].toLocaleString(),
-    //     };
-    //   }),
-    // };
-  });
+  const tree = {};
+  for (const variable of variablesByCdnScripts) {
+    tree[variable] = Object.getOwnPropertyNames(window[variable]);
+  }
 
   const scriptSrc = document.getElementById('dynamic-cdn').src;
 
   console.log(
     JSON.stringify({
       src: scriptSrc,
-      directChildren,
-      directChildrenNum: directChildren.length,
+      tree,
+      directChildrenNum: tree.length,
     })
   );
 }
