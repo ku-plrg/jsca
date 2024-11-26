@@ -1,454 +1,545 @@
 const libData = {
   jquery: {
     src: {
-      '1.2.3': 'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.2.3/jquery.js',
-      '1.3.0': 'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.3.0/jquery.js',
-      '1.4.0': 'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.4.0/jquery.js',
-      '1.5.1': 'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.5.1/jquery.js',
-      '1.6.1': 'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.6.1/jquery.js',
-      '1.8.0': 'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.0/jquery.js',
-      '1.9.0': 'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.0/jquery.js',
-      '1.10.0': 'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.0/jquery.js',
-      '1.11.0': 'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.js',
-      '1.12.0': 'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.0/jquery.js',
-      '2.0.0': 'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.0/jquery.js',
-      '2.1.0': 'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.js',
-      '2.2.0': 'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.js',
-      '3.1.0': 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.js',
-      '3.2.0': 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.0/jquery.js',
-      '3.3.0': 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.0/jquery.js',
-      '3.4.0': 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.js',
-      '3.5.0': 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.js',
-      '3.6.0': 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.js',
-      '3.7.0': 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.js',
+      '1.2.3':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.2.3/jquery.min.js',
+      '1.2.6':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.2.6/jquery.min.js',
+      '1.3.0':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.3.0/jquery.min.js',
+      '1.3.1':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.3.1/jquery.min.js',
+      '1.3.2':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.3.2/jquery.min.js',
+      '1.4.0':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.4.0/jquery.min.js',
+      '1.4.1':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.4.1/jquery.min.js',
+      '1.4.2':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.4.2/jquery.min.js',
+      '1.4.3':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.4.3/jquery.min.js',
+      '1.4.4':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.4.4/jquery.min.js',
+      '1.5.1':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.5.1/jquery.min.js',
+      '1.6.1':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.6.1/jquery.min.js',
+      '1.6.2':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.6.2/jquery.min.js',
+      '1.6.3':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.6.3/jquery.min.js',
+      '1.6.4':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.6.4/jquery.min.js',
+      1.7: 'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7/jquery.min.js',
+      '1.7.1':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.1/jquery.min.js',
+      '1.7.2':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js',
+      '1.8.0':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.0/jquery.min.js',
+      '1.8.1':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.1/jquery.min.js',
+      '1.8.2':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.2/jquery.min.js',
+      '1.8.3':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.3/jquery.min.js',
+      '1.9.0':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.0/jquery.min.js',
+      '1.9.1':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js',
+      '1.10.0':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.0/jquery.min.js',
+      '1.10.1':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.1/jquery.min.js',
+      '1.10.2':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js',
+      '1.11.0-beta3':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0-beta3/jquery.min.js',
+      '1.11.0-rc1':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0-rc1/jquery.min.js',
+      '1.11.0':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.min.js',
+      '1.11.1-beta1':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1-beta1/jquery.min.js',
+      '1.11.1-rc1':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1-rc1/jquery.min.js',
+      '1.11.1-rc2':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1-rc2/jquery.min.js',
+      '1.11.1':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js',
+      '1.11.2':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.2/jquery.min.js',
+      '1.11.3':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js',
+      '1.12.0':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.0/jquery.min.js',
+      '1.12.1':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js',
+      '1.12.2':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.2/jquery.min.js',
+      '1.12.3':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.3/jquery.min.js',
+      '1.12.4':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js',
+      '2.0.0':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.0/jquery.min.js',
+      '2.0.1':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.1/jquery.min.js',
+      '2.0.2':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js',
+      '2.0.3':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js',
+      '2.1.0-beta2':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0-beta2/jquery.min.js',
+      '2.1.0-beta3':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0-beta3/jquery.min.js',
+      '2.1.0-rc1':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0-rc1/jquery.min.js',
+      '2.1.0':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js',
+      '2.1.1-beta1':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1-beta1/jquery.min.js',
+      '2.1.1-rc1':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1-rc1/jquery.min.js',
+      '2.1.1-rc2':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1-rc2/jquery.min.js',
+      '2.1.1':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js',
+      '2.1.2':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.2/jquery.min.js',
+      '2.1.3':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js',
+      '2.1.4':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js',
+      '2.2.0':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js',
+      '2.2.1':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.1/jquery.min.js',
+      '2.2.2':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js',
+      '2.2.3':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js',
+      '2.2.4':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js',
+      '3.0.0-alpha1':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js',
+      '3.0.0-beta1':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-beta1/jquery.min.js',
+      '3.0.0-rc1':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-rc1/jquery.min.js',
+      '3.0.0':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js',
+      '3.1.0':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js',
+      '3.1.1':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js',
+      '3.2.0':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.0/jquery.min.js',
+      '3.2.1':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js',
+      '3.3.0':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.0/jquery.min.js',
+      '3.3.1':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js',
+      '3.4.0':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js',
+      '3.4.1':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js',
+      '3.5.0':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.min.js',
+      '3.5.1':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js',
+      '3.6.0':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js',
+      '3.6.1':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js',
+      '3.6.2':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.2/jquery.min.js',
+      '3.6.3':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js',
+      '3.6.4':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js',
+      '3.7.0':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js',
+      '3.7.1':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js',
+      '4.0.0-beta':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/4.0.0-beta/jquery.min.js',
+      '4.0.0-beta.2':
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/4.0.0-beta.2/jquery.min.js',
     },
     tree: {
       jQuery: {
-        "length": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "name": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "arguments": [
-          [[1, 2, 3], [1, 8, 0]],
-          [[1, 10, 0], [2, 2, 0]],
-        ],
-        "caller": [
-          [[1, 2, 3], [1, 8, 0]],
-          [[1, 10, 0], [2, 2, 0]],
-        ],
-        "prototype": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "fn": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "extend": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "noConflict": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "isFunction": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "isXMLDoc": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "globalEval": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "nodeName": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "cache": [
-          [[1, 2, 3], [1, 12, 0]],
-        ],
-        "data": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "removeData": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "each": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "prop": [
-          [[1, 2, 3], [1, 3, 0]],
-          [[1, 6, 1], [1, 3, 0]],
-        ],
-        "className": [
-          [[1, 2, 3], [1, 2, 3]],
-          [[1, 3, 0], [1, 3, 0]],
-        ],
-        "swap": [
-          [[1, 2, 3], [1, 11, 0]],
-          [[2, 0, 0], [2, 1, 0]],
-        ],
-        "css": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "curCSS": [
-          [[1, 2, 3], [1, 6, 1]],
-        ],
-        "clean": [
-          [[1, 2, 3], [1, 8, 0]],
-        ],
-        "attr": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "trim": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "makeArray": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "inArray": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "merge": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "unique": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "grep": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "map": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "browser": [
-          [[1, 2, 3], [1, 8, 0]],
-        ],
-        "boxModel": [
-          [[1, 2, 3], [1, 2, 3]],
-          [[1, 4, 0], [1, 6, 1]],
-        ],
-        "props": [
-          [[1, 2, 3], [1, 5, 1]],
-        ],
-        "expr": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "parse": [
-          [[1, 2, 3], [1, 2, 3]],
-        ],
-        "multiFilter": [
-          [[1, 2, 3], [1, 3, 0]],
-        ],
-        "find": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "classFilter": [
-          [[1, 2, 3], [1, 2, 3]],
-        ],
-        "filter": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "dir": [
-          [[1, 2, 3], [1, 11, 0]],
-          [[2, 0, 0], [2, 1, 0]],
-        ],
-        "nth": [
-          [[1, 2, 3], [1, 6, 1]],
-        ],
-        "sibling": [
-          [[1, 2, 3], [1, 11, 0]],
-          [[2, 0, 0], [2, 1, 0]],
-        ],
-        "event": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "isReady": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "readyList": [
-          [[1, 2, 3], [1, 3, 0]],
-        ],
-        "ready": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "get": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "getScript": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "getJSON": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "post": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "ajaxSetup": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "ajaxSettings": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "lastModified": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "ajax": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "handleError": [
-          [[1, 2, 3], [1, 4, 0]],
-        ],
-        "active": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "httpSuccess": [
-          [[1, 2, 3], [1, 4, 0]],
-        ],
-        "httpNotModified": [
-          [[1, 2, 3], [1, 4, 0]],
-        ],
-        "httpData": [
-          [[1, 2, 3], [1, 4, 0]],
-        ],
-        "param": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "speed": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "easing": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "timers": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "fx": [
-          [[1, 2, 3], [3, 7, 0]],
-        ],
-        "isArray": [
-          [[1, 3, 0], [3, 7, 0]],
-        ],
-        "queue": [
-          [[1, 3, 0], [3, 7, 0]],
-        ],
-        "dequeue": [
-          [[1, 3, 0], [3, 7, 0]],
-        ],
-        "Event": [
-          [[1, 3, 0], [3, 7, 0]],
-        ],
-        "support": [
-          [[1, 3, 0], [3, 7, 0]],
-        ],
-        "timerId": [
-          [[1, 3, 0], [1, 3, 0]],
-        ],
-        "offset": [
-          [[1, 3, 0], [3, 7, 0]],
-        ],
-        "bindReady": [
-          [[1, 4, 0], [1, 6, 1]],
-        ],
-        "isPlainObject": [
-          [[1, 4, 0], [3, 7, 0]],
-        ],
-        "isEmptyObject": [
-          [[1, 4, 0], [3, 7, 0]],
-        ],
-        "noop": [
-          [[1, 4, 0], [3, 7, 0]],
-        ],
-        "guid": [
-          [[1, 4, 0], [3, 7, 0]],
-        ],
-        "proxy": [
-          [[1, 4, 0], [3, 7, 0]],
-        ],
-        "uaMatch": [
-          [[1, 4, 0], [1, 8, 0]],
-        ],
-        "expando": [
-          [[1, 4, 0], [3, 7, 0]],
-        ],
-        "noData": [
-          [[1, 4, 0], [1, 12, 0]],
-        ],
-        "attrFn": [
-          [[1, 4, 0], [1, 8, 0]],
-        ],
-        "getText": [
-          [[1, 4, 0], [1, 4, 0]],
-        ],
-        "contains": [
-          [[1, 4, 0], [3, 7, 0]],
-        ],
-        "fragments": [
-          [[1, 4, 0], [1, 8, 0]],
-        ],
-        "style": [
-          [[1, 4, 0], [3, 7, 0]],
-        ],
-        "etag": [
-          [[1, 4, 0], [3, 7, 0]],
-        ],
-        "readyWait": [
-          [[1, 5, 1], [3, 7, 0]],
-        ],
-        "isWindow": [
-          [[1, 5, 1], [3, 7, 0]],
-        ],
-        "isNaN": [
-          [[1, 5, 1], [1, 6, 1]],
-        ],
-        "type": [
-          [[1, 5, 1], [3, 7, 0]],
-        ],
-        "error": [
-          [[1, 5, 1], [3, 7, 0]],
-        ],
-        "parseJSON": [
-          [[1, 5, 1], [3, 7, 0]],
-        ],
-        "parseXML": [
-          [[1, 5, 1], [3, 7, 0]],
-        ],
-        "access": [
-          [[1, 5, 1], [1, 11, 0]],
-          [[2, 0, 0], [2, 1, 0]],
-        ],
-        "now": [
-          [[1, 5, 1], [3, 7, 0]],
-        ],
-        "_Deferred": [
-          [[1, 5, 1], [1, 6, 1]],
-        ],
-        "Deferred": [
-          [[1, 5, 1], [3, 7, 0]],
-        ],
-        "when": [
-          [[1, 5, 1], [3, 7, 0]],
-        ],
-        "sub": [
-          [[1, 5, 1], [1, 8, 0]],
-        ],
-        "uuid": [
-          [[1, 5, 1], [1, 8, 0]],
-        ],
-        "hasData": [
-          [[1, 5, 1], [3, 7, 0]],
-        ],
-        "_data": [
-          [[1, 5, 1], [3, 7, 0]],
-        ],
-        "acceptData": [
-          [[1, 5, 1], [1, 11, 0]],
-          [[2, 0, 0], [2, 1, 0]],
-        ],
-        "removeEvent": [
-          [[1, 5, 1], [3, 7, 0]],
-        ],
-        "text": [
-          [[1, 5, 1], [3, 7, 0]],
-        ],
-        "buildFragment": [
-          [[1, 5, 1], [1, 11, 0]],
-          [[2, 0, 0], [2, 1, 0]],
-        ],
-        "clone": [
-          [[1, 5, 1], [3, 7, 0]],
-        ],
-        "cleanData": [
-          [[1, 5, 1], [3, 7, 0]],
-        ],
-        "cssHooks": [
-          [[1, 5, 1], [3, 7, 0]],
-        ],
-        "cssNumber": [
-          [[1, 5, 1], [3, 7, 0]],
-        ],
-        "cssProps": [
-          [[1, 5, 1], [3, 7, 0]],
-        ],
-        "camelCase": [
-          [[1, 5, 1], [3, 7, 0]],
-        ],
-        "ajaxPrefilter": [
-          [[1, 5, 1], [3, 7, 0]],
-        ],
-        "ajaxTransport": [
-          [[1, 5, 1], [3, 7, 0]],
-        ],
-        "holdReady": [
-          [[1, 6, 1], [3, 1, 0]],
-          [[3, 3, 0], [3, 7, 0]],
-        ],
-        "_mark": [
-          [[1, 6, 1], [1, 6, 1]],
-        ],
-        "_unmark": [
-          [[1, 6, 1], [1, 6, 1]],
-        ],
-        "valHooks": [
-          [[1, 6, 1], [3, 7, 0]],
-        ],
-        "attrFix": [
-          [[1, 6, 1], [1, 6, 1]],
-        ],
-        "removeAttr": [
-          [[1, 6, 1], [3, 7, 0]],
-        ],
-        "attrHooks": [
-          [[1, 6, 1], [3, 7, 0]],
-        ],
-        "propFix": [
-          [[1, 6, 1], [3, 7, 0]],
-        ],
-        "propHooks": [
-          [[1, 6, 1], [3, 7, 0]],
-        ],
-        "isNumeric": [
-          [[1, 8, 0], [3, 7, 0]],
-        ],
-        "parseHTML": [
-          [[1, 8, 0], [3, 7, 0]],
-        ],
-        "Callbacks": [
-          [[1, 8, 0], [3, 7, 0]],
-        ],
-        "deletedIds": [
-          [[1, 8, 0], [1, 8, 0]],
-        ],
-        "_queueHooks": [
-          [[1, 8, 0], [3, 7, 0]],
-        ],
-        "Animation": [
-          [[1, 8, 0], [3, 7, 0]],
-        ],
-        "Tween": [
-          [[1, 8, 0], [3, 7, 0]],
-        ],
-        "_removeData": [
-          [[1, 9, 0], [3, 7, 0]],
-        ],
-        "_evalUrl": [
-          [[1, 10, 0], [3, 7, 0]],
-        ],
-        "uniqueSort": [
-          [[1, 12, 0], [1, 12, 0]],
-          [[2, 2, 0], [3, 7, 0]],
-        ],
-        "htmlPrefilter": [
-          [[1, 12, 0], [1, 12, 0]],
-          [[2, 2, 0], [3, 7, 0]],
-        ],
-        "escapeSelector": [
-          [[3, 1, 0], [3, 7, 0]],
-        ],
-        "readyException": [
-          [[3, 1, 0], [3, 7, 0]],
-        ]
-      }
-    }
-  }
-}
+        length: [[0, 83]],
+        name: [[0, 83]],
+        arguments: [
+          [0, 21],
+          [23, 62],
+        ],
+        caller: [
+          [0, 21],
+          [23, 62],
+        ],
+        prototype: [[0, 83]],
+        fn: [[0, 83]],
+        extend: [[0, 83]],
+        noConflict: [[0, 83]],
+        isFunction: [[0, 81]],
+        isXMLDoc: [[0, 83]],
+        globalEval: [[0, 83]],
+        nodeName: [[0, 81]],
+        cache: [[0, 40]],
+        data: [[0, 83]],
+        removeData: [[0, 83]],
+        each: [[0, 83]],
+        prop: [
+          [0, 4],
+          [11, 83],
+        ],
+        className: [[0, 4]],
+        swap: [
+          [0, 35],
+          [41, 55],
+        ],
+        css: [[0, 83]],
+        curCSS: [[0, 17]],
+        clean: [[0, 21]],
+        attr: [[0, 83]],
+        trim: [[0, 81]],
+        makeArray: [[0, 83]],
+        inArray: [[0, 83]],
+        merge: [[0, 83]],
+        unique: [[0, 81]],
+        grep: [[0, 83]],
+        map: [[0, 83]],
+        browser: [[0, 21]],
+        boxModel: [
+          [0, 1],
+          [5, 17],
+        ],
+        props: [[0, 10]],
+        expr: [[0, 83]],
+        parse: [[0, 1]],
+        multiFilter: [[0, 4]],
+        find: [[0, 83]],
+        classFilter: [[0, 1]],
+        filter: [[0, 83]],
+        dir: [
+          [0, 35],
+          [41, 55],
+          [61, 61],
+        ],
+        nth: [[0, 17]],
+        sibling: [
+          [0, 35],
+          [41, 55],
+          [61, 61],
+        ],
+        event: [[0, 83]],
+        isReady: [[0, 83]],
+        readyList: [[0, 4]],
+        ready: [[0, 83]],
+        get: [[0, 83]],
+        getScript: [[0, 83]],
+        getJSON: [[0, 83]],
+        post: [[0, 83]],
+        ajaxSetup: [[0, 83]],
+        ajaxSettings: [[0, 83]],
+        lastModified: [[0, 83]],
+        ajax: [[0, 83]],
+        handleError: [[0, 9]],
+        active: [[0, 83]],
+        httpSuccess: [[0, 9]],
+        httpNotModified: [[0, 9]],
+        httpData: [[0, 9]],
+        param: [[0, 83]],
+        speed: [[0, 83]],
+        easing: [[0, 83]],
+        timers: [[0, 83]],
+        fx: [[0, 83]],
+        timerId: [[1, 2]],
+        isArray: [[2, 81]],
+        queue: [[2, 83]],
+        dequeue: [[2, 83]],
+        Event: [[2, 83]],
+        support: [[2, 83]],
+        offset: [[2, 83]],
+        bindReady: [[5, 17]],
+        isPlainObject: [[5, 83]],
+        isEmptyObject: [[5, 83]],
+        noop: [[5, 83]],
+        guid: [[5, 83]],
+        proxy: [[5, 83]],
+        uaMatch: [[5, 21]],
+        expando: [[5, 83]],
+        noData: [[5, 40]],
+        attrFn: [[5, 21]],
+        getText: [[5, 6]],
+        contains: [[5, 83]],
+        fragments: [[5, 21]],
+        style: [[5, 83]],
+        etag: [[5, 83]],
+        error: [[6, 83]],
+        parseJSON: [[6, 81]],
+        cleanData: [[6, 83]],
+        text: [[7, 83]],
+        readyWait: [[8, 83]],
+        isWindow: [[8, 81]],
+        isNaN: [[8, 14]],
+        type: [[8, 81]],
+        access: [
+          [8, 35],
+          [41, 55],
+          [61, 61],
+        ],
+        now: [[8, 81]],
+        uuid: [[8, 21]],
+        acceptData: [
+          [8, 35],
+          [41, 55],
+          [61, 61],
+        ],
+        removeEvent: [[8, 83]],
+        buildFragment: [
+          [8, 35],
+          [41, 55],
+        ],
+        cssHooks: [[8, 83]],
+        cssNumber: [[8, 81]],
+        cssProps: [[8, 81]],
+        camelCase: [[8, 81]],
+        handleSuccess: [[8, 9]],
+        handleComplete: [[8, 9]],
+        triggerGlobal: [[8, 9]],
+        parseXML: [[10, 83]],
+        _Deferred: [[10, 14]],
+        Deferred: [[10, 83]],
+        when: [[10, 83]],
+        sub: [[10, 21]],
+        hasData: [[10, 83]],
+        _data: [[10, 83]],
+        clone: [[10, 83]],
+        ajaxPrefilter: [[10, 83]],
+        ajaxTransport: [[10, 83]],
+        holdReady: [
+          [11, 66],
+          [68, 83],
+        ],
+        _mark: [[11, 17]],
+        _unmark: [[11, 17]],
+        valHooks: [[11, 83]],
+        attrFix: [[11, 14]],
+        removeAttr: [[11, 83]],
+        attrHooks: [[11, 83]],
+        propFix: [[11, 83]],
+        propHooks: [[11, 83]],
+        isNumeric: [[15, 81]],
+        Callbacks: [[15, 83]],
+        parseHTML: [[18, 83]],
+        deletedIds: [[18, 21]],
+        _queueHooks: [[18, 83]],
+        Animation: [[18, 83]],
+        Tween: [[18, 83]],
+        _removeData: [[22, 83]],
+        _evalUrl: [[24, 83]],
+        uniqueSort: [
+          [36, 40],
+          [56, 83],
+        ],
+        htmlPrefilter: [
+          [36, 40],
+          [56, 83],
+        ],
+        escapeSelector: [[63, 83]],
+        readyException: [[65, 83]],
+      },
+      $: {
+        length: [[0, 83]],
+        name: [[0, 83]],
+        arguments: [
+          [0, 21],
+          [23, 62],
+        ],
+        caller: [
+          [0, 21],
+          [23, 62],
+        ],
+        prototype: [[0, 83]],
+        fn: [[0, 83]],
+        extend: [[0, 83]],
+        noConflict: [[0, 83]],
+        isFunction: [[0, 81]],
+        isXMLDoc: [[0, 83]],
+        globalEval: [[0, 83]],
+        nodeName: [[0, 81]],
+        cache: [[0, 40]],
+        data: [[0, 83]],
+        removeData: [[0, 83]],
+        each: [[0, 83]],
+        prop: [
+          [0, 4],
+          [11, 83],
+        ],
+        className: [[0, 4]],
+        swap: [
+          [0, 35],
+          [41, 55],
+        ],
+        css: [[0, 83]],
+        curCSS: [[0, 17]],
+        clean: [[0, 21]],
+        attr: [[0, 83]],
+        trim: [[0, 81]],
+        makeArray: [[0, 83]],
+        inArray: [[0, 83]],
+        merge: [[0, 83]],
+        unique: [[0, 81]],
+        grep: [[0, 83]],
+        map: [[0, 83]],
+        browser: [[0, 21]],
+        boxModel: [
+          [0, 1],
+          [5, 17],
+        ],
+        props: [[0, 10]],
+        expr: [[0, 83]],
+        parse: [[0, 1]],
+        multiFilter: [[0, 4]],
+        find: [[0, 83]],
+        classFilter: [[0, 1]],
+        filter: [[0, 83]],
+        dir: [
+          [0, 35],
+          [41, 55],
+          [61, 61],
+        ],
+        nth: [[0, 17]],
+        sibling: [
+          [0, 35],
+          [41, 55],
+          [61, 61],
+        ],
+        event: [[0, 83]],
+        isReady: [[0, 83]],
+        readyList: [[0, 4]],
+        ready: [[0, 83]],
+        get: [[0, 83]],
+        getScript: [[0, 83]],
+        getJSON: [[0, 83]],
+        post: [[0, 83]],
+        ajaxSetup: [[0, 83]],
+        ajaxSettings: [[0, 83]],
+        lastModified: [[0, 83]],
+        ajax: [[0, 83]],
+        handleError: [[0, 9]],
+        active: [[0, 83]],
+        httpSuccess: [[0, 9]],
+        httpNotModified: [[0, 9]],
+        httpData: [[0, 9]],
+        param: [[0, 83]],
+        speed: [[0, 83]],
+        easing: [[0, 83]],
+        timers: [[0, 83]],
+        fx: [[0, 83]],
+        timerId: [[1, 2]],
+        isArray: [[2, 81]],
+        queue: [[2, 83]],
+        dequeue: [[2, 83]],
+        Event: [[2, 83]],
+        support: [[2, 83]],
+        offset: [[2, 83]],
+        bindReady: [[5, 17]],
+        isPlainObject: [[5, 83]],
+        isEmptyObject: [[5, 83]],
+        noop: [[5, 83]],
+        guid: [[5, 83]],
+        proxy: [[5, 83]],
+        uaMatch: [[5, 21]],
+        expando: [[5, 83]],
+        noData: [[5, 40]],
+        attrFn: [[5, 21]],
+        getText: [[5, 6]],
+        contains: [[5, 83]],
+        fragments: [[5, 21]],
+        style: [[5, 83]],
+        etag: [[5, 83]],
+        error: [[6, 83]],
+        parseJSON: [[6, 81]],
+        cleanData: [[6, 83]],
+        text: [[7, 83]],
+        readyWait: [[8, 83]],
+        isWindow: [[8, 81]],
+        isNaN: [[8, 14]],
+        type: [[8, 81]],
+        access: [
+          [8, 35],
+          [41, 55],
+          [61, 61],
+        ],
+        now: [[8, 81]],
+        uuid: [[8, 21]],
+        acceptData: [
+          [8, 35],
+          [41, 55],
+          [61, 61],
+        ],
+        removeEvent: [[8, 83]],
+        buildFragment: [
+          [8, 35],
+          [41, 55],
+        ],
+        cssHooks: [[8, 83]],
+        cssNumber: [[8, 81]],
+        cssProps: [[8, 81]],
+        camelCase: [[8, 81]],
+        handleSuccess: [[8, 9]],
+        handleComplete: [[8, 9]],
+        triggerGlobal: [[8, 9]],
+        parseXML: [[10, 83]],
+        _Deferred: [[10, 14]],
+        Deferred: [[10, 83]],
+        when: [[10, 83]],
+        sub: [[10, 21]],
+        hasData: [[10, 83]],
+        _data: [[10, 83]],
+        clone: [[10, 83]],
+        ajaxPrefilter: [[10, 83]],
+        ajaxTransport: [[10, 83]],
+        holdReady: [
+          [11, 66],
+          [68, 83],
+        ],
+        _mark: [[11, 17]],
+        _unmark: [[11, 17]],
+        valHooks: [[11, 83]],
+        attrFix: [[11, 14]],
+        removeAttr: [[11, 83]],
+        attrHooks: [[11, 83]],
+        propFix: [[11, 83]],
+        propHooks: [[11, 83]],
+        isNumeric: [[15, 81]],
+        Callbacks: [[15, 83]],
+        parseHTML: [[18, 83]],
+        deletedIds: [[18, 21]],
+        _queueHooks: [[18, 83]],
+        Animation: [[18, 83]],
+        Tween: [[18, 83]],
+        _removeData: [[22, 83]],
+        _evalUrl: [[24, 83]],
+        uniqueSort: [
+          [36, 40],
+          [56, 83],
+        ],
+        htmlPrefilter: [
+          [36, 40],
+          [56, 83],
+        ],
+        escapeSelector: [[63, 83]],
+        readyException: [[65, 83]],
+      },
+    },
+  },
+};
 
 export default libData;

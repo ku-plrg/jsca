@@ -23,9 +23,7 @@ export const calcScore = (libData, windowProps) => {
           delta = -1;
         }
         if (subWindowProps.has(sub)) {
-          for (const [from, to] of ranges) {
-            const fromIndex = indexOf[getVersionString(from)];
-            const toIndex = indexOf[getVersionString(to)];
+          for (const [fromIndex, toIndex] of ranges) {
             for (let i = fromIndex; i <= toIndex; i++) {
               const version = versions[i];
               matched[version] += delta;
@@ -42,9 +40,4 @@ export const calcScore = (libData, windowProps) => {
   }
   scores.sort((a, b) => b.score - a.score);
   return scores;
-}
-
-export const getVersionString = (version) => {
-  if (Array.isArray(version)) return version.join('.');
-  return `${version.major}.${version.minor}.${version.patch}`;
-}
+};
