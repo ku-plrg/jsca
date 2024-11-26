@@ -45,7 +45,10 @@ export const calcScore = (libData, windowProps) => {
     allScores.push({
       libName: name,
       detected: scores.length > 0,
-      versions: scores.sort((a, b) => b.score - a.score),
+      versions: scores.sort((a, b) => {
+        if (a.score !== b.score) return b.score - a.score;
+        else return b.count - a.count;
+      }),
     });
   }
 
