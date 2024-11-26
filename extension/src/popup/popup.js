@@ -19,7 +19,8 @@ const renderEachRow = ({ score, count, all, src, name, version }) =>
     </td>
   </tr>`;
 
-const toggleLibDivId = (libName) => `toggle-${libName}`;
+const toggleLibDivId = (libName) => `toggle-${libName.replaceAll('.', '-')}`;
+const libTableId = (libName) => `table-${libName.replaceAll('.', '-')}`;
 
 const renderEachTable = ({ libName, detected, versions }) =>
   `
@@ -30,13 +31,13 @@ const renderEachTable = ({ libName, detected, versions }) =>
     <span>${detected ? '✅' : '❌'}</span>
     <span>${versions[0] ? versions[0].version : ''}</span>
   </div>
-  <table border="0" cellspacing="0" id="${libName}" class="table">
+  <table border="0" cellspacing="0" id="${libTableId(libName)}" class="table">
     ${versions.map(renderEachRow).join('')}
   </table>
   `;
 
 const toggleVisibility = (libName) => {
-  document.querySelector(`#${libName}`).classList.toggle('visible');
+  document.getElementById(libTableId(libName)).classList.toggle('visible');
 };
 
 // from background worker
