@@ -10,26 +10,48 @@ analyzeButton.addEventListener('click', () => {
   });
 });
 
+const renderEachRow = ({ score, count, all, src, name, version }) =>
+  `<tr>
+    <td>${score}</td>
+    <td>(${count}/${all})</td>
+    <td>
+      <a href="${src}" target="_blank">${name} v${version}</a>
+    </td>
+  </tr>`;
+
+const toggleLibDivId = (libName) => `toggle-${libName}`;
+
+const renderEachTable = ({ libName, detected, versions }) =>
+  `
+  <div id="${toggleLibDivId(libName)}" class="div-table-title ${
+    detected ? 'detected' : ''
+  }">
+    <span>${libName}</span>
+    <span>${detected ? '✅' : '❌'}</span>
+    <span>${versions[0] ? versions[0].version : ''}</span>
+  </div>
+  <table border="0" cellspacing="0" id="${libName}" class="table">
+    ${versions.map(renderEachRow).join('')}
+  </table>
+  `;
+
+const toggleVisibility = (libName) => {
+  document.querySelector(`#${libName}`).classList.toggle('visible');
+};
+
 // from background worker
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type !== 'res_analyze') return;
 
   if (Array.isArray(message.result)) {
-    analysisResultDiv.innerHTML = `
-    <table border="0" cellspacing="0">
-    ${message.result
-      .map(
-        (res) =>
-          `<tr>
-            <td>${res.score}</td>
-            <td>(${res.count}/${res.all})</td>
-            <td>
-              <a href="${res.src}" target="_blank">${res.name} v${res.version}</a>
-            </td>
-          </tr>`
-      )
-      .join('')}
-    </table>`;
+    analysisResultDiv.innerHTML = message.result.map(renderEachTable).join('');
+    message.result.forEach(({ libName }) => {
+      document
+        .getElementById(toggleLibDivId(libName))
+        .addEventListener('click', () => {
+          toggleVisibility(libName);
+        });
+    });
   } else {
     analysisResultDiv.textContent = message.result;
   }

@@ -1,6 +1,7 @@
 export const calcScore = (libData, windowProps) => {
-  const scores = [];
+  const allScores = [];
   for (const name in libData) {
+    const scores = [];
     const { src, tree } = libData[name];
     const versions = Object.keys(src);
     const all = {};
@@ -29,16 +30,24 @@ export const calcScore = (libData, windowProps) => {
     for (const version in matched) {
       const count = matched[version];
       const score = (count / all[version]).toFixed(5);
-      scores.push({
-        name,
-        version,
-        count,
-        all: all[version],
-        score,
-        src: src[version],
-      });
+      if (score > 0) {
+        scores.push({
+          version,
+          count,
+          all: all[version],
+          score,
+          src: src[version],
+          name,
+        });
+      }
     }
+
+    allScores.push({
+      libName: name,
+      detected: scores.length > 0,
+      versions: scores.sort((a, b) => b.score - a.score),
+    });
   }
-  scores.sort((a, b) => b.score - a.score);
-  return scores;
+
+  return allScores;
 };
