@@ -54,3 +54,9 @@ export const calcScore = (libData, windowProps) => {
 
   return allScores;
 };
+
+export const getTargetProperties = (libData) =>
+  Object.values(libData).reduce(
+    (acc, { tree }) => [...acc, ...Object.keys(tree)],
+    []
+  );

@@ -2,12 +2,8 @@ const analyzeButton = document.getElementById('btn-analyze'),
   analysisResultDiv = document.getElementById('div-analysis-result');
 
 analyzeButton.addEventListener('click', () => {
-  // to content-script
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    chrome.tabs.sendMessage(tabs[0].id, {
-      type: 'req_data',
-    });
-  });
+  // to background worker
+  chrome.runtime.sendMessage({ type: 'req_data' });
 });
 
 const renderEachRow = ({ score, count, all, src, name, version }) =>
