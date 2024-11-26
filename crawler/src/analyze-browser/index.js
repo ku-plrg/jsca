@@ -11,11 +11,11 @@ const __dirname = dirname(__filename);
 
 const allTrees = {};
 
-const targets = ['jquery'];
+const targets = ['jquery', 'lodash.js', 'moment.js'];
+const filename = `data/allTree.json`;
 
 (async () => {
   const libraries = getCdnPaths(targets); // Record<string,{version:string, src:string, idx:number}[]>
-
   for (const [libName, libVersionInfos] of Object.entries(libraries)) {
     allTrees[libName] = {
       src: {},
@@ -47,6 +47,5 @@ const targets = ['jquery'];
     }
   }
 
-  const filename = `data/allTree.json`;
   fs.writeFileSync(filename, JSON.stringify(allTrees, null, 2));
 })();

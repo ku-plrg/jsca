@@ -4,7 +4,10 @@ window.addEventListener('message', (event) => {
 
   const data = {
     // TODO generalize this
-    jQuery: window.jQuery ? Object.getOwnPropertyNames(window.jQuery) : []
+    jQuery: window.jQuery ? Object.getOwnPropertyNames(window.jQuery) : [],
+    $: window.$ ? Object.getOwnPropertyNames(window.$) : [],
+    _: window._ ? Object.getOwnPropertyNames(window._) : [],
+    moment: window.moment ? Object.getOwnPropertyNames(window.moment) : [],
   };
 
   // to content-script

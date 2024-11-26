@@ -7,7 +7,7 @@ export const getCompressedTree = (prevTree, newTree, idx) => {
     }
     for (const child of children) {
       const prevVersionRange = newSubTree[base][child];
-      if (!prevVersionRange) {
+      if (!prevVersionRange || !Array.isArray(prevVersionRange)) {
         // 이 버전에서 새로 생긴 property
         newSubTree[base][child] = [[idx, idx]];
       } else {

@@ -13,7 +13,10 @@ function getTwoDepthVariableTree() {
 
   const tree = {};
   for (const variable of variablesByCdnScripts) {
-    tree[variable] = Object.getOwnPropertyNames(window[variable]);
+    tree[variable] = Object.getOwnPropertyNames(window[variable]).filter(
+      (gv) =>
+        gv !== 'originalGlobalVariables' && gv !== 'getTwoDepthVariableTree'
+    );
   }
 
   const scriptSrc = document.getElementById('dynamic-cdn').src;
