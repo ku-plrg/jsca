@@ -1091,5 +1091,2241 @@
         "HTML5_FMT": [[57, 77]]
       }
     }
+  },
+  "zepto": {
+    "src": {
+      "0.0.1": "https://cdnjs.cloudflare.com/ajax/libs/zepto/0.0.1/zepto.min.js",
+      "0.0.2": "https://cdnjs.cloudflare.com/ajax/libs/zepto/0.0.2/zepto.min.js",
+      "0.0.3": "https://cdnjs.cloudflare.com/ajax/libs/zepto/0.0.3/zepto.min.js",
+      "0.0.4": "https://cdnjs.cloudflare.com/ajax/libs/zepto/0.0.4/zepto.min.js",
+      "0.6": "https://cdnjs.cloudflare.com/ajax/libs/zepto/0.6/zepto.min.js",
+      "0.7": "https://cdnjs.cloudflare.com/ajax/libs/zepto/0.7/zepto.min.js",
+      "0.8": "https://cdnjs.cloudflare.com/ajax/libs/zepto/0.8/zepto.min.js",
+      "1.0": "https://cdnjs.cloudflare.com/ajax/libs/zepto/1.0/zepto.min.js",
+      "1.0.0": "https://cdnjs.cloudflare.com/ajax/libs/zepto/1.0.0/zepto.min.js",
+      "1.0rc1": "https://cdnjs.cloudflare.com/ajax/libs/zepto/1.0rc1/zepto.min.js",
+      "1.0.1": "https://cdnjs.cloudflare.com/ajax/libs/zepto/1.0.1/zepto.min.js",
+      "1.1.1": "https://cdnjs.cloudflare.com/ajax/libs/zepto/1.1.1/zepto.min.js",
+      "1.1.2": "https://cdnjs.cloudflare.com/ajax/libs/zepto/1.1.2/zepto.min.js",
+      "1.1.3": "https://cdnjs.cloudflare.com/ajax/libs/zepto/1.1.3/zepto.min.js",
+      "1.1.4": "https://cdnjs.cloudflare.com/ajax/libs/zepto/1.1.4/zepto.min.js",
+      "1.1.5": "https://cdnjs.cloudflare.com/ajax/libs/zepto/1.1.5/zepto.min.js",
+      "1.1.6": "https://cdnjs.cloudflare.com/ajax/libs/zepto/1.1.6/zepto.min.js",
+      "1.1.7": "https://cdnjs.cloudflare.com/ajax/libs/zepto/1.1.7/zepto.min.js",
+      "1.2.0": "https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"
+    },
+    "tree": {
+      "Zepto": {
+        "length": [[0, 18]],
+        "name": [[0, 18]],
+        "arguments": [[0, 18]],
+        "caller": [[0, 18]],
+        "prototype": [[0, 18]],
+        "extend": [[0, 18]],
+        "isFunction": [[0, 18]],
+        "isObject": [
+          [0, 2],
+          [4, 6],
+          [9, 9]
+        ],
+        "isArray": [[0, 18]],
+        "isPlainObject": [
+          [0, 3],
+          [7, 18]
+        ],
+        "inArray": [
+          [0, 3],
+          [7, 18]
+        ],
+        "trim": [
+          [0, 3],
+          [7, 18]
+        ],
+        "uuid": [
+          [0, 3],
+          [7, 18]
+        ],
+        "map": [
+          [0, 3],
+          [5, 18]
+        ],
+        "each": [
+          [0, 3],
+          [5, 18]
+        ],
+        "fn": [[0, 18]],
+        "zepto": [
+          [0, 3],
+          [7, 18]
+        ],
+        "event": [[0, 18]],
+        "proxy": [
+          [0, 3],
+          [7, 18]
+        ],
+        "Event": [
+          [0, 3],
+          [5, 18]
+        ],
+        "os": [[0, 10]],
+        "browser": [[0, 10]],
+        "__detect": [[0, 10]],
+        "fx": [
+          [0, 3],
+          [6, 10]
+        ],
+        "active": [
+          [0, 3],
+          [6, 18]
+        ],
+        "ajaxJSONP": [[0, 18]],
+        "ajaxSettings": [[0, 18]],
+        "ajax": [[0, 18]],
+        "get": [[0, 18]],
+        "post": [[0, 18]],
+        "getJSON": [[0, 18]],
+        "param": [[0, 18]],
+        "contains": [
+          [3, 3],
+          [7, 8],
+          [10, 18]
+        ],
+        "type": [
+          [3, 3],
+          [7, 8],
+          [10, 18]
+        ],
+        "isWindow": [
+          [3, 3],
+          [7, 8],
+          [10, 18]
+        ],
+        "isEmptyObject": [
+          [3, 3],
+          [7, 8],
+          [10, 18]
+        ],
+        "camelCase": [
+          [3, 3],
+          [7, 8],
+          [10, 18]
+        ],
+        "support": [
+          [3, 3],
+          [7, 8],
+          [10, 18]
+        ],
+        "expr": [
+          [3, 3],
+          [7, 8],
+          [10, 18]
+        ],
+        "grep": [
+          [3, 3],
+          [7, 8],
+          [10, 18]
+        ],
+        "parseJSON": [
+          [3, 3],
+          [7, 8],
+          [10, 18]
+        ],
+        "qsa": [[4, 6]],
+        "isNumeric": [[18, 18]],
+        "noop": [[18, 18]]
+      },
+      "$": {
+        "length": [[0, 18]],
+        "name": [[0, 18]],
+        "arguments": [[0, 18]],
+        "caller": [[0, 18]],
+        "prototype": [[0, 18]],
+        "extend": [[0, 18]],
+        "isFunction": [[0, 18]],
+        "isObject": [
+          [0, 2],
+          [4, 6],
+          [9, 9]
+        ],
+        "isArray": [[0, 18]],
+        "isPlainObject": [
+          [0, 3],
+          [7, 18]
+        ],
+        "inArray": [
+          [0, 3],
+          [7, 18]
+        ],
+        "trim": [
+          [0, 3],
+          [7, 18]
+        ],
+        "uuid": [
+          [0, 3],
+          [7, 18]
+        ],
+        "map": [
+          [0, 3],
+          [5, 18]
+        ],
+        "each": [
+          [0, 3],
+          [5, 18]
+        ],
+        "fn": [[0, 18]],
+        "zepto": [
+          [0, 3],
+          [7, 18]
+        ],
+        "event": [[0, 18]],
+        "proxy": [
+          [0, 3],
+          [7, 18]
+        ],
+        "Event": [
+          [0, 3],
+          [5, 18]
+        ],
+        "os": [[0, 10]],
+        "browser": [[0, 10]],
+        "__detect": [[0, 10]],
+        "fx": [
+          [0, 3],
+          [6, 10]
+        ],
+        "active": [
+          [0, 3],
+          [6, 18]
+        ],
+        "ajaxJSONP": [[0, 18]],
+        "ajaxSettings": [[0, 18]],
+        "ajax": [[0, 18]],
+        "get": [[0, 18]],
+        "post": [[0, 18]],
+        "getJSON": [[0, 18]],
+        "param": [[0, 18]],
+        "contains": [
+          [3, 3],
+          [7, 8],
+          [10, 18]
+        ],
+        "type": [
+          [3, 3],
+          [7, 8],
+          [10, 18]
+        ],
+        "isWindow": [
+          [3, 3],
+          [7, 8],
+          [10, 18]
+        ],
+        "isEmptyObject": [
+          [3, 3],
+          [7, 8],
+          [10, 18]
+        ],
+        "camelCase": [
+          [3, 3],
+          [7, 8],
+          [10, 18]
+        ],
+        "support": [
+          [3, 3],
+          [7, 8],
+          [10, 18]
+        ],
+        "expr": [
+          [3, 3],
+          [7, 8],
+          [10, 18]
+        ],
+        "grep": [
+          [3, 3],
+          [7, 8],
+          [10, 18]
+        ],
+        "parseJSON": [
+          [3, 3],
+          [7, 8],
+          [10, 18]
+        ],
+        "qsa": [[4, 6]],
+        "isNumeric": [[18, 18]],
+        "noop": [[18, 18]]
+      }
+    }
+  },
+  "d3": {
+    "src": {
+      "1.29.5": "https://cdnjs.cloudflare.com/ajax/libs/d3/1.29.5/d3.min.js",
+      "2.1.3": "https://cdnjs.cloudflare.com/ajax/libs/d3/2.1.3/d3.min.js",
+      "2.2.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/2.2.1/d3.min.js",
+      "2.3.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/2.3.0/d3.min.js",
+      "2.3.2": "https://cdnjs.cloudflare.com/ajax/libs/d3/2.3.2/d3.min.js",
+      "2.3.3": "https://cdnjs.cloudflare.com/ajax/libs/d3/2.3.3/d3.min.js",
+      "2.3.4": "https://cdnjs.cloudflare.com/ajax/libs/d3/2.3.4/d3.min.js",
+      "2.4.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/2.4.0/d3.min.js",
+      "2.4.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/2.4.1/d3.min.js",
+      "2.4.2": "https://cdnjs.cloudflare.com/ajax/libs/d3/2.4.2/d3.min.js",
+      "2.5.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/2.5.1/d3.min.js",
+      "2.5.2": "https://cdnjs.cloudflare.com/ajax/libs/d3/2.5.2/d3.min.js",
+      "2.6.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/2.6.0/d3.min.js",
+      "2.7.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/2.7.0/d3.min.js",
+      "2.7.2": "https://cdnjs.cloudflare.com/ajax/libs/d3/2.7.2/d3.min.js",
+      "2.7.3": "https://cdnjs.cloudflare.com/ajax/libs/d3/2.7.3/d3.min.js",
+      "2.7.4": "https://cdnjs.cloudflare.com/ajax/libs/d3/2.7.4/d3.min.js",
+      "2.7.5": "https://cdnjs.cloudflare.com/ajax/libs/d3/2.7.5/d3.min.js",
+      "2.8.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/2.8.1/d3.v2.min.js",
+      "2.10.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/2.10.0/d3.v2.js",
+      "3.0.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.0.0/d3.min.js",
+      "3.0.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.0.1/d3.v3.js",
+      "3.0.2": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.0.2/d3.min.js",
+      "3.0.3": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.0.3/d3.min.js",
+      "3.0.4": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.0.4/d3.min.js",
+      "3.0.5": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.0.5/d3.min.js",
+      "3.0.6": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.0.6/d3.min.js",
+      "3.0.7": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.0.7/d3.min.js",
+      "3.0.8": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.0.8/d3.min.js",
+      "3.1.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.1.0/d3.min.js",
+      "3.1.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.1.1/d3.min.js",
+      "3.1.2": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.1.2/d3.min.js",
+      "3.1.3": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.1.3/d3.min.js",
+      "3.1.4": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.1.4/d3.min.js",
+      "3.1.5": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.1.5/d3.min.js",
+      "3.1.6": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.1.6/d3.min.js",
+      "3.1.7": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.1.7/d3.min.js",
+      "3.1.8": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.1.8/d3.min.js",
+      "3.1.9": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.1.9/d3.min.js",
+      "3.1.10": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.1.10/d3.min.js",
+      "3.2.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.2.0/d3.min.js",
+      "3.2.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.2.1/d3.min.js",
+      "3.2.2": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.2.2/d3.min.js",
+      "3.2.3": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.2.3/d3.min.js",
+      "3.2.4": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.2.4/d3.min.js",
+      "3.2.5": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.2.5/d3.min.js",
+      "3.2.6": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.2.6/d3.min.js",
+      "3.2.7": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.2.7/d3.min.js",
+      "3.2.8": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.2.8/d3.min.js",
+      "3.3.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.3.0/d3.min.js",
+      "3.3.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.3.1/d3.min.js",
+      "3.3.2": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.3.2/d3.min.js",
+      "3.3.3": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.3.3/d3.min.js",
+      "3.3.4": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.3.4/d3.min.js",
+      "3.3.5": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.3.5/d3.min.js",
+      "3.3.6": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.3.6/d3.min.js",
+      "3.3.7": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.3.7/d3.min.js",
+      "3.3.8": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.3.8/d3.min.js",
+      "3.3.9": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.3.9/d3.min.js",
+      "3.3.10": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.3.10/d3.min.js",
+      "3.3.11": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.3.11/d3.min.js",
+      "3.3.12": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.3.12/d3.min.js",
+      "3.3.13": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.3.13/d3.min.js",
+      "3.4.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.0/d3.min.js",
+      "3.4.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.1/d3.min.js",
+      "3.4.2": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.2/d3.min.js",
+      "3.4.3": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.3/d3.min.js",
+      "3.4.4": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.4/d3.min.js",
+      "3.4.5": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.5/d3.min.js",
+      "3.4.6": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.6/d3.min.js",
+      "3.4.7": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.7/d3.min.js",
+      "3.4.8": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.8/d3.min.js",
+      "3.4.9": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.9/d3.min.js",
+      "3.4.10": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.10/d3.min.js",
+      "3.4.11": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js",
+      "3.4.12": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.12/d3.min.js",
+      "3.4.13": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.13/d3.min.js",
+      "3.5.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.0/d3.min.js",
+      "3.5.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.1/d3.min.js",
+      "3.5.2": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.2/d3.min.js",
+      "3.5.3": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js",
+      "3.5.4": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.4/d3.min.js",
+      "3.5.5": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js",
+      "3.5.6": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js",
+      "3.5.7": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.7/d3.min.js",
+      "3.5.8": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.8/d3.min.js",
+      "3.5.9": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.9/d3.min.js",
+      "3.5.10": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.10/d3.min.js",
+      "3.5.11": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.11/d3.min.js",
+      "3.5.12": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.12/d3.min.js",
+      "3.5.13": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.13/d3.min.js",
+      "3.5.14": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.14/d3.min.js",
+      "3.5.15": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.15/d3.min.js",
+      "3.5.16": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.min.js",
+      "3.5.17": "https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js",
+      "4.0.0-alpha.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.1/d3.min.js",
+      "4.0.0-alpha.10": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.10/d3.min.js",
+      "4.0.0-alpha.11": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.11/d3.min.js",
+      "4.0.0-alpha.12": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.12/d3.min.js",
+      "4.0.0-alpha.13": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.13/d3.min.js",
+      "4.0.0-alpha.14": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.14/d3.min.js",
+      "4.0.0-alpha.15": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.15/d3.min.js",
+      "4.0.0-alpha.16": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.16/d3.min.js",
+      "4.0.0-alpha.17": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.17/d3.min.js",
+      "4.0.0-alpha.18": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.18/d3.min.js",
+      "4.0.0-alpha.19": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.19/d3.min.js",
+      "4.0.0-alpha.2": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.2/d3.min.js",
+      "4.0.0-alpha.20": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.20/d3.min.js",
+      "4.0.0-alpha.21": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.21/d3.min.js",
+      "4.0.0-alpha.22": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.22/d3.min.js",
+      "4.0.0-alpha.23": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.23/d3.min.js",
+      "4.0.0-alpha.24": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.24/d3.min.js",
+      "4.0.0-alpha.25": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.25/d3.min.js",
+      "4.0.0-alpha.26": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.26/d3.min.js",
+      "4.0.0-alpha.27": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.27/d3.min.js",
+      "4.0.0-alpha.28": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.28/d3.min.js",
+      "4.0.0-alpha.29": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.29/d3.min.js",
+      "4.0.0-alpha.3": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.3/d3.min.js",
+      "4.0.0-alpha.30": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.30/d3.min.js",
+      "4.0.0-alpha.31": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.31/d3.min.js",
+      "4.0.0-alpha.32": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.32/d3.min.js",
+      "4.0.0-alpha.33": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.33/d3.min.js",
+      "4.0.0-alpha.34": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.34/d3.min.js",
+      "4.0.0-alpha.35": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.35/d3.min.js",
+      "4.0.0-alpha.36": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.36/d3.min.js",
+      "4.0.0-alpha.37": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.37/d3.min.js",
+      "4.0.0-alpha.38": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.38/d3.min.js",
+      "4.0.0-alpha.39": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.39/d3.min.js",
+      "4.0.0-alpha.4": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.4/d3.min.js",
+      "4.0.0-alpha.40": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.40/d3.min.js",
+      "4.0.0-alpha.41": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.41/d3.min.js",
+      "4.0.0-alpha.42": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.42/d3.min.js",
+      "4.0.0-alpha.43": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.43/d3.min.js",
+      "4.0.0-alpha.44": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.44/d3.min.js",
+      "4.0.0-alpha.45": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.45/d3.min.js",
+      "4.0.0-alpha.46": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.46/d3.min.js",
+      "4.0.0-alpha.47": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.47/d3.min.js",
+      "4.0.0-alpha.48": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.48/d3.min.js",
+      "4.0.0-alpha.49": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.49/d3.min.js",
+      "4.0.0-alpha.5": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.5/d3.min.js",
+      "4.0.0-alpha.50": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.50/d3.min.js",
+      "4.0.0-alpha.6": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.6/d3.min.js",
+      "4.0.0-alpha.7": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.7/d3.min.js",
+      "4.0.0-alpha.9": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-alpha.9/d3.min.js",
+      "4.0.0-rc.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-rc.1/d3.min.js",
+      "4.0.0-rc.2": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0-rc.2/d3.min.js",
+      "4.0.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.0.0/d3.min.js",
+      "4.1.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.1.0/d3.min.js",
+      "4.1.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.1.1/d3.min.js",
+      "4.2.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.0/d3.min.js",
+      "4.2.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.1/d3.min.js",
+      "4.2.2": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.2/d3.min.js",
+      "4.2.3": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.3/d3.min.js",
+      "4.2.4": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.4/d3.min.js",
+      "4.2.5": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.5/d3.min.js",
+      "4.2.6": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.6/d3.min.js",
+      "4.2.7": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.7/d3.min.js",
+      "4.2.8": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.8/d3.min.js",
+      "4.3.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.3.0/d3.min.js",
+      "4.4.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.4.0/d3.min.js",
+      "4.4.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.4.1/d3.min.js",
+      "4.4.2": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.4.2/d3.min.js",
+      "4.4.3": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.4.3/d3.min.js",
+      "4.4.4": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.4.4/d3.min.js",
+      "4.5.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.5.0/d3.min.js",
+      "4.5.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.5.1/d3.min.js",
+      "4.6.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.6.0/d3.min.js",
+      "4.7.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.7.0/d3.min.js",
+      "4.7.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.7.1/d3.min.js",
+      "4.7.2": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.7.2/d3.min.js",
+      "4.7.3": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.7.3/d3.min.js",
+      "4.7.4": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.7.4/d3.min.js",
+      "4.8.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.8.0/d3.min.js",
+      "4.9.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.9.0/d3.min.js",
+      "4.9.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.9.1/d3.min.js",
+      "4.10.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.10.0/d3.min.js",
+      "4.10.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.10.1/d3.min.js",
+      "4.10.2": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.10.2/d3.min.js",
+      "4.11.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.11.0/d3.min.js",
+      "4.12.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.12.0/d3.min.js",
+      "4.12.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.12.1/d3.min.js",
+      "4.12.2": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.12.2/d3.min.js",
+      "4.13.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/4.13.0/d3.min.js",
+      "5.0.0-rc.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.0.0-rc.1/d3.min.js",
+      "5.0.0-rc.2": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.0.0-rc.2/d3.min.js",
+      "5.0.0-rc.3": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.0.0-rc.3/d3.min.js",
+      "5.0.0-rc.4": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.0.0-rc.4/d3.min.js",
+      "5.0.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.0.0/d3.min.js",
+      "5.0.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.0.1/d3.min.js",
+      "5.0.2": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.0.2/d3.min.js",
+      "5.1.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.1.0/d3.min.js",
+      "5.2.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.2.0/d3.min.js",
+      "5.3.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.3.0/d3.min.js",
+      "5.4.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.4.0/d3.min.js",
+      "5.5.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.min.js",
+      "5.6.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.6.0/d3.min.js",
+      "5.7.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.7.0/d3.min.js",
+      "5.8.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.8.0/d3.min.js",
+      "5.8.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.8.1/d3.min.js",
+      "5.8.2": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.8.2/d3.min.js",
+      "5.9.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.9.0/d3.min.js",
+      "5.9.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.9.1/d3.min.js",
+      "5.9.2": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.9.2/d3.min.js",
+      "5.9.3": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.9.3/d3.min.js",
+      "5.9.4": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.9.4/d3.min.js",
+      "5.9.5": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.9.5/d3.min.js",
+      "5.9.6": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.9.6/d3.min.js",
+      "5.9.7": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.9.7/d3.min.js",
+      "5.10.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.10.0/d3.min.js",
+      "5.10.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.10.1/d3.min.js",
+      "5.11.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.11.0/d3.min.js",
+      "5.12.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.12.0/d3.min.js",
+      "5.13.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.13.0/d3.min.js",
+      "5.13.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.13.1/d3.min.js",
+      "5.14.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.14.0/d3.min.js",
+      "5.14.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.14.1/d3.min.js",
+      "5.14.2": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.14.2/d3.min.js",
+      "5.15.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.15.0/d3.min.js",
+      "5.15.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.15.1/d3.min.js",
+      "5.16.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/5.16.0/d3.min.js",
+      "6.0.0-rc.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/6.0.0-rc.1/d3.min.js",
+      "6.0.0-rc.2": "https://cdnjs.cloudflare.com/ajax/libs/d3/6.0.0-rc.2/d3.min.js",
+      "6.0.0-rc.3": "https://cdnjs.cloudflare.com/ajax/libs/d3/6.0.0-rc.3/d3.min.js",
+      "6.0.0-rc.4": "https://cdnjs.cloudflare.com/ajax/libs/d3/6.0.0-rc.4/d3.min.js",
+      "6.0.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/6.0.0/d3.min.js",
+      "6.1.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/6.1.0/d3.min.js",
+      "6.1.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/6.1.1/d3.min.js",
+      "6.2.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/6.2.0/d3.min.js",
+      "6.3.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/6.3.0/d3.min.js",
+      "6.3.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/6.3.1/d3.min.js",
+      "6.4.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/6.4.0/d3.min.js",
+      "6.5.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/6.5.0/d3.min.js",
+      "6.6.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/6.6.0/d3.min.js",
+      "6.6.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/6.6.1/d3.min.js",
+      "6.6.2": "https://cdnjs.cloudflare.com/ajax/libs/d3/6.6.2/d3.min.js",
+      "6.7.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/6.7.0/d3.min.js",
+      "7.0.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/7.0.0/d3.min.js",
+      "7.0.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/7.0.1/d3.min.js",
+      "7.0.2": "https://cdnjs.cloudflare.com/ajax/libs/d3/7.0.2/d3.min.js",
+      "7.0.3": "https://cdnjs.cloudflare.com/ajax/libs/d3/7.0.3/d3.min.js",
+      "7.0.4": "https://cdnjs.cloudflare.com/ajax/libs/d3/7.0.4/d3.min.js",
+      "7.1.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/7.1.0/d3.min.js",
+      "7.1.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/7.1.1/d3.min.js",
+      "7.2.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/7.2.0/d3.min.js",
+      "7.2.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/7.2.1/d3.min.js",
+      "7.3.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/7.3.0/d3.min.js",
+      "7.4.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/7.4.0/d3.min.js",
+      "7.4.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/7.4.1/d3.min.js",
+      "7.4.2": "https://cdnjs.cloudflare.com/ajax/libs/d3/7.4.2/d3.min.js",
+      "7.4.3": "https://cdnjs.cloudflare.com/ajax/libs/d3/7.4.3/d3.min.js",
+      "7.4.4": "https://cdnjs.cloudflare.com/ajax/libs/d3/7.4.4/d3.min.js",
+      "7.4.5": "https://cdnjs.cloudflare.com/ajax/libs/d3/7.4.5/d3.min.js",
+      "7.5.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/7.5.0/d3.min.js",
+      "7.6.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/7.6.0/d3.min.js",
+      "7.6.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/7.6.1/d3.min.js",
+      "7.7.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/7.7.0/d3.min.js",
+      "7.8.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.0/d3.min.js",
+      "7.8.1": "https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.1/d3.min.js",
+      "7.8.2": "https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.2/d3.min.js",
+      "7.8.3": "https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.3/d3.min.js",
+      "7.8.4": "https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.4/d3.min.js",
+      "7.8.5": "https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js",
+      "7.9.0": "https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"
+    },
+    "tree": {
+      "d3": {
+        "version": [[0, 262]],
+        "functor": [[0, 94]],
+        "rebind": [[0, 94]],
+        "ascending": [[0, 262]],
+        "descending": [[0, 262]],
+        "min": [[0, 262]],
+        "max": [[0, 262]],
+        "sum": [[0, 262]],
+        "quantile": [[0, 262]],
+        "zip": [[0, 262]],
+        "bisectLeft": [[0, 262]],
+        "bisectRight": [[0, 262]],
+        "bisect": [[0, 262]],
+        "first": [[0, 19]],
+        "last": [[0, 19]],
+        "nest": [[0, 219]],
+        "keys": [[0, 219]],
+        "values": [[0, 219]],
+        "entries": [[0, 219]],
+        "permute": [[0, 262]],
+        "merge": [[0, 262]],
+        "split": [[0, 19]],
+        "range": [[0, 262]],
+        "requote": [
+          [0, 95],
+          [106, 106],
+          [117, 117],
+          [128, 128]
+        ],
+        "round": [[0, 94]],
+        "xhr": [[0, 94]],
+        "text": [
+          [0, 94],
+          [101, 105],
+          [107, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "json": [
+          [0, 94],
+          [101, 105],
+          [107, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "html": [
+          [0, 94],
+          [101, 105],
+          [107, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 182],
+          [186, 262]
+        ],
+        "xml": [
+          [0, 94],
+          [101, 105],
+          [107, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 182],
+          [186, 262]
+        ],
+        "ns": [[0, 94]],
+        "dispatch": [[0, 262]],
+        "format": [[0, 262]],
+        "ease": [[0, 94]],
+        "event": [[0, 219]],
+        "interpolate": [[0, 262]],
+        "interpolateNumber": [[0, 262]],
+        "interpolateRound": [[0, 262]],
+        "interpolateString": [[0, 262]],
+        "interpolateRgb": [[0, 262]],
+        "interpolateHsl": [[0, 262]],
+        "interpolateArray": [[0, 262]],
+        "interpolateObject": [[0, 262]],
+        "interpolators": [
+          [0, 110],
+          [117, 117],
+          [128, 128],
+          [139, 139],
+          [141, 143]
+        ],
+        "rgb": [[0, 262]],
+        "hsl": [[0, 262]],
+        "select": [[0, 262]],
+        "selectAll": [[0, 262]],
+        "transition": [
+          [0, 94],
+          [100, 105],
+          [107, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "timer": [[0, 262]],
+        "scale": [[0, 94]],
+        "svg": [
+          [0, 94],
+          [186, 262]
+        ],
+        "selection": [[1, 262]],
+        "behavior": [[1, 94]],
+        "mean": [[7, 262]],
+        "median": [[7, 262]],
+        "formatPrefix": [[8, 262]],
+        "extent": [[10, 262]],
+        "random": [[10, 94]],
+        "interpolateTransform": [
+          [10, 108],
+          [117, 117],
+          [128, 128],
+          [139, 139],
+          [141, 143]
+        ],
+        "transform": [[10, 94]],
+        "transpose": [[12, 262]],
+        "map": [
+          [18, 219],
+          [227, 262]
+        ],
+        "bisector": [[18, 262]],
+        "mouse": [[18, 219]],
+        "touches": [[18, 219]],
+        "layout": [[18, 94]],
+        "csv": [[18, 262]],
+        "geo": [[18, 94]],
+        "geom": [[18, 94]],
+        "time": [[18, 94]],
+        "interpolateLab": [[19, 262]],
+        "interpolateHcl": [[19, 262]],
+        "hcl": [[19, 262]],
+        "lab": [[19, 262]],
+        "tween": [[19, 19]],
+        "tsv": [[19, 262]],
+        "shuffle": [[20, 262]],
+        "set": [[29, 219]],
+        "dsv": [
+          [40, 106],
+          [117, 117],
+          [128, 128],
+          [139, 139],
+          [141, 143],
+          [183, 262]
+        ],
+        "pairs": [[49, 262]],
+        "interpolateZoom": [[49, 262]],
+        "locale": [[63, 94]],
+        "touch": [[67, 219]],
+        "color": [[72, 262]],
+        "variance": [[79, 262]],
+        "deviation": [[79, 262]],
+        "histogram": [[95, 262]],
+        "thresholdFreedmanDiaconis": [[95, 262]],
+        "thresholdScott": [[95, 262]],
+        "thresholdSturges": [[95, 262]],
+        "scan": [[95, 262]],
+        "ticks": [[95, 262]],
+        "randomUniform": [[95, 262]],
+        "randomNormal": [[95, 262]],
+        "randomLogNormal": [[95, 262]],
+        "randomBates": [[95, 262]],
+        "randomIrwinHall": [[95, 262]],
+        "randomExponential": [[95, 262]],
+        "easeBind": [
+          [95, 99],
+          [106, 106],
+          [117, 117],
+          [128, 128],
+          [139, 139],
+          [141, 143]
+        ],
+        "easeLinearIn": [
+          [95, 100],
+          [106, 106],
+          [117, 117],
+          [128, 128],
+          [139, 139],
+          [141, 143]
+        ],
+        "easeLinearOut": [
+          [95, 100],
+          [106, 106],
+          [117, 117],
+          [128, 128],
+          [139, 139],
+          [141, 143]
+        ],
+        "easeLinearInOut": [
+          [95, 100],
+          [106, 106],
+          [117, 117],
+          [128, 128],
+          [139, 139],
+          [141, 143]
+        ],
+        "easeQuadIn": [[95, 262]],
+        "easeQuadOut": [[95, 262]],
+        "easeQuadInOut": [[95, 262]],
+        "easeCubicIn": [[95, 262]],
+        "easeCubicOut": [[95, 262]],
+        "easeCubicInOut": [[95, 262]],
+        "easePolyIn": [[95, 262]],
+        "easePolyOut": [[95, 262]],
+        "easePolyInOut": [[95, 262]],
+        "easeSinIn": [[95, 262]],
+        "easeSinOut": [[95, 262]],
+        "easeSinInOut": [[95, 262]],
+        "easeExpIn": [[95, 262]],
+        "easeExpOut": [[95, 262]],
+        "easeExpInOut": [[95, 262]],
+        "easeCircleIn": [[95, 262]],
+        "easeCircleOut": [[95, 262]],
+        "easeCircleInOut": [[95, 262]],
+        "easeBounceIn": [[95, 262]],
+        "easeBounceOut": [[95, 262]],
+        "easeBounceInOut": [[95, 262]],
+        "easeBackIn": [[95, 262]],
+        "easeBackOut": [[95, 262]],
+        "easeBackInOut": [[95, 262]],
+        "easeElasticIn": [[95, 262]],
+        "easeElasticOut": [[95, 262]],
+        "easeElasticInOut": [[95, 262]],
+        "path": [[95, 262]],
+        "arc": [[95, 262]],
+        "area": [[95, 262]],
+        "line": [[95, 262]],
+        "pie": [[95, 262]],
+        "radialArea": [[95, 262]],
+        "radialLine": [[95, 262]],
+        "symbol": [[95, 262]],
+        "symbols": [[95, 262]],
+        "symbolCircle": [[95, 262]],
+        "symbolCross": [[95, 262]],
+        "symbolDiamond": [[95, 262]],
+        "symbolSquare": [[95, 262]],
+        "symbolStar": [[95, 262]],
+        "symbolTriangle": [[95, 262]],
+        "symbolWye": [[95, 262]],
+        "curveBasisClosed": [[95, 262]],
+        "curveBasisOpen": [[95, 262]],
+        "curveBasis": [[95, 262]],
+        "curveBundle": [[95, 262]],
+        "curveCardinalClosed": [[95, 262]],
+        "curveCardinalOpen": [[95, 262]],
+        "curveCardinal": [[95, 262]],
+        "curveCatmullRomClosed": [[95, 262]],
+        "curveCatmullRomOpen": [[95, 262]],
+        "curveCatmullRom": [[95, 262]],
+        "curveLinearClosed": [[95, 262]],
+        "curveLinear": [[95, 262]],
+        "curveMonotone": [
+          [95, 97],
+          [106, 106],
+          [117, 117],
+          [128, 128],
+          [139, 139],
+          [141, 143]
+        ],
+        "curveNatural": [[95, 262]],
+        "curveStep": [[95, 262]],
+        "curveStepAfter": [[95, 262]],
+        "curveStepBefore": [[95, 262]],
+        "stack": [[95, 262]],
+        "stackOffsetExpand": [[95, 262]],
+        "stackOffsetNone": [[95, 262]],
+        "stackOffsetSilhouette": [[95, 262]],
+        "stackOffsetWiggle": [[95, 262]],
+        "stackOrderAscending": [[95, 262]],
+        "stackOrderDescending": [[95, 262]],
+        "stackOrderInsideOut": [[95, 262]],
+        "stackOrderNone": [[95, 262]],
+        "stackOrderReverse": [[95, 262]],
+        "cubehelix": [[95, 262]],
+        "interpolateBind": [
+          [95, 99],
+          [106, 106],
+          [117, 117],
+          [128, 128],
+          [139, 139],
+          [141, 143]
+        ],
+        "interpolateHslLong": [[95, 262]],
+        "interpolateHclLong": [[95, 262]],
+        "interpolateCubehelix": [[95, 262]],
+        "interpolateCubehelixLong": [[95, 262]],
+        "request": [[95, 182]],
+        "requestHtml": [
+          [95, 100],
+          [106, 106],
+          [117, 117],
+          [128, 128],
+          [139, 139],
+          [141, 143]
+        ],
+        "requestJson": [
+          [95, 100],
+          [106, 106],
+          [117, 117],
+          [128, 128],
+          [139, 139],
+          [141, 143]
+        ],
+        "requestText": [
+          [95, 100],
+          [106, 106],
+          [117, 117],
+          [128, 128],
+          [139, 139],
+          [141, 143]
+        ],
+        "requestXml": [
+          [95, 100],
+          [106, 106],
+          [117, 117],
+          [128, 128],
+          [139, 139],
+          [141, 143]
+        ],
+        "requestCsv": [
+          [95, 100],
+          [106, 106],
+          [117, 117],
+          [128, 128],
+          [139, 139],
+          [141, 143]
+        ],
+        "requestTsv": [
+          [95, 100],
+          [106, 106],
+          [117, 117],
+          [128, 128],
+          [139, 139],
+          [141, 143]
+        ],
+        "timerFlush": [[95, 262]],
+        "timeInterval": [[95, 262]],
+        "timeMillisecond": [[95, 262]],
+        "timeMilliseconds": [[95, 262]],
+        "timeSecond": [[95, 262]],
+        "timeSeconds": [[95, 262]],
+        "timeMinute": [[95, 262]],
+        "timeMinutes": [[95, 262]],
+        "timeHour": [[95, 262]],
+        "timeHours": [[95, 262]],
+        "timeDay": [[95, 262]],
+        "timeDays": [[95, 262]],
+        "timeWeek": [[95, 262]],
+        "timeWeeks": [[95, 262]],
+        "timeSunday": [[95, 262]],
+        "timeSundays": [[95, 262]],
+        "timeMonday": [[95, 262]],
+        "timeMondays": [[95, 262]],
+        "timeTuesday": [[95, 262]],
+        "timeTuesdays": [[95, 262]],
+        "timeWednesday": [[95, 262]],
+        "timeWednesdays": [[95, 262]],
+        "timeThursday": [[95, 262]],
+        "timeThursdays": [[95, 262]],
+        "timeFriday": [[95, 262]],
+        "timeFridays": [[95, 262]],
+        "timeSaturday": [[95, 262]],
+        "timeSaturdays": [[95, 262]],
+        "timeMonth": [[95, 262]],
+        "timeMonths": [[95, 262]],
+        "timeYear": [[95, 262]],
+        "timeYears": [[95, 262]],
+        "utcMillisecond": [[95, 262]],
+        "utcMilliseconds": [[95, 262]],
+        "utcSecond": [[95, 262]],
+        "utcSeconds": [[95, 262]],
+        "utcMinute": [[95, 262]],
+        "utcMinutes": [[95, 262]],
+        "utcHour": [[95, 262]],
+        "utcHours": [[95, 262]],
+        "utcDay": [[95, 262]],
+        "utcDays": [[95, 262]],
+        "utcWeek": [[95, 262]],
+        "utcWeeks": [[95, 262]],
+        "utcSunday": [[95, 262]],
+        "utcSundays": [[95, 262]],
+        "utcMonday": [[95, 262]],
+        "utcMondays": [[95, 262]],
+        "utcTuesday": [[95, 262]],
+        "utcTuesdays": [[95, 262]],
+        "utcWednesday": [[95, 262]],
+        "utcWednesdays": [[95, 262]],
+        "utcThursday": [[95, 262]],
+        "utcThursdays": [[95, 262]],
+        "utcFriday": [[95, 262]],
+        "utcFridays": [[95, 262]],
+        "utcSaturday": [[95, 262]],
+        "utcSaturdays": [[95, 262]],
+        "utcMonth": [[95, 262]],
+        "utcMonths": [[95, 262]],
+        "utcYear": [[95, 262]],
+        "utcYears": [[95, 262]],
+        "formatLocale": [[95, 262]],
+        "formatCaEs": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "formatCsCz": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "formatDeCh": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "formatDeDe": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "formatEnCa": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "formatEnGb": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "formatEnUs": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "formatEsEs": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "formatFiFi": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "formatFrCa": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "formatFrFr": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "formatHeIl": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "formatHuHu": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "formatItIt": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "formatJaJp": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "formatKoKr": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "formatMkMk": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "formatNlNl": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "formatPlPl": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "formatPtBr": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "formatRuRu": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "formatSvSe": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "formatZhCn": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "formatSpecifier": [[95, 262]],
+        "precisionFixed": [[95, 262]],
+        "precisionPrefix": [[95, 262]],
+        "precisionRound": [[95, 262]],
+        "timeFormat": [[95, 262]],
+        "utcFormat": [[95, 262]],
+        "isoFormat": [[95, 262]],
+        "timeFormatLocale": [[95, 262]],
+        "timeFormatCaEs": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "timeFormatDeCh": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "timeFormatDeDe": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "timeFormatEnCa": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "timeFormatEnGb": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "timeFormatEnUs": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "timeFormatEsEs": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "timeFormatFiFi": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "timeFormatFrCa": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "timeFormatFrFr": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "timeFormatHeIl": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "timeFormatHuHu": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "timeFormatItIt": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "timeFormatJaJp": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "timeFormatKoKr": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "timeFormatMkMk": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "timeFormatNlNl": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "timeFormatPlPl": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "timeFormatPtBr": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "timeFormatRuRu": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "timeFormatSvSe": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "timeFormatZhCn": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "scaleBand": [[95, 262]],
+        "scalePoint": [[95, 262]],
+        "scaleIdentity": [[95, 262]],
+        "scaleLinear": [[95, 262]],
+        "scaleLog": [[95, 262]],
+        "scaleOrdinal": [[95, 262]],
+        "scaleImplicit": [[95, 262]],
+        "scalePow": [[95, 262]],
+        "scaleSqrt": [[95, 262]],
+        "scaleQuantile": [[95, 262]],
+        "scaleQuantize": [[95, 262]],
+        "scaleThreshold": [[95, 262]],
+        "scaleTime": [[95, 262]],
+        "scaleUtc": [[95, 262]],
+        "scaleCategory10": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "scaleCategory20b": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "scaleCategory20c": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "scaleCategory20": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "scaleCubehelix": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "scaleRainbow": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "scaleWarm": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "scaleCool": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "scaleViridis": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "scaleMagma": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "scaleInferno": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "scalePlasma": [
+          [95, 133],
+          [139, 139],
+          [141, 143]
+        ],
+        "namespace": [[95, 262]],
+        "namespaces": [[95, 262]],
+        "polygonArea": [
+          [96, 105],
+          [107, 116],
+          [118, 127],
+          [129, 262]
+        ],
+        "polygonCentroid": [
+          [96, 105],
+          [107, 116],
+          [118, 127],
+          [129, 262]
+        ],
+        "polygonHull": [
+          [96, 105],
+          [107, 116],
+          [118, 127],
+          [129, 262]
+        ],
+        "polygonContains": [
+          [96, 105],
+          [107, 116],
+          [118, 127],
+          [129, 262]
+        ],
+        "polygonLength": [
+          [96, 105],
+          [107, 116],
+          [118, 127],
+          [129, 262]
+        ],
+        "quadtree": [
+          [96, 105],
+          [107, 116],
+          [118, 127],
+          [129, 262]
+        ],
+        "timeParse": [
+          [96, 105],
+          [107, 262]
+        ],
+        "utcParse": [
+          [96, 105],
+          [107, 262]
+        ],
+        "isoParse": [
+          [96, 105],
+          [107, 262]
+        ],
+        "axisTop": [
+          [96, 105],
+          [107, 116],
+          [118, 262]
+        ],
+        "axisRight": [
+          [96, 105],
+          [107, 116],
+          [118, 262]
+        ],
+        "axisBottom": [
+          [96, 105],
+          [107, 116],
+          [118, 262]
+        ],
+        "axisLeft": [
+          [96, 105],
+          [107, 116],
+          [118, 262]
+        ],
+        "voronoi": [
+          [96, 105],
+          [107, 116],
+          [118, 127],
+          [129, 219]
+        ],
+        "queue": [
+          [97, 105],
+          [107, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 184]
+        ],
+        "curveMonotoneX": [
+          [98, 105],
+          [107, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "curveMonotoneY": [
+          [98, 105],
+          [107, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "timerOnce": [[100, 103]],
+        "easeLinear": [
+          [101, 105],
+          [107, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "easeQuad": [
+          [101, 105],
+          [107, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "easeCubic": [
+          [101, 105],
+          [107, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "easePoly": [
+          [101, 105],
+          [107, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "easeSin": [
+          [101, 105],
+          [107, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "easeExp": [
+          [101, 105],
+          [107, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "easeCircle": [
+          [101, 105],
+          [107, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "easeBounce": [
+          [101, 105],
+          [107, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "easeBack": [
+          [101, 105],
+          [107, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "easeElastic": [
+          [101, 105],
+          [107, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "csvParse": [
+          [101, 105],
+          [107, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "csvParseRows": [
+          [101, 105],
+          [107, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "csvFormat": [
+          [101, 105],
+          [107, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "csvFormatRows": [
+          [101, 105],
+          [107, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "tsvParse": [
+          [101, 105],
+          [107, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "tsvParseRows": [
+          [101, 105],
+          [107, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "tsvFormat": [
+          [101, 105],
+          [107, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "tsvFormatRows": [
+          [101, 105],
+          [107, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "now": [
+          [102, 105],
+          [107, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "active": [
+          [102, 105],
+          [107, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "timeout": [
+          [104, 105],
+          [107, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "interval": [
+          [104, 105],
+          [107, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "dsvFormat": [
+          [107, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "interpolateTransformCss": [
+          [109, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "interpolateTransformSvg": [
+          [109, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "cluster": [
+          [116, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "hierarchy": [
+          [116, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "pack": [
+          [116, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "packSiblings": [
+          [116, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "packEnclose": [
+          [116, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "partition": [
+          [116, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "stratify": [
+          [116, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "tree": [
+          [116, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "treemap": [
+          [116, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "treemapBinary": [
+          [116, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "treemapDice": [
+          [116, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "treemapSlice": [
+          [116, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "treemapSliceDice": [
+          [116, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "treemapSquarify": [
+          [116, 116],
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "forceCenter": [
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "forceCollide": [
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "forceLink": [
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "forceManyBody": [
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "forcePosition": [[118, 119]],
+        "forceSimulation": [
+          [118, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "forceX": [
+          [120, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "forceY": [
+          [120, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "creator": [
+          [123, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "matcher": [
+          [123, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "selector": [
+          [123, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "selectorAll": [
+          [123, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "window": [
+          [123, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "customEvent": [
+          [125, 127],
+          [129, 138],
+          [140, 140],
+          [144, 219]
+        ],
+        "drag": [
+          [125, 127],
+          [129, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "zoom": [
+          [130, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "zoomTransform": [
+          [130, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "zoomIdentity": [
+          [131, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "tickStep": [
+          [133, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "scaleSequential": [
+          [133, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "interrupt": [
+          [133, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "dragDisable": [
+          [133, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "dragEnable": [
+          [133, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "interpolateRgbBasis": [
+          [134, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "interpolateRgbBasisClosed": [
+          [134, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "interpolateBasis": [
+          [134, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "interpolateBasisClosed": [
+          [134, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "quantize": [
+          [134, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "schemeCategory10": [
+          [134, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "schemeCategory20b": [
+          [134, 138],
+          [140, 140],
+          [144, 182]
+        ],
+        "schemeCategory20c": [
+          [134, 138],
+          [140, 140],
+          [144, 182]
+        ],
+        "schemeCategory20": [
+          [134, 138],
+          [140, 140],
+          [144, 182]
+        ],
+        "interpolateCubehelixDefault": [
+          [134, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "interpolateRainbow": [
+          [134, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "interpolateWarm": [
+          [134, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "interpolateCool": [
+          [134, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "interpolateViridis": [
+          [134, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "interpolateMagma": [
+          [134, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "interpolateInferno": [
+          [134, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "interpolatePlasma": [
+          [134, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "local": [
+          [134, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "treemapResquarify": [
+          [134, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "brush": [
+          [134, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "brushX": [
+          [134, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "brushY": [
+          [134, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "brushSelection": [
+          [134, 138],
+          [140, 140],
+          [144, 262]
+        ],
+        "__esModule": [
+          [134, 138],
+          [140, 140],
+          [144, 254]
+        ],
+        "geoArea": [
+          [140, 140],
+          [144, 262]
+        ],
+        "geoBounds": [
+          [140, 140],
+          [144, 262]
+        ],
+        "geoCentroid": [
+          [140, 140],
+          [144, 262]
+        ],
+        "geoCircle": [
+          [140, 140],
+          [144, 262]
+        ],
+        "geoClipExtent": [
+          [140, 140],
+          [144, 262]
+        ],
+        "geoDistance": [
+          [140, 140],
+          [144, 262]
+        ],
+        "geoGraticule": [
+          [140, 140],
+          [144, 262]
+        ],
+        "geoInterpolate": [
+          [140, 140],
+          [144, 262]
+        ],
+        "geoLength": [
+          [140, 140],
+          [144, 262]
+        ],
+        "geoPath": [
+          [140, 140],
+          [144, 262]
+        ],
+        "geoAlbers": [
+          [140, 140],
+          [144, 262]
+        ],
+        "geoAlbersUsa": [
+          [140, 140],
+          [144, 262]
+        ],
+        "geoAzimuthalEqualArea": [
+          [140, 140],
+          [144, 262]
+        ],
+        "geoAzimuthalEquidistant": [
+          [140, 140],
+          [144, 262]
+        ],
+        "geoConicConformal": [
+          [140, 140],
+          [144, 262]
+        ],
+        "geoConicEqualArea": [
+          [140, 140],
+          [144, 262]
+        ],
+        "geoConicEquidistant": [
+          [140, 140],
+          [144, 262]
+        ],
+        "geoEquirectangular": [
+          [140, 140],
+          [144, 262]
+        ],
+        "geoGnomonic": [
+          [140, 140],
+          [144, 262]
+        ],
+        "geoProjection": [
+          [140, 140],
+          [144, 262]
+        ],
+        "geoProjectionMutator": [
+          [140, 140],
+          [144, 262]
+        ],
+        "geoMercator": [
+          [140, 140],
+          [144, 262]
+        ],
+        "geoOrthographic": [
+          [140, 140],
+          [144, 262]
+        ],
+        "geoStereographic": [
+          [140, 140],
+          [144, 262]
+        ],
+        "geoTransverseMercator": [
+          [140, 140],
+          [144, 262]
+        ],
+        "geoRotation": [
+          [140, 140],
+          [144, 262]
+        ],
+        "geoStream": [
+          [140, 140],
+          [144, 262]
+        ],
+        "geoTransform": [
+          [140, 140],
+          [144, 262]
+        ],
+        "formatDefaultLocale": [[144, 262]],
+        "timeFormatDefaultLocale": [[144, 262]],
+        "interpolateDate": [[147, 262]],
+        "chord": [[147, 262]],
+        "ribbon": [[147, 262]],
+        "geoAzimuthalEqualAreaRaw": [[147, 262]],
+        "geoAzimuthalEquidistantRaw": [[147, 262]],
+        "geoConicConformalRaw": [[147, 262]],
+        "geoConicEqualAreaRaw": [[147, 262]],
+        "geoConicEquidistantRaw": [[147, 262]],
+        "geoEquirectangularRaw": [[147, 262]],
+        "geoGnomonicRaw": [[147, 262]],
+        "geoMercatorRaw": [[147, 262]],
+        "geoOrthographicRaw": [[147, 262]],
+        "geoStereographicRaw": [[147, 262]],
+        "geoTransverseMercatorRaw": [[147, 262]],
+        "geoGraticule10": [[158, 262]],
+        "geoIdentity": [[158, 262]],
+        "cross": [[167, 262]],
+        "geoContains": [[167, 262]],
+        "tickIncrement": [[172, 262]],
+        "style": [[173, 262]],
+        "linkHorizontal": [[173, 262]],
+        "linkVertical": [[173, 262]],
+        "linkRadial": [[173, 262]],
+        "stackOffsetDiverging": [[173, 262]],
+        "areaRadial": [[175, 262]],
+        "lineRadial": [[175, 262]],
+        "pointRadial": [[175, 262]],
+        "forceRadial": [[178, 262]],
+        "geoClipAntimeridian": [[178, 262]],
+        "geoClipCircle": [[178, 262]],
+        "geoClipRectangle": [[178, 262]],
+        "geoNaturalEarth1": [[178, 262]],
+        "geoNaturalEarth1Raw": [[178, 262]],
+        "clientPoint": [[179, 219]],
+        "create": [[182, 262]],
+        "contours": [[183, 262]],
+        "contourDensity": [[183, 262]],
+        "blob": [[183, 262]],
+        "buffer": [[183, 262]],
+        "image": [[183, 262]],
+        "schemeAccent": [[183, 262]],
+        "schemeDark2": [[183, 262]],
+        "schemePaired": [[183, 262]],
+        "schemePastel1": [[183, 262]],
+        "schemePastel2": [[183, 262]],
+        "schemeSet1": [[183, 262]],
+        "schemeSet2": [[183, 262]],
+        "schemeSet3": [[183, 262]],
+        "interpolateBrBG": [[183, 262]],
+        "schemeBrBG": [[183, 262]],
+        "interpolatePRGn": [[183, 262]],
+        "schemePRGn": [[183, 262]],
+        "interpolatePiYG": [[183, 262]],
+        "schemePiYG": [[183, 262]],
+        "interpolatePuOr": [[183, 262]],
+        "schemePuOr": [[183, 262]],
+        "interpolateRdBu": [[183, 262]],
+        "schemeRdBu": [[183, 262]],
+        "interpolateRdGy": [[183, 262]],
+        "schemeRdGy": [[183, 262]],
+        "interpolateRdYlBu": [[183, 262]],
+        "schemeRdYlBu": [[183, 262]],
+        "interpolateRdYlGn": [[183, 262]],
+        "schemeRdYlGn": [[183, 262]],
+        "interpolateSpectral": [[183, 262]],
+        "schemeSpectral": [[183, 262]],
+        "interpolateBuGn": [[183, 262]],
+        "schemeBuGn": [[183, 262]],
+        "interpolateBuPu": [[183, 262]],
+        "schemeBuPu": [[183, 262]],
+        "interpolateGnBu": [[183, 262]],
+        "schemeGnBu": [[183, 262]],
+        "interpolateOrRd": [[183, 262]],
+        "schemeOrRd": [[183, 262]],
+        "interpolatePuBuGn": [[183, 262]],
+        "schemePuBuGn": [[183, 262]],
+        "interpolatePuBu": [[183, 262]],
+        "schemePuBu": [[183, 262]],
+        "interpolatePuRd": [[183, 262]],
+        "schemePuRd": [[183, 262]],
+        "interpolateRdPu": [[183, 262]],
+        "schemeRdPu": [[183, 262]],
+        "interpolateYlGnBu": [[183, 262]],
+        "schemeYlGnBu": [[183, 262]],
+        "interpolateYlGn": [[183, 262]],
+        "schemeYlGn": [[183, 262]],
+        "interpolateYlOrBr": [[183, 262]],
+        "schemeYlOrBr": [[183, 262]],
+        "interpolateYlOrRd": [[183, 262]],
+        "schemeYlOrRd": [[183, 262]],
+        "interpolateBlues": [[183, 262]],
+        "schemeBlues": [[183, 262]],
+        "interpolateGreens": [[183, 262]],
+        "schemeGreens": [[183, 262]],
+        "interpolateGreys": [[183, 262]],
+        "schemeGreys": [[183, 262]],
+        "interpolatePurples": [[183, 262]],
+        "schemePurples": [[183, 262]],
+        "interpolateReds": [[183, 262]],
+        "schemeReds": [[183, 262]],
+        "interpolateOranges": [[183, 262]],
+        "schemeOranges": [[183, 262]],
+        "lch": [[190, 262]],
+        "gray": [[190, 262]],
+        "piecewise": [[191, 262]],
+        "interpolateSinebow": [[193, 262]],
+        "scaleDiverging": [[194, 262]],
+        "geoEqualEarth": [[196, 262]],
+        "geoEqualEarthRaw": [[196, 262]],
+        "interpolateDiscrete": [[196, 262]],
+        "interpolateHue": [[196, 262]],
+        "scaleSymlog": [[197, 262]],
+        "scaleSequentialLog": [[197, 262]],
+        "scaleSequentialPow": [[197, 262]],
+        "scaleSequentialSqrt": [[197, 262]],
+        "scaleSequentialSymlog": [[197, 262]],
+        "scaleSequentialQuantile": [[197, 262]],
+        "scaleDivergingLog": [[197, 262]],
+        "scaleDivergingPow": [[197, 262]],
+        "scaleDivergingSqrt": [[197, 262]],
+        "scaleDivergingSymlog": [[197, 262]],
+        "tickFormat": [[197, 262]],
+        "stackOrderAppearance": [[197, 262]],
+        "csvFormatBody": [[200, 262]],
+        "tsvFormatBody": [[200, 262]],
+        "autoType": [[200, 262]],
+        "schemeTableau10": [[208, 262]],
+        "interpolateCividis": [[210, 262]],
+        "interpolateTurbo": [[210, 262]],
+        "FormatSpecifier": [[211, 262]],
+        "csvFormatRow": [[212, 262]],
+        "csvFormatValue": [[212, 262]],
+        "tsvFormatRow": [[212, 262]],
+        "tsvFormatValue": [[212, 262]],
+        "interpolateNumberArray": [[217, 262]],
+        "Delaunay": [[220, 262]],
+        "Voronoi": [[220, 262]],
+        "bin": [[220, 262]],
+        "chordDirected": [[220, 262]],
+        "chordTranspose": [[220, 262]],
+        "count": [[220, 262]],
+        "cumsum": [[220, 262]],
+        "greatest": [[220, 262]],
+        "greatestIndex": [[220, 262]],
+        "group": [[220, 262]],
+        "groups": [[220, 262]],
+        "least": [[220, 262]],
+        "leastIndex": [[220, 262]],
+        "maxIndex": [[220, 262]],
+        "minIndex": [[220, 262]],
+        "pointer": [[220, 262]],
+        "quantileSorted": [[220, 262]],
+        "quickselect": [[220, 262]],
+        "randomBernoulli": [[220, 262]],
+        "randomBeta": [[220, 262]],
+        "randomBinomial": [[220, 262]],
+        "randomCauchy": [[220, 262]],
+        "randomGamma": [[220, 262]],
+        "randomGeometric": [[220, 262]],
+        "randomInt": [[220, 262]],
+        "randomLogistic": [[220, 262]],
+        "randomPareto": [[220, 262]],
+        "randomPoisson": [[220, 262]],
+        "randomWeibull": [[220, 262]],
+        "ribbonArrow": [[220, 262]],
+        "rollup": [[220, 262]],
+        "rollups": [[220, 262]],
+        "scaleRadial": [[220, 262]],
+        "Adder": [[221, 262]],
+        "fsum": [[221, 262]],
+        "pointers": [[222, 262]],
+        "randomLcg": [[223, 262]],
+        "index": [[224, 262]],
+        "indexes": [[224, 262]],
+        "bisectCenter": [[225, 262]],
+        "shuffler": [[225, 262]],
+        "difference": [[227, 262]],
+        "disjoint": [[227, 262]],
+        "every": [[227, 262]],
+        "filter": [[227, 262]],
+        "intersection": [[227, 262]],
+        "nice": [[227, 262]],
+        "reduce": [[227, 262]],
+        "reverse": [[227, 262]],
+        "some": [[227, 262]],
+        "sort": [[227, 262]],
+        "subset": [[227, 262]],
+        "superset": [[227, 262]],
+        "union": [[227, 262]],
+        "InternMap": [[230, 262]],
+        "InternSet": [[230, 262]],
+        "groupSort": [[231, 262]],
+        "curveBumpX": [[232, 262]],
+        "curveBumpY": [[232, 262]],
+        "fcumsum": [[232, 262]],
+        "timeTickInterval": [[235, 262]],
+        "timeTicks": [[235, 262]],
+        "utcTickInterval": [[235, 262]],
+        "utcTicks": [[235, 262]],
+        "Node": [[236, 262]],
+        "ZoomTransform": [[236, 262]],
+        "flatGroup": [[236, 262]],
+        "flatRollup": [[236, 262]],
+        "mode": [[236, 262]],
+        "rank": [[241, 262]],
+        "link": [[245, 262]],
+        "symbolAsterisk": [[245, 262]],
+        "symbolDiamond2": [[245, 262]],
+        "symbolPlus": [[245, 262]],
+        "symbolSquare2": [[245, 262]],
+        "symbolTriangle2": [[245, 262]],
+        "symbolX": [[245, 262]],
+        "symbolsFill": [[245, 262]],
+        "symbolsStroke": [[245, 262]],
+        "blur": [[253, 262]],
+        "blur2": [[253, 262]],
+        "blurImage": [[253, 262]],
+        "medianIndex": [[253, 262]],
+        "quantileIndex": [[253, 262]],
+        "unixDay": [[255, 262]],
+        "unixDays": [[255, 262]],
+        "Path": [[256, 262]],
+        "pathRound": [[256, 262]],
+        "symbolTimes": [[256, 262]],
+        "schemeObservable10": [[262, 262]]
+      },
+      "d3_time_weekdays": {
+        "0": [[18, 18]],
+        "1": [[18, 18]],
+        "2": [[18, 18]],
+        "3": [[18, 18]],
+        "4": [[18, 18]],
+        "5": [[18, 18]],
+        "6": [[18, 18]],
+        "length": [[18, 18]]
+      }
+    }
   }
 }

@@ -2,6 +2,7 @@ import fs from 'fs';
 import { dirname } from 'path';
 import puppeteer from 'puppeteer';
 import { fileURLToPath } from 'url';
+import prevAllTrees from '../../data/allTree.json' assert { type: 'json' };
 import { getCdnPaths } from './cdn-paths.js';
 import { getCompressedTree } from './compressor.js';
 import extractTree from './tree-extractor.js';
@@ -9,18 +10,19 @@ import extractTree from './tree-extractor.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const allTrees = {};
+const allTrees = prevAllTrees;
 
-const targets = ['jquery', 'lodash.js', 'moment.js'];
+const targets = ['jquery', 'lodash.js', 'moment.js', 'zepto', 'd3'];
 const filename = `data/allTree.json`;
 
 (async () => {
-  const libraries = getCdnPaths(targets); // Record<string,{version:string, src:string, idx:number}[]>
+  console.log(`skip ${Object.keys(allTrees).join(', ')}`);
+  const libraries = await getCdnPaths(
+    targets.filter((t) => !Object.keys(allTrees).includes(t))
+  ); // Record<string,{version:string, src:string, idx:number}[]>
   for (const [libName, libVersionInfos] of Object.entries(libraries)) {
-    allTrees[libName] = {
-      src: {},
-      tree: {},
-    };
+    console.log(`Processing ${libName}...`);
+    allTrees[libName] = { src: {}, tree: {} };
     for (const libVersionInfo of libVersionInfos) {
       allTrees[libName].src[libVersionInfo.version] = libVersionInfo.src;
       // library: {version:string, src:string, idx:number}
