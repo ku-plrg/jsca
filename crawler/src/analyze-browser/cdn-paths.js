@@ -1,4 +1,6 @@
+import axios from 'axios';
 import getLibInfo from '../../data/index.js';
+import { fetchVersionAssets } from '../library-info/fetch-cdn-api.js';
 
 const cdnTemplate = (libName, version, filename) => {
   return `https://cdnjs.cloudflare.com/ajax/libs/${libName}/${version}/${filename}`;
@@ -18,30 +20,50 @@ export const parseCdnPath = (url) => {
 };
 
 // (string[]) => Record<string,{version:string, src:string, idx:number}[]>
-export const getCdnPaths = (libraries) => {
+export const getCdnPaths = async (libraries) => {
   const versionStrings = {};
-  for (const lib of libraries) {
-    const libInfo = getLibInfo(lib);
-    if (!libInfo) continue;
-    versionStrings[lib] = Object.keys(libInfo.versions).reduce(
-      (acc, version) => {
-        const prevIdx = acc.at(-1)?.idx ? acc.at(-1).idx + 1 : 0;
-        const majorVersionInfo = libInfo.versions[version];
+
+  await Promise.all(
+    libraries.map(async (lib) => {
+      const libInfo = getLibInfo(lib);
+      if (!libInfo) return;
+
+      const promises = libInfo.versions.map(async (version, idx) => {
         const fileName = libInfo.filename;
 
-        if (majorVersionInfo.files.includes(fileName))
-          return [
-            ...acc,
-            ...majorVersionInfo.versions.map((v, vIdx) => ({
-              version: v,
-              src: cdnTemplate(lib, v, fileName),
-              idx: prevIdx + vIdx,
-            })),
-          ];
-        return acc; // TODO : 없는 경우도 잘 처리되도록 더 정밀하게 구현..
-      },
-      []
-    );
-  }
+        try {
+          const isValidFileName = await axios.get(
+            cdnTemplate(lib, version, fileName)
+          );
+
+          if (isValidFileName.status === 200) {
+            return {
+              version,
+              src: cdnTemplate(lib, version, fileName),
+              idx,
+            };
+          }
+        } catch (error) {}
+
+        try {
+          const versionInfo = await fetchVersionAssets(lib, version);
+          const heuristicFileName = versionInfo.find((f) => f.endsWith('.js'));
+          if (heuristicFileName) {
+            return {
+              version,
+              src: cdnTemplate(lib, version, heuristicFileName),
+              idx,
+            };
+          }
+        } catch (error) {}
+
+        return null;
+      });
+
+      const resolvedVersions = (await Promise.all(promises)).filter(Boolean);
+      versionStrings[lib] = resolvedVersions;
+    })
+  );
+
   return versionStrings;
 };
