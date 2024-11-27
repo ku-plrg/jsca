@@ -4,7 +4,7 @@ import {
   fetchLibInfo,
   fetchVersionAssets,
 } from './fetch-cdn-api.js';
-import { groupByMajorRelease } from './versions.js';
+import { groupByMajorRelease, sortVersions } from './versions.js';
 
 async function main(libraryNames) {
   const allLibs = libraryNames ?? (await fetchAllLibs());
@@ -32,25 +32,39 @@ async function main(libraryNames) {
     for (const lib of libs) {
       try {
         const libData = await fetchLibInfo(lib);
-        const resultVersionGroup = {};
+        const allFiles = new Set();
         const versionGroup = groupByMajorRelease(libData.versions);
         for (const majorVersion of Object.keys(versionGroup)) {
           const files = await fetchVersionAssets(
             lib,
-            versionGroup[majorVersion][0]
+            versionGroup[majorVersion]?.at(-1)
           );
-          resultVersionGroup[majorVersion] = {
-            versions: versionGroup[majorVersion],
-            files,
-          };
+
+          files
+            .filter((f) => f.endsWith('.js'))
+            .forEach(allFiles.add, allFiles);
         }
 
-        groupData[lib] = {
-          ...libData,
-          versions: resultVersionGroup,
-        };
+        if (
+          Array.from(allFiles).filter((f) => f.endsWith('.js')).length === 0
+        ) {
+          errorLibs.push({
+            libName: lib,
+            reason: 'no js files available',
+          });
+        } else {
+          groupData[lib] = {
+            ...libData,
+            versions: sortVersions(libData.versions),
+            allFiles: Array.from(allFiles),
+          };
+        }
       } catch (e) {
-        errorLibs.push(lib);
+        errorLibs.push({
+          libName: lib,
+          reason: 'network error',
+          message: JSON.stringify(e),
+        });
       }
     }
 
@@ -61,8 +75,11 @@ async function main(libraryNames) {
 
   await Promise.all(promises);
 
-  console.log('All data saved.');
-  console.log(errorLibs);
+  console.log(
+    'All data saved, except',
+    errorLibs.map((e) => e.libName)
+  );
+  fs.writeFileSync('data/error-libs.json', JSON.stringify(errorLibs, null, 2));
 }
 
 main().catch((err) => {

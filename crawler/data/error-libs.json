@@ -1,0 +1,1429 @@
+[
+  {
+    "libName": "ky",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "weui",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "editor.js",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "normalize",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "zurb-ink",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bulma",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "firacode",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "fuels",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "10up-sanitize.css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "naive-ui",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "hover.css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "wangEditor",
+    "reason": "network error",
+    "message": "{\"message\":\"Request failed with status code 404\",\"name\":\"AxiosError\",\"stack\":\"AxiosError: Request failed with status code 404\\n    at settle (file:///Users/kimseojin/jsca/crawler/node_modules/axios/lib/core/settle.js:19:12)\\n    at BrotliDecompress.handleStreamEnd (file:///Users/kimseojin/jsca/crawler/node_modules/axios/lib/adapters/http.js:599:11)\\n    at BrotliDecompress.emit (node:events:525:35)\\n    at endReadableNT (node:internal/streams/readable:1358:12)\\n    at processTicksAndRejections (node:internal/process/task_queues:83:21)\\n    at Axios.request (file:///Users/kimseojin/jsca/crawler/node_modules/axios/lib/core/Axios.js:45:41)\\n    at runMicrotasks (<anonymous>)\\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)\\n    at async fetchVersionAssets (file:///Users/kimseojin/jsca/crawler/src/library-info/fetch-cdn-api.js:17:20)\\n    at async file:///Users/kimseojin/jsca/crawler/src/library-info/index.js:38:25\\n    at async Promise.all (index 23)\\n    at async main (file:///Users/kimseojin/jsca/crawler/src/library-info/index.js:77:3)\",\"config\":{\"transitional\":{\"silentJSONParsing\":true,\"forcedJSONParsing\":true,\"clarifyTimeoutError\":false},\"adapter\":[\"xhr\",\"http\",\"fetch\"],\"transformRequest\":[null],\"transformResponse\":[null],\"timeout\":0,\"xsrfCookieName\":\"XSRF-TOKEN\",\"xsrfHeaderName\":\"X-XSRF-TOKEN\",\"maxContentLength\":-1,\"maxBodyLength\":-1,\"env\":{\"Blob\":null},\"headers\":{\"Accept\":\"application/json, text/plain, */*\",\"User-Agent\":\"axios/1.7.7\",\"Accept-Encoding\":\"gzip, compress, deflate, br\"},\"method\":\"get\",\"url\":\"https://api.cdnjs.com/libraries/wangEditor/@wangeditor/video-module@0.10.8\"},\"code\":\"ERR_BAD_REQUEST\",\"status\":404}"
+  },
+  {
+    "libName": "qrcode",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "960gs",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "nes.css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "daisyui",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "zone.js",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "animate.css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "material-design-icons",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "1140",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "16pixels",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "xhook",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "octicons",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "ejs",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "unsemantic",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "github-markdown-css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "draggable",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "Iosevka",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "hack-font",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "weather-icons",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "x-markdown-css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "jquery-mobile",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "react-spring",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "pure",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "open-iconic",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "skeleton",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "qcobjects",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "spinkit",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "devicon",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "usertiming",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "hint.css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "gifshot",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "hamburgers",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "overpass",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "heatmap.js",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "wingcss",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-icons",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "colors.css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "openwebicons",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "froala-design-blocks",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "tabler-icons",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "flag-icons",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "wenk",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "Primer",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "emoji-datasource",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "flag-icon-css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "grd",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "waffle-grid",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "leapjs",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "picocss",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "webicons",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "winstrap",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "emoji-datasource-apple",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "flexboxgrid",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "html5-device-mockups",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "emoji-datasource-facebook",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "docsearch-css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "clappr",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "js-xss",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "gridlex",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "spectre.css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "emoji-datasource-google",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "foundation-emails",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "device.js",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "normalize-opentype.css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "weather",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "jsondiffpatch",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "gridly",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "emoji-datasource-twitter",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "tachyons",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "hack",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "design-system",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "w3-css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "webpack-cesium",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "photon",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "wuzzle",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "recompose",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "libsodium-wrappers",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "github-fork-ribbon-css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "WebRupee",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "react-json-tree",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "load-awesome",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "excalibur",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "jslint",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "event-source-polyfill",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "browser-logos",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "devicons",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "emoji-datasource-messenger",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "satellizer",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "lockr",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "html5media",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "label.css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "basscss",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "milligram",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "remark",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "clarity-ui",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "json-schema-faker",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "jquery-datetimepicker",
+    "reason": "network error",
+    "message": "{\"message\":\"Request failed with status code 400\",\"name\":\"AxiosError\",\"stack\":\"AxiosError: Request failed with status code 400\\n    at settle (file:///Users/kimseojin/jsca/crawler/node_modules/axios/lib/core/settle.js:19:12)\\n    at IncomingMessage.handleStreamEnd (file:///Users/kimseojin/jsca/crawler/node_modules/axios/lib/adapters/http.js:599:11)\\n    at IncomingMessage.emit (node:events:525:35)\\n    at endReadableNT (node:internal/streams/readable:1358:12)\\n    at processTicksAndRejections (node:internal/process/task_queues:83:21)\\n    at Axios.request (file:///Users/kimseojin/jsca/crawler/node_modules/axios/lib/core/Axios.js:45:41)\\n    at runMicrotasks (<anonymous>)\\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)\\n    at async fetchVersionAssets (file:///Users/kimseojin/jsca/crawler/src/library-info/fetch-cdn-api.js:17:20)\\n    at async file:///Users/kimseojin/jsca/crawler/src/library-info/index.js:38:25\\n    at async Promise.all (index 10)\\n    at async main (file:///Users/kimseojin/jsca/crawler/src/library-info/index.js:77:3)\",\"config\":{\"transitional\":{\"silentJSONParsing\":true,\"forcedJSONParsing\":true,\"clarifyTimeoutError\":false},\"adapter\":[\"xhr\",\"http\",\"fetch\"],\"transformRequest\":[null],\"transformResponse\":[null],\"timeout\":0,\"xsrfCookieName\":\"XSRF-TOKEN\",\"xsrfHeaderName\":\"X-XSRF-TOKEN\",\"maxContentLength\":-1,\"maxBodyLength\":-1,\"env\":{\"Blob\":null},\"headers\":{\"Accept\":\"application/json, text/plain, */*\",\"User-Agent\":\"axios/1.7.7\",\"Accept-Encoding\":\"gzip, compress, deflate, br\"},\"method\":\"get\",\"url\":\"https://api.cdnjs.com/libraries/jquery-datetimepicker/%npm_package_version%\"},\"code\":\"ERR_BAD_REQUEST\",\"status\":400}"
+  },
+  {
+    "libName": "cssgram",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "flipclock",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "lazyad-loader",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "csshake",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "magic",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "tempus-dominus",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "genericons",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "gemma",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "emblem",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "line-awesome",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "modern-normalize",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "balloon-css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "mvp.css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "folktale",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "freewall",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "picnic",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "lemonade",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "IBM-type",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "peaks.js",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "fukol-grids",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "godlike.css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "icono",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "iconoir",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "cutjs",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-social",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "iamdustan-smoothscroll",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "http-request-mock",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "vazir-font",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "mini.css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "entypo",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "gyrejs",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "remixicon",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "gridmest",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "fork-awesome",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "hey-sven",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "emoji-awesome",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "font-awesome-animation",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "sir-trevor-js",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "css-social-buttons",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "pretendard",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "ismobilejs",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "pretendard-gov",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "pretendard-std",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "pretendard-jp",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "cutestrap",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "lxgw-wenkai-screen-webfont",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "lxgw-wenkai-webfont",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "mobi.css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "commonmark",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "flex-layout-attribute",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "minireset.css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "imagehover.css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "furtive",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bttn.css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "simpledotcss",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "multiple-select",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "lato-font",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "lxgw-wenkai-screen-web",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "lxgw-wenkai-web",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "font-mfizz",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "equalizecss",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "css-loader",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "cookie.js",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "paper-css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "awesome-bootstrap-checkbox",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "paymentfont",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "marx",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "scrollmonitor",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "blaze",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "pretty-checkbox",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "material-design-iconic-font",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bulmaswatch",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "csspin",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "pills",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "min",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "carbon-charts",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "font-linux",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "font-logos",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "placeholder-loading",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "base",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "foundicons",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "tufte-css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "fontisto",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "topcoat",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "cssco",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-rtl",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "videojs-swf",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "vast-client",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "float-label-css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "colofilter.css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "juliamono",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "react-instantsearch-theme-algolia",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "cleanslate",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "brand-colors",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "photo-editor",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "prism-themes",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "flexiblegs-css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "cldr-json",
+    "reason": "network error",
+    "message": "{\"message\":\"Request failed with status code 404\",\"name\":\"AxiosError\",\"stack\":\"AxiosError: Request failed with status code 404\\n    at settle (file:///Users/kimseojin/jsca/crawler/node_modules/axios/lib/core/settle.js:19:12)\\n    at BrotliDecompress.handleStreamEnd (file:///Users/kimseojin/jsca/crawler/node_modules/axios/lib/adapters/http.js:599:11)\\n    at BrotliDecompress.emit (node:events:525:35)\\n    at endReadableNT (node:internal/streams/readable:1358:12)\\n    at processTicksAndRejections (node:internal/process/task_queues:83:21)\\n    at Axios.request (file:///Users/kimseojin/jsca/crawler/node_modules/axios/lib/core/Axios.js:45:41)\\n    at runMicrotasks (<anonymous>)\\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)\\n    at async fetchVersionAssets (file:///Users/kimseojin/jsca/crawler/src/library-info/fetch-cdn-api.js:17:20)\\n    at async file:///Users/kimseojin/jsca/crawler/src/library-info/index.js:38:25\\n    at async Promise.all (index 3)\\n    at async main (file:///Users/kimseojin/jsca/crawler/src/library-info/index.js:77:3)\",\"config\":{\"transitional\":{\"silentJSONParsing\":true,\"forcedJSONParsing\":true,\"clarifyTimeoutError\":false},\"adapter\":[\"xhr\",\"http\",\"fetch\"],\"transformRequest\":[null],\"transformResponse\":[null],\"timeout\":0,\"xsrfCookieName\":\"XSRF-TOKEN\",\"xsrfHeaderName\":\"X-XSRF-TOKEN\",\"maxContentLength\":-1,\"maxBodyLength\":-1,\"env\":{\"Blob\":null},\"headers\":{\"Accept\":\"application/json, text/plain, */*\",\"User-Agent\":\"axios/1.7.7\",\"Accept-Encoding\":\"gzip, compress, deflate, br\"},\"method\":\"get\",\"url\":\"https://api.cdnjs.com/libraries/cldr-json/srl295/random-v44\"},\"code\":\"ERR_BAD_REQUEST\",\"status\":404}"
+  },
+  {
+    "libName": "bigfishtv-turret",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "toast-css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "inter-ui",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "breezejs",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "typebase.css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "concrete.css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "fatcow-icons",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "icheck-bootstrap",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "checkbox.css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "typicons",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "amcharts4",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "css-sans",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "three-dots",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "videogular-themes-default",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "MaterialDesign-Webfont",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "paradeiser",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "react-router-bootstrap",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "simple-line-icons",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "ant-design-icons-svg",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "primeflex",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "psl",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bulma-helpers",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-show-password",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "mu",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "chrome-bootstrap",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "jquery.ripples",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "typeplate-starter-kit",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "sip.js",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "academicons",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "better-ajv-errors",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "papier",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "androidicons",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "startbootstrap-landing-page",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "pavilion",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "CSS-Mint",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bulma-prefers-dark",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "strophe.js",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "tracing.js",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "react-uwp",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "avalanche-css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "core.css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "argon-dashboard",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "primeicons",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "tootik",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "tuesday",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "baseguide",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bf-solid",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "Repaintless.css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "currency-flags",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "backpack.css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "tent-css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "m8tro-bootstrap",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-material-design-icons",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-horizon",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "chiron-sans-hk",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bulma-tooltip",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "angular-motion",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "cascade-framework",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "stackicons",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "meyer-reset",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "radiobox.css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "starability",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "rpg-awesome",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-profiles",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-comments",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-news-feed",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-page-transitions",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-product-cards",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-quotes",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-shopping-carts",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-sidebars",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-square-buttons",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "cc-icons",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "startbootstrap-stylish-portfolio",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "tipograf",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-avatars",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-chat",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-comparison-table",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "typeahead.js-bootstrap-css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "argon-dashboard-react",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-credit-card-form",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-invoice",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "titatoggle",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "select2-bootstrap-theme",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-jumbotron",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-login-form",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-max-width",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "chiron-sans-hk-pro",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-media-object",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "reflex-grid",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-mega-menu",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "caiuss",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-multiselects",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "timeline.css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-offcanvas",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-payment-forms",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "turkuaz",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-side-navbar",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-testimonial-slider",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-testimonials",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-textarea",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "basics",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "ably",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-address-form",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "css-spinning-spinners",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-dark-mode",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "custom-elements-builder",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-dropdown-on-hover",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-logo",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-modal-backdrop",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "select2-bootstrap-css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "rwdgrid",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-modal-methods",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-modal-size",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-padding",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-popup",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-sliders",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "social-sharing",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-timeline",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "twbuttons",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-to-do-list",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "rusha",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "typeboost.css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-video-carousel",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "codex-design-tokens",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "bootstrap-weather",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "domtastic",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "custommarkup",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "dripicons",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "spoqa-han-sans",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "skeleton-framework",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "angular-retina",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "shabnam-font",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "simple-hint",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "authy-forms.css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "aurora-grid",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "select2-bootstrap-5-theme",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "akar-icons-fonts",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "Jouele",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "simpleui",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "sanitize.css",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "aegis",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "style-forge",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "style-forge.base",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "style-forge.patterns",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "s3colors",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "style-forge.colors",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "style-forge.form",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "style-forge.helpers",
+    "reason": "no js files available"
+  },
+  {
+    "libName": "style-forge.themes",
+    "reason": "no js files available"
+  }
+]

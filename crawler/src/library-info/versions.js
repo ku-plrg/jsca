@@ -30,7 +30,8 @@ export const sortVersions = (versions) => versions.sort(compareVersions);
 
 export const groupByMajorRelease = (versions) => {
   const groupedVersions = versions.reduce((acc, version) => {
-    const [major] = parseVersionString(version);
+    const [maybeNumberMajor] = parseVersionString(version);
+    const major = isNaN(maybeNumberMajor) ? 'other' : maybeNumberMajor;
     if (!acc[major]) {
       acc[major] = [version];
     } else {
