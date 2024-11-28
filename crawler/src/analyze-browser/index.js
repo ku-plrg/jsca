@@ -1,3 +1,4 @@
+import cliProgress from 'cli-progress';
 import fs from 'fs';
 import { dirname } from 'path';
 import puppeteer from 'puppeteer';
@@ -22,6 +23,11 @@ const filename = `data/allTree.json`;
   ); // Record<string,{version:string, src:string, idx:number}[]>
   for (const [libName, libVersionInfos] of Object.entries(libraries)) {
     console.log(`Processing ${libName}...`);
+    const progressBar = new cliProgress.SingleBar(
+      {},
+      cliProgress.Presets.shades_classic
+    );
+    progressBar.start(libVersionInfos.length, 0);
     allTrees[libName] = { src: {}, tree: {} };
     for (const libVersionInfo of libVersionInfos) {
       allTrees[libName].src[libVersionInfo.version] = libVersionInfo.src;
@@ -41,12 +47,14 @@ const filename = `data/allTree.json`;
           result.tree,
           libVersionInfo.idx
         );
+        progressBar.update(libVersionInfo.idx);
       } catch (e) {
         console.error(`Error processing ${libVersionInfo.src}:`, e);
       } finally {
         await browser.close();
       }
     }
+    progressBar.stop();
   }
 
   fs.writeFileSync(filename, JSON.stringify(allTrees, null, 2));
