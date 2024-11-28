@@ -26,7 +26,9 @@ const targets = [
   'backbone.js',
   'bootstrap',
   'core-js',
+  'camanjs',
   'dc',
+  'fastify',
 ];
 const filename = `data/allTree.json`;
 
@@ -42,6 +44,7 @@ const filename = `data/allTree.json`;
       cliProgress.Presets.shades_classic
     );
     progressBar.start(libVersionInfos.length, 0);
+
     allTrees[libName] = { src: {}, tree: {} };
     for (const libVersionInfo of libVersionInfos) {
       allTrees[libName].src[libVersionInfo.version] = libVersionInfo.src;
@@ -61,7 +64,7 @@ const filename = `data/allTree.json`;
           result.tree,
           libVersionInfo.idx
         );
-        progressBar.update(libVersionInfo.idx);
+        progressBar.update(libVersionInfo.idx + 1);
       } catch (e) {
         console.error(`Error processing ${libVersionInfo.src}:`, e);
       } finally {
