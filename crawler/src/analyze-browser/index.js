@@ -13,7 +13,21 @@ const __dirname = dirname(__filename);
 
 const allTrees = prevAllTrees;
 
-const targets = ['jquery', 'lodash.js', 'moment.js', 'zepto', 'd3'];
+const targets = [
+  'jquery',
+  'lodash.js',
+  'moment.js',
+  'zepto',
+  'd3',
+  'axios',
+  'angular',
+  'antd',
+  'amplifyjs',
+  'backbone.js',
+  'bootstrap',
+  'core-js',
+  'dc',
+];
 const filename = `data/allTree.json`;
 
 (async () => {
