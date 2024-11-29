@@ -32,8 +32,12 @@ const targets = [
   'snap.svg',
   'smartcrop',
   'save-svg-as-png', // all properties in versions are same :(
-  'sql.js', // all files in cdnjs is not for browser impl :(
+  'sql.js', // all files in cdnjs are not for browser impl :(
+  'driver.js',
+  'kube',
+  'formjs',
 ];
+
 const filename = `data/allTree.json`;
 
 (async () => {
