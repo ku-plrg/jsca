@@ -2859,14 +2859,13 @@
         "schemeObservable10": [[262, 262]]
       },
       "d3_time_weekdays": {
-        "0": [[18, 18]],
-        "1": [[18, 18]],
-        "2": [[18, 18]],
-        "3": [[18, 18]],
-        "4": [[18, 18]],
-        "5": [[18, 18]],
-        "6": [[18, 18]],
-        "length": [[18, 18]]
+        "\"Sunday\"": [[18, 18]],
+        "\"Monday\"": [[18, 18]],
+        "\"Tuesday\"": [[18, 18]],
+        "\"Wednesday\"": [[18, 18]],
+        "\"Thursday\"": [[18, 18]],
+        "\"Friday\"": [[18, 18]],
+        "\"Saturday\"": [[18, 18]]
       }
     }
   },
@@ -13456,6 +13455,189 @@
         "arguments": [[0, 3]],
         "caller": [[0, 3]],
         "prototype": [[0, 3]]
+      }
+    }
+  },
+  "tocas-ui": {
+    "src": {
+      "2.0.0-rc3": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/2.0.0-rc3/tocas.js",
+      "2.0.0-rc4": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/2.0.0-rc4/tocas.js",
+      "2.0.0-rc5": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/2.0.0-rc5/tocas.js",
+      "2.0.0-rc6": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/2.0.0-rc6/tocas.js",
+      "2.0.0-rc7": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/2.0.0-rc7/tocas.js",
+      "2.0.0-rc8": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/2.0.0-rc8/tocas.js",
+      "2.0.0": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/2.0.0/tocas.js",
+      "2.0.1": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/2.0.1/tocas.js",
+      "2.0.2": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/2.0.2/tocas.js",
+      "2.1.0": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/2.1.0/tocas.js",
+      "2.2.0": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/2.2.0/tocas.js",
+      "2.2.1": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/2.2.1/tocas.js",
+      "2.2.2": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/2.2.2/tocas.js",
+      "2.3.0": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/2.3.0/tocas.js",
+      "2.3.1": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/2.3.1/tocas.js",
+      "2.3.2": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/2.3.2/tocas.js",
+      "2.3.3": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/2.3.3/tocas.js",
+      "2.4.0-alpha.1": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/2.4.0-alpha.1/tocas.js",
+      "2.4.0-alpha.2": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/2.4.0-alpha.2/tocas.js",
+      "2.4.0-alpha1": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/2.4.0-alpha1/tocas.js",
+      "2.4.0-alpha2": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/2.4.0-alpha2/tocas.js",
+      "3.0.0-alpha.1": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/3.0.0-alpha.1/accordion.js",
+      "4.0.0-beta.2": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/4.0.0-beta.2/tocas.js",
+      "4.0.0-beta.3": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/4.0.0-beta.3/tocas.js",
+      "4.0.2": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/4.0.2/tocas.js",
+      "4.0.3": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/4.0.3/tocas.js",
+      "4.0.4": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/4.0.4/tocas.js",
+      "4.1.0": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/4.1.0/tocas.js",
+      "4.2.0": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/4.2.0/tocas.js",
+      "4.2.1": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/4.2.1/tocas.js",
+      "4.2.2": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/4.2.2/tocas.js",
+      "4.2.3": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/4.2.3/tocas.js",
+      "4.2.4": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/4.2.4/tocas.js",
+      "4.2.5": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/4.2.5/tocas.js",
+      "5.0.0": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/5.0.0/tocas.js",
+      "5.0.1": "https://cdnjs.cloudflare.com/ajax/libs/tocas-ui/5.0.1/tocas.js"
+    },
+    "tree": {
+      "Tocas": {
+        "null": [[0, 20]]
+      },
+      "quadrant": {
+        "length": [[0, 20]],
+        "name": [[0, 20]],
+        "arguments": [[0, 20]],
+        "caller": [[0, 20]],
+        "prototype": [[0, 20]]
+      },
+      "expandDropdown": {
+        "length": [[0, 20]],
+        "name": [[0, 20]],
+        "arguments": [[0, 20]],
+        "caller": [[0, 20]],
+        "prototype": [[0, 20]]
+      },
+      "contractDropdown": {
+        "length": [[0, 20]],
+        "name": [[0, 20]],
+        "arguments": [[0, 20]],
+        "caller": [[0, 20]],
+        "prototype": [[0, 20]]
+      },
+      "detectDropdown": {
+        "length": [[0, 20]],
+        "name": [[0, 20]],
+        "arguments": [[0, 20]],
+        "caller": [[0, 20]],
+        "prototype": [[0, 20]]
+      },
+      "ts": {
+        "length": [[0, 20]],
+        "name": [[0, 20]],
+        "arguments": [[0, 20]],
+        "caller": [[0, 20]],
+        "prototype": [[0, 20]],
+        "fn": [[0, 20]]
+      },
+      "closeModal": {
+        "length": [[11, 20]],
+        "name": [[11, 20]],
+        "arguments": [[11, 20]],
+        "caller": [[11, 20]],
+        "prototype": [[11, 20]]
+      },
+      "bindModalButtons": {
+        "length": [[11, 20]],
+        "name": [[11, 20]],
+        "arguments": [[11, 20]],
+        "caller": [[11, 20]],
+        "prototype": [[11, 20]]
+      },
+      "animationEnd": {
+        "\"webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend\"": [
+          [13, 20]
+        ]
+      },
+      "slider_progressColor": {
+        "\"rgb(150, 150, 150)\"": [[13, 20]]
+      },
+      "slider_trackColor": {
+        "\"#e9e9e9\"": [[13, 20]]
+      },
+      "z_dropdownActive": {
+        "10": [[13, 20]]
+      },
+      "z_dropdownHovered": {
+        "11": [[13, 20]]
+      },
+      "z_dropdownMenu": {
+        "9": [[13, 20]]
+      },
+      "tocas": {
+        "config": [[28, 35]]
+      },
+      "TocasFloatingUICore": {
+        "arrow": [[28, 35]],
+        "autoPlacement": [[28, 35]],
+        "computePosition": [[28, 35]],
+        "detectOverflow": [[28, 35]],
+        "flip": [[28, 35]],
+        "hide": [[28, 35]],
+        "inline": [[28, 35]],
+        "limitShift": [[28, 35]],
+        "offset": [[28, 35]],
+        "rectToClientRect": [[28, 35]],
+        "shift": [[28, 35]],
+        "size": [[28, 35]],
+        "__esModule": [[28, 35]]
+      },
+      "TocasFloatingUIDOM": {
+        "arrow": [[28, 35]],
+        "autoPlacement": [[28, 35]],
+        "detectOverflow": [[28, 35]],
+        "flip": [[28, 35]],
+        "hide": [[28, 35]],
+        "inline": [[28, 35]],
+        "limitShift": [[28, 35]],
+        "offset": [[28, 35]],
+        "shift": [[28, 35]],
+        "size": [[28, 35]],
+        "autoUpdate": [[28, 35]],
+        "computePosition": [[28, 35]],
+        "getOverflowAncestors": [[28, 35]],
+        "platform": [[28, 35]],
+        "__esModule": [[28, 35]]
+      },
+      "searchScopeTargets": {
+        "length": [[31, 33]],
+        "name": [[31, 33]]
+      },
+      "addedNodeMutation": {
+        "length": [[31, 35]],
+        "name": [[31, 35]]
+      },
+      "attributeMutation": {
+        "length": [[31, 35]],
+        "name": [[31, 35]]
+      },
+      "tocas_modules": {
+        "Responsive": [[32, 35]],
+        "Tab": [[32, 35]],
+        "Toggle": [[32, 33]],
+        "Dropdown": [[32, 35]],
+        "Tooltip": [[32, 35]],
+        "Popover": [[34, 35]],
+        "Dialog": [[34, 35]]
+      },
+      "createElement": {
+        "length": [[32, 35]],
+        "name": [[32, 35]]
+      },
+      "getID": {
+        "length": [[34, 35]],
+        "name": [[34, 35]]
+      },
+      "removedNodeMutation": {
+        "length": [[34, 35]],
+        "name": [[34, 35]]
       }
     }
   }

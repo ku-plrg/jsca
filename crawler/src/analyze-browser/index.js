@@ -36,13 +36,14 @@ const targets = [
   'driver.js',
   'kube',
   'formjs',
+  'tocas-ui',
 ];
 
 const filename = `data/allTree.json`;
 
 (async () => {
   if (Object.keys(allTrees).length > 0)
-  console.log(`skip ${Object.keys(allTrees).join(', ')}`);
+    console.log(`skip ${Object.keys(allTrees).join(', ')}`);
   const libraries = await getCdnPaths(
     targets.filter((t) => !Object.keys(allTrees).includes(t))
   ); // Record<string,{version:string, src:string, idx:number}[]>
