@@ -2,10 +2,16 @@ const extractTree = (page, cdnPath) =>
   new Promise((resolve, reject) => {
     page.on('console', (msg) => {
       const text = msg.text();
-      if (text.startsWith('{') && text.endsWith('}')) {
+      if (
+        text.startsWith('{') &&
+        text.endsWith('}') &&
+        typeof JSON.parse(text).src === 'string'
+      ) {
         try {
           const result = JSON.parse(text);
-          resolve(result);
+          setTimeout(() => {
+            resolve(result);
+          }, 50); // for stable browser.close()
         } catch (e) {
           reject(`Failed to parse JSON from console: ${text}`);
         }
