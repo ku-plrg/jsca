@@ -47,20 +47,26 @@ export const getCdnPaths = async (libraries) => {
       const promises = libInfo.versions.map(async (version) => {
         const fileName = libInfo.filename;
 
-        try {
-          const isValidCdnScript = await fetchAndCheckValidCdnScript(
-            cdnTemplate(lib, version, fileName)
-          );
-          if (isValidCdnScript)
-            return {
-              version,
-              src: cdnTemplate(lib, version, fileName),
-            };
-        } catch (error) {}
+        if (fileName.endsWith('.js')) {
+          try {
+            const isValidCdnScript = await fetchAndCheckValidCdnScript(
+              cdnTemplate(lib, version, fileName)
+            );
+            if (isValidCdnScript)
+              return {
+                version,
+                src: cdnTemplate(lib, version, fileName),
+              };
+          } catch (error) {}
+        }
 
         try {
           const versionInfo = await fetchVersionAssets(lib, version);
-          const heuristicFileName = versionInfo.find((f) => f.endsWith('.js'));
+          const heuristicFileName =
+            versionInfo.find((f) => f.includes(`${lib}.js`)) ??
+            versionInfo.find((f) => f.includes(`${lib}.min.js`)) ??
+            versionInfo.find((f) => f.endsWith('.js'));
+          if (!heuristicFileName) return null;
           const isValidCdnScript = await fetchAndCheckValidCdnScript(
             cdnTemplate(lib, version, heuristicFileName)
           );
