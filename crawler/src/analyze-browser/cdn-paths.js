@@ -24,7 +24,9 @@ const fetchAndCheckValidCdnScript = async (url) => {
     const response = await axios.get(url);
     if (response.status === 200) {
       const scriptContent = response.data;
-      const isNodeScript = scriptContent.includes(`require('fs')`);
+      const isNodeScript =
+        scriptContent.includes(`require('fs')`) ||
+        scriptContent.includes(`require("fs")`);
       return !isNodeScript;
     }
   } catch {

@@ -29,6 +29,10 @@ const targets = [
   'camanjs',
   'dc',
   'fastify',
+  'snap.svg',
+  'smartcrop',
+  'save-svg-as-png', // all properties in versions are same :(
+  'sql.js', // all files in cdnjs is not for browser impl :(
 ];
 const filename = `data/allTree.json`;
 
