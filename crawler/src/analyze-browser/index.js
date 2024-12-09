@@ -37,6 +37,8 @@ const targets = [
   'kube',
   'formjs',
   'tocas-ui',
+  'nprogress',
+  'nedb',
 ];
 
 const filename = `data/allTree.json`;

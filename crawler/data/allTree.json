@@ -13640,5 +13640,117 @@
         "name": [[34, 35]]
       }
     }
+  },
+  "nedb": {
+    "src": {
+      "0.8.0": "https://cdnjs.cloudflare.com/ajax/libs/nedb/0.8.0/nedb.min.js",
+      "0.8.1": "https://cdnjs.cloudflare.com/ajax/libs/nedb/0.8.1/nedb.min.js",
+      "0.8.2": "https://cdnjs.cloudflare.com/ajax/libs/nedb/0.8.2/nedb.min.js",
+      "0.8.3": "https://cdnjs.cloudflare.com/ajax/libs/nedb/0.8.3/nedb.min.js",
+      "0.8.4": "https://cdnjs.cloudflare.com/ajax/libs/nedb/0.8.4/nedb.min.js",
+      "0.8.5": "https://cdnjs.cloudflare.com/ajax/libs/nedb/0.8.5/nedb.min.js",
+      "0.8.6": "https://cdnjs.cloudflare.com/ajax/libs/nedb/0.8.6/nedb.min.js",
+      "0.8.7": "https://cdnjs.cloudflare.com/ajax/libs/nedb/0.8.7/nedb.min.js",
+      "0.8.8": "https://cdnjs.cloudflare.com/ajax/libs/nedb/0.8.8/nedb.min.js",
+      "0.8.9": "https://cdnjs.cloudflare.com/ajax/libs/nedb/0.8.9/nedb.min.js",
+      "0.8.10": "https://cdnjs.cloudflare.com/ajax/libs/nedb/0.8.10/nedb.min.js",
+      "0.8.11": "https://cdnjs.cloudflare.com/ajax/libs/nedb/0.8.11/nedb.min.js",
+      "0.8.12": "https://cdnjs.cloudflare.com/ajax/libs/nedb/0.8.12/nedb.min.js",
+      "0.8.13": "https://cdnjs.cloudflare.com/ajax/libs/nedb/0.8.13/nedb.min.js",
+      "0.9.1": "https://cdnjs.cloudflare.com/ajax/libs/nedb/0.9.1/nedb.min.js",
+      "0.9.2": "https://cdnjs.cloudflare.com/ajax/libs/nedb/0.9.2/nedb.min.js",
+      "0.9.3": "https://cdnjs.cloudflare.com/ajax/libs/nedb/0.9.3/nedb.min.js",
+      "0.9.4": "https://cdnjs.cloudflare.com/ajax/libs/nedb/0.9.4/nedb.min.js",
+      "0.10.0": "https://cdnjs.cloudflare.com/ajax/libs/nedb/0.10.0/nedb.min.js",
+      "0.10.1": "https://cdnjs.cloudflare.com/ajax/libs/nedb/0.10.1/nedb.min.js",
+      "0.10.2": "https://cdnjs.cloudflare.com/ajax/libs/nedb/0.10.2/nedb.min.js",
+      "0.10.3": "https://cdnjs.cloudflare.com/ajax/libs/nedb/0.10.3/nedb.min.js",
+      "0.10.4": "https://cdnjs.cloudflare.com/ajax/libs/nedb/0.10.4/nedb.min.js",
+      "0.10.5": "https://cdnjs.cloudflare.com/ajax/libs/nedb/0.10.5/nedb.min.js",
+      "0.10.6": "https://cdnjs.cloudflare.com/ajax/libs/nedb/0.10.6/nedb.min.js",
+      "0.10.7": "https://cdnjs.cloudflare.com/ajax/libs/nedb/0.10.7/nedb.min.js",
+      "0.10.9": "https://cdnjs.cloudflare.com/ajax/libs/nedb/0.10.9/nedb.min.js",
+      "0.10.10": "https://cdnjs.cloudflare.com/ajax/libs/nedb/0.10.10/nedb.min.js",
+      "0.10.11": "https://cdnjs.cloudflare.com/ajax/libs/nedb/0.10.11/nedb.min.js",
+      "0.11.0": "https://cdnjs.cloudflare.com/ajax/libs/nedb/0.11.0/nedb.min.js",
+      "0.11.1": "https://cdnjs.cloudflare.com/ajax/libs/nedb/0.11.1/nedb.min.js",
+      "0.11.2": "https://cdnjs.cloudflare.com/ajax/libs/nedb/0.11.2/nedb.min.js",
+      "1.0.0": "https://cdnjs.cloudflare.com/ajax/libs/nedb/1.0.0/nedb.min.js",
+      "1.0.1": "https://cdnjs.cloudflare.com/ajax/libs/nedb/1.0.1/nedb.min.js",
+      "1.0.2": "https://cdnjs.cloudflare.com/ajax/libs/nedb/1.0.2/nedb.min.js",
+      "1.1.0": "https://cdnjs.cloudflare.com/ajax/libs/nedb/1.1.0/nedb.min.js",
+      "1.1.1": "https://cdnjs.cloudflare.com/ajax/libs/nedb/1.1.1/nedb.min.js",
+      "1.1.2": "https://cdnjs.cloudflare.com/ajax/libs/nedb/1.1.2/nedb.min.js",
+      "1.1.3": "https://cdnjs.cloudflare.com/ajax/libs/nedb/1.1.3/nedb.min.js",
+      "1.1.4": "https://cdnjs.cloudflare.com/ajax/libs/nedb/1.1.4/nedb.min.js",
+      "1.2.0": "https://cdnjs.cloudflare.com/ajax/libs/nedb/1.2.0/nedb.min.js",
+      "1.2.1": "https://cdnjs.cloudflare.com/ajax/libs/nedb/1.2.1/nedb.min.js",
+      "1.3.0": "https://cdnjs.cloudflare.com/ajax/libs/nedb/1.3.0/nedb.min.js",
+      "1.4.0": "https://cdnjs.cloudflare.com/ajax/libs/nedb/1.4.0/nedb.min.js",
+      "1.5.0": "https://cdnjs.cloudflare.com/ajax/libs/nedb/1.5.0/nedb.min.js",
+      "1.5.1": "https://cdnjs.cloudflare.com/ajax/libs/nedb/1.5.1/nedb.min.js",
+      "1.6.0": "https://cdnjs.cloudflare.com/ajax/libs/nedb/1.6.0/nedb.min.js",
+      "1.6.1": "https://cdnjs.cloudflare.com/ajax/libs/nedb/1.6.1/nedb.min.js",
+      "1.6.2": "https://cdnjs.cloudflare.com/ajax/libs/nedb/1.6.2/nedb.min.js",
+      "1.7.1": "https://cdnjs.cloudflare.com/ajax/libs/nedb/1.7.1/nedb.min.js",
+      "1.7.2": "https://cdnjs.cloudflare.com/ajax/libs/nedb/1.7.2/nedb.min.js",
+      "1.7.3": "https://cdnjs.cloudflare.com/ajax/libs/nedb/1.7.3/nedb.min.js",
+      "1.7.4": "https://cdnjs.cloudflare.com/ajax/libs/nedb/1.7.4/nedb.min.js",
+      "1.8.0": "https://cdnjs.cloudflare.com/ajax/libs/nedb/1.8.0/nedb.min.js"
+    },
+    "tree": {
+      "Nedb": {
+        "length": [
+          [0, 47],
+          [49, 53]
+        ],
+        "name": [
+          [0, 47],
+          [49, 53]
+        ],
+        "arguments": [
+          [0, 47],
+          [49, 53]
+        ],
+        "caller": [
+          [0, 47],
+          [49, 53]
+        ],
+        "prototype": [
+          [0, 47],
+          [49, 53]
+        ],
+        "super_": [[49, 53]]
+      }
+    }
+  },
+  "nprogress": {
+    "src": {
+      "0.1.2": "https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.1.2/nprogress.min.js",
+      "0.1.3": "https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.1.3/nprogress.min.js",
+      "0.1.4": "https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.1.4/nprogress.min.js",
+      "0.1.5": "https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.1.5/nprogress.min.js",
+      "0.1.6": "https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.1.6/nprogress.min.js",
+      "0.2.0": "https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"
+    },
+    "tree": {
+      "NProgress": {
+        "version": [[0, 5]],
+        "settings": [[0, 5]],
+        "configure": [[0, 5]],
+        "status": [[0, 5]],
+        "set": [[0, 5]],
+        "isStarted": [[0, 5]],
+        "start": [[0, 5]],
+        "done": [[0, 5]],
+        "inc": [[0, 5]],
+        "trickle": [[0, 5]],
+        "render": [[0, 5]],
+        "remove": [[0, 5]],
+        "isRendered": [[0, 5]],
+        "getPositioningCSS": [[0, 5]],
+        "promise": [[1, 5]]
+      }
+    }
   }
 }
