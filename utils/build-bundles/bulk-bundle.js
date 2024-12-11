@@ -4,7 +4,11 @@ import fetch from 'npm-registry-fetch';
 import path from 'path';
 import util from 'util';
 
-const TARGET_PACKAGE = 'is-number';
+// TODO : Support libraries with dependencies
+
+const TARGET_PACKAGE = 'is-number'; // available name in https://www.npmjs.com/
+const TARGET_BUNDLER = 'all'; // all | esbuild | webpack | rollup | vite | parcel
+const TARGET_VERSIONS = undefined; // undefined | array of versions like ['1.0.0', '2.0.0']
 
 const execPromise = util.promisify(exec);
 
@@ -14,7 +18,7 @@ const getVersions = async (packageName) => {
 };
 
 const bulkBundle = async () => {
-  const versions = await getVersions(TARGET_PACKAGE);
+  const versions = TARGET_VERSIONS ?? (await getVersions(TARGET_PACKAGE));
 
   for (const version of versions) {
     try {
@@ -23,7 +27,7 @@ const bulkBundle = async () => {
       await execPromise(`npm install ${TARGET_PACKAGE}@${version}`);
       console.log(`Installed ${TARGET_PACKAGE}@${version}`);
 
-      await execPromise('npm run build:all');
+      await execPromise(`npm run build:${TARGET_BUNDLER}`);
       console.log(`Build completed for ${TARGET_PACKAGE}@${version}`);
 
       const distFolder = path.resolve('dist');
