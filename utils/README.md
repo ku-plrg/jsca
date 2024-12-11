@@ -30,5 +30,5 @@ npx serve
 ![screenshots](assets/screenshot.png)
 
 - scripts from [cdnjs](https://cdnjs.com/)
-- scripts from build-bundles/build
+- scripts from build-bundles/build (e.g. `/build-bundles/build/esbuild/out.js`)
 
