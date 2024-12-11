@@ -1,4 +1,20 @@
-## Run
+## Build Bundles
+
+```
+cd build-bundles
+```
+
+```
+npm install
+```
+
+```
+npm run build:all
+```
+
+
+
+## Run Script Test Page
 
 ```
 npm start
@@ -10,6 +26,9 @@ npx serve
 
 `http://localhost:3000/script-test-page`
 
-Use test pages with CDN scripts imported (for extension test)
 
 ![screenshots](assets/screenshot.png)
+
+- scripts from [cdnjs](https://cdnjs.com/)
+- scripts from build-bundles/build
+
