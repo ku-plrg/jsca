@@ -8,7 +8,7 @@ or
 npx serve
 ```
 
-`http://localhost:3000/cdn-test-page`
+`http://localhost:3000/script-test-page`
 
 Use test pages with CDN scripts imported (for extension test)
 
