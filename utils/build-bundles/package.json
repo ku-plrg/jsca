@@ -15,8 +15,8 @@
     "build:vite-esbuild": "vite build --config configs/vite.esbuild.config.js",
     "build:vite-terser": "vite build --config configs/vite.terser.config.js",
     "build:parcel": "npm run build:parcel-swc && npm run build:parcel-terser",
-    "build:parcel-swc": "parcel build src/app.js --dist-dir build/parcel-swc",
-    "build:parcel-terser": "parcel build src/app.js --dist-dir build/parcel-terser --config ./configs/.parcelrc",
+    "build:parcel-swc": "parcel build src/app.js --dist-dir dist/parcel-swc",
+    "build:parcel-terser": "parcel build src/app.js --dist-dir dist/parcel-terser --config ./configs/.parcelrc",
     "build:all": "npm run build:esbuild && npm run build:webpack && npm run build:rollup && npm run build:vite && npm run build:parcel"
   },
   "author": "",

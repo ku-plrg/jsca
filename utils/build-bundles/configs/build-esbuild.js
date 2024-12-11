@@ -8,7 +8,7 @@ esbuild
     minify: true,
     sourcemap: true,
     target: ['chrome58', 'firefox57', 'safari11', 'edge16'],
-    outfile: 'build/esbuild/out.js',
+    outfile: 'dist/esbuild/out.js',
     format: 'esm', // 'esm', 'cjs', 'iife
   })
   .catch(() => process.exit(1));

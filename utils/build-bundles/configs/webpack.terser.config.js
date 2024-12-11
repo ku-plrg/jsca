@@ -6,7 +6,7 @@ module.exports = {
   entry: './src/app.js',
   output: {
     filename: 'out.js',
-    path: path.resolve(__dirname, '../build/webpack-terser'),
+    path: path.resolve(__dirname, '../dist/webpack-terser'),
     library: {
       type: 'module',
     },

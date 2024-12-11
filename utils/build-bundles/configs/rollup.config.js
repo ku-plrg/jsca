@@ -7,7 +7,7 @@ import { minify } from 'rollup-plugin-esbuild';
 export default {
   input: 'src/app.js',
   output: {
-    file: 'build/rollup/out.js',
+    file: 'dist/rollup/out.js',
     format: 'es', // amd cjs es iife umd system
     sourcemap: true,
   },
