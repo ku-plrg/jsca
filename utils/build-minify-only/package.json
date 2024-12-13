@@ -1,0 +1,26 @@
+{
+  "name": "build-minify-only",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:all": "npm run build:terser && npm run build:uglify-js && npm run build:esbuild && npm run build:babel-minify && npm run build:swc",
+    "build:terser": "terser $npm_config_filename -o dist/terser/$npm_config_filename --mangle --mangle-props",
+    "build:uglify-js": "cross-env OUTPUT_FILE=dist/uglify-js/${npm_config_filename:-index.js} sh -c 'mkdir -p $(dirname $OUTPUT_FILE) && uglifyjs ${npm_config_filename:-input.js} -o $OUTPUT_FILE --mangle'",
+    "build:esbuild": "esbuild $npm_config_filename --bundle --minify --outfile=dist/esbuild/$npm_config_filename",
+    "build:babel-minify": "cross-env OUTPUT_FILE=dist/babel-minify/${npm_config_filename:-index.js} sh -c 'mkdir -p $(dirname $OUTPUT_FILE) && minify ${npm_config_filename:-input.js} -o $OUTPUT_FILE --mangle true'",
+    "build:swc": "swc $npm_config_filename --out-file dist/swc/$npm_config_filename"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@swc/cli": "0.5.2",
+    "@swc/core": "1.10.1",
+    "babel-minify": "0.5.2",
+    "cross-env": "7.0.3",
+    "esbuild": "0.24.0",
+    "terser": "5.37.0",
+    "uglify-js": "3.19.3"
+  }
+}
