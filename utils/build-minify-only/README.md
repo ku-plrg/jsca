@@ -10,3 +10,12 @@
 npm run build:all --filename=test.js
 ```
 
+## Bulk-Minify
+
+### In `bulk-minify.js`, Set `TARGET_PACKAGE` and `TARGET_MINIFIER`
+
+### Run the command
+
+```
+node bulk-minify.js
+```
