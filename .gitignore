@@ -135,3 +135,8 @@ dist
 # build
 build
 dist
+
+# utils/license-crawler
+utils/license-crawler/data
+utils/license-crawler/results
+utils/license-crawler/error-log.txt
