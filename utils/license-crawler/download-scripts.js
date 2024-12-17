@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
-const url = require('url');
+const { URL } = require('url');
 const {
   logError,
   truncateFileName,
@@ -34,7 +34,10 @@ async function downloadScripts(targetUrl, rootFolder = 'data') {
   });
 
   console.log(`Navigating to ${targetUrl}`);
-  await page.goto(targetUrl, { waitUntil: 'networkidle0' });
+  const reachableUrl = new URL(
+    targetUrl.startsWith('http') ? targetUrl : `https://${targetUrl}`
+  );
+  await page.goto(reachableUrl, { waitUntil: 'networkidle0' });
 
   const preloadScripts = await page.evaluate(() => {
     const links = [
@@ -46,8 +49,7 @@ async function downloadScripts(targetUrl, rootFolder = 'data') {
 
   preloadScripts.forEach((scriptUrl) => jsFiles.add(scriptUrl));
 
-  const parsedUrl = url.parse(targetUrl);
-  const domainFolder = path.join(rootFolder, parsedUrl.hostname);
+  const domainFolder = path.join(rootFolder, reachableUrl.host);
 
   if (!fs.existsSync(domainFolder)) {
     fs.mkdirSync(domainFolder, { recursive: true });
