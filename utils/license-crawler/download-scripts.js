@@ -2,11 +2,16 @@ const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
 const url = require('url');
-const { logError, truncateFileName } = require('./utils');
+const {
+  logError,
+  truncateFileName,
+  processChunks,
+  chunkArray,
+} = require('./utils');
 
 const TARGET_URLS = [
   /* put urls here */
-  'www.youtube.com',
+  'https://www.youtube.com/',
 ];
 
 const CHUNK_SIZE = 2;

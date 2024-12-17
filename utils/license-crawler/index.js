@@ -22,7 +22,11 @@ function analyzeFile(targetDirectory) {
   });
 
   result['all'] = [
-    ...new Set(Object.keys(result).flatMap((key) => result[key])),
+    ...new Set(
+      Object.keys(result).flatMap((key) =>
+        result[key].flatMap((v) => v.split('\n'))
+      )
+    ),
   ];
 
   const resultFolder = 'results';
