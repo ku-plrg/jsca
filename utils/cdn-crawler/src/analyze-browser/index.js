@@ -39,6 +39,10 @@ const targets = [
   'tocas-ui',
   'nprogress',
   'nedb',
+  'underscore.js',
+  'ionic',
+  'hammer.js',
+  'google-closure-library',
 ];
 
 const filename = `data/allTree.json`;
