@@ -10698,7 +10698,8 @@ const detect = () => {
       for (const version in matched) {
         const count = matched[version];
         const score = (count / all[version]).toFixed(5);
-        if (score > 0) {
+        if (score > 0.5) {
+          // 임의의 threshold
           scores.push({
             version,
             count,
