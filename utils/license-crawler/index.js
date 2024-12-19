@@ -3,11 +3,14 @@ const { getFilesRecursively } = require('./utils');
 
 function extractLicenseComments(filePath) {
   const fileContent = fs.readFileSync(filePath, 'utf8');
-  const commentRegex = /\/\*\*(?:.|\n)*?\*\//g; // 여러 줄 및 한 줄 주석
-  const licenseRegex = /(license|copyright)/i; // 라이선스/저작권 관련 필터
+  const commentRegex = /\/\*(?:.|\n)*?\*\//g;
+  const licenseRegex = /(license|copyright)/i;
 
   const comments = fileContent.match(commentRegex) || [];
-  return comments.filter((comment) => licenseRegex.test(comment.toLowerCase()));
+  return comments.filter(
+    (comment) =>
+      licenseRegex.test(comment.toLowerCase()) && comment.length < 500
+  );
 }
 
 function analyzeFile(targetDirectory) {
