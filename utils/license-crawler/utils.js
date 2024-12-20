@@ -11,17 +11,15 @@ function chunkArray(array, size) {
   return chunks;
 }
 
-async function processChunks(chunks, asyncFunc) {
+async function processChunks(chunks, asyncFunc, asyncFuncFallback) {
   for (const chunk of chunks) {
     await Promise.all(
       chunk.map((url) =>
-        asyncFunc(url).catch((err) => {
-          const errorMessage = `Error processing URL "${url}": ${
-            err.message || err
-          }`;
-          logError(errorMessage);
-
-          return null;
+        asyncFunc(url).catch((err1) => {
+          asyncFuncFallback(url).catch((err2) => {
+            logError(`Error processing URL "${url}": ${err2.message || err2}`);
+            return null;
+          });
         })
       )
     );
@@ -43,23 +41,23 @@ function getFilesRecursively(dir, fileList = []) {
     const fullPath = path.join(dir, file);
     if (fs.statSync(fullPath).isDirectory()) {
       getFilesRecursively(fullPath, fileList);
-    } else if (fullPath.endsWith(fileExtension)) {
+    } else {
       fileList.push(fullPath);
     }
   }
   return fileList;
 }
 
-const MAX_LENGTH = 255;
-
 // To prevent `ENAMETOOLONG`
-function truncateFileName(fileName) {
-  const fileExtension = path.extname(fileName);
-  const baseName = path.basename(fileName, fileExtension);
 
-  if (baseName.length > MAX_LENGTH - fileExtension.length) {
-    return baseName.slice(0, MAX_LENGTH - fileExtension.length) + fileExtension;
-  }
+const MAX_LENGTH = 230;
+
+function truncateFileName(fileName) {
+  const ext = fileName.endsWith('.js') ? '.js' : '';
+  const baseName = fileName.slice(0, -ext.length - 1);
+
+  if (baseName.length > MAX_LENGTH - ext.length)
+    return baseName.slice(0, MAX_LENGTH - ext.length) + ext;
 
   return fileName;
 }
