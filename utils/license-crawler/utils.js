@@ -1,40 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 
-const logFilePath = path.join(__dirname, 'error-log.txt');
-
-function chunkArray(array, size) {
-  const chunks = [];
-  for (let i = 0; i < array.length; i += size) {
-    chunks.push(array.slice(i, i + size));
-  }
-  return chunks;
-}
-
-async function processChunks(chunks, asyncFunc, asyncFuncFallback) {
-  for (const chunk of chunks) {
-    await Promise.all(
-      chunk.map((url) =>
-        asyncFunc(url).catch((err1) => {
-          asyncFuncFallback(url).catch((err2) => {
-            logError(`Error processing URL "${url}": ${err2.message || err2}`);
-            return null;
-          });
-        })
-      )
-    );
-  }
-}
-
-function logError(msg) {
-  console.error(msg);
-  fs.appendFile(logFilePath, msg + '\n', (fsErr) => {
-    if (fsErr) console.error('Failed to write to log file:', fsErr);
-  });
-}
-
-const fileExtension = '.js';
-
 function getFilesRecursively(dir, fileList = []) {
   const files = fs.readdirSync(dir);
   for (const file of files) {
@@ -48,24 +14,46 @@ function getFilesRecursively(dir, fileList = []) {
   return fileList;
 }
 
-// To prevent `ENAMETOOLONG`
+function extractLicenseComments(filePath) {
+  const fileContent = fs.readFileSync(filePath, 'utf8');
+  const commentRegex = /\/\*(?:.|\n)*?\*\//g;
+  const licenseRegex = /(license|copyright)/i;
 
-const MAX_LENGTH = 230;
+  const comments = fileContent.match(commentRegex) || [];
+  return comments.filter(
+    (comment) =>
+      licenseRegex.test(comment.toLowerCase()) && comment.length < 500
+  );
+}
 
-function truncateFileName(fileName) {
-  const ext = fileName.endsWith('.js') ? '.js' : '';
-  const baseName = fileName.slice(0, -ext.length - 1);
+function analyzeFile(targetDirectory) {
+  const allJsFiles = getFilesRecursively(targetDirectory);
+  const result = {};
 
-  if (baseName.length > MAX_LENGTH - ext.length)
-    return baseName.slice(0, MAX_LENGTH - ext.length) + ext;
+  allJsFiles.forEach((filePath) => {
+    const licenseComments = extractLicenseComments(filePath);
+    if (licenseComments.length > 0) {
+      result[filePath] = [...new Set(licenseComments)];
+    }
+  });
 
-  return fileName;
+  result['all'] = [
+    ...new Set(
+      Object.keys(result).flatMap((key) =>
+        result[key].flatMap((v) => v.split('\n'))
+      )
+    ),
+  ];
+
+  const resultFolder = 'results';
+  fs.mkdirSync(resultFolder, { recursive: true });
+
+  fs.writeFileSync(
+    `${resultFolder}/${targetDirectory.split('/').at(-1)}.json`,
+    JSON.stringify(result, null, 2)
+  );
 }
 
 module.exports = {
-  chunkArray,
-  processChunks,
-  logError,
-  getFilesRecursively,
-  truncateFileName,
+  analyzeFile,
 };

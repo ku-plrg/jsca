@@ -140,3 +140,7 @@ dist
 utils/license-crawler/data
 utils/license-crawler/results
 utils/license-crawler/error-log.txt
+
+# utils/website-crawler
+utils/website-crawler/data
+utils/website-crawler/error-log.txt
