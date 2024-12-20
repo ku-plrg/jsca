@@ -144,3 +144,8 @@ utils/license-crawler/error-log.txt
 # utils/website-crawler
 utils/website-crawler/data
 utils/website-crawler/error-log.txt
+
+# utils/dynamic-analysis
+utils/dynamic-analysis/log.txt
+utils/dynamic-analysis/output.json
+utils/dynamic-analysis/output-func.json
