@@ -1,8 +1,5 @@
-const fs = require('fs');
 const acorn = require('acorn');
 const walk = require('acorn-walk');
-
-const testCode = fs.readFileSync('test.js', 'utf-8');
 
 function extractFunctions(code) {
   try {
@@ -14,17 +11,15 @@ function extractFunctions(code) {
       onComment: false, // Don't include comments
       allowReserved: true, // Allow reserved words
     });
-    // Object to store analysis results
-    const analysis = {
-      functions: {},
-      anonymousCounter: 0,
-    };
 
+    const functions = {};
+
+    let anonymousCounter = 0;
     function getUniqueFunctionName(node) {
       // For null/anonymous functions
       if (!node.id) {
-        analysis.anonymousCounter++;
-        return `anonymous_${analysis.anonymousCounter}`;
+        anonymousCounter++;
+        return `anonymous_${anonymousCounter}`;
       }
 
       // For existing names
@@ -32,7 +27,7 @@ function extractFunctions(code) {
       let uniqueName = baseName;
       let counter = 1;
 
-      while (uniqueName in analysis.functions) {
+      while (uniqueName in functions) {
         uniqueName = `${baseName}_${counter}`;
         counter++;
       }
@@ -43,7 +38,7 @@ function extractFunctions(code) {
     walk.simple(ast, {
       FunctionDeclaration(node) {
         const functionName = getUniqueFunctionName(node);
-        analysis.functions[functionName] = {
+        functions[functionName] = {
           name: functionName,
           params: node.params.map((p) => p.name),
           location: node.loc,
@@ -55,7 +50,7 @@ function extractFunctions(code) {
     walk.simple(ast, {
       FunctionExpression(node) {
         const functionName = getUniqueFunctionName(node);
-        analysis.functions[functionName] = {
+        functions[functionName] = {
           name: functionName,
           params: node.params.map((p) => p.name),
           location: node.loc,
@@ -63,7 +58,10 @@ function extractFunctions(code) {
         };
       },
     });
-    return analysis;
+    return {
+      success: true,
+      functions,
+    };
   } catch (error) {
     return {
       success: false,
@@ -73,20 +71,4 @@ function extractFunctions(code) {
   }
 }
 
-function analyzeJSFile(code) {
-  const result = extractFunctions(code);
-
-  const analysis = result;
-
-  console.log('\nFunctions:', Object.keys(analysis.functions).length);
-
-  Object.entries(analysis.functions).forEach(([name, fn]) => {
-    console.log(`\n📎 Function: ${name}(${fn.params.join(', ')})`);
-    console.log(
-      '  Location:',
-      `Line ${fn.location.start.line}-${fn.location.end.line}`
-    );
-  });
-}
-
-analyzeJSFile(testCode);
+module.exports = extractFunctions;
