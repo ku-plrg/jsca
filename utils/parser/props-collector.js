@@ -92,18 +92,25 @@ function makePropstree(func) {
       withContext(logicNode.paths.right, () => c(node.right, state));
     },
 
-    MemberExpression(node, state) {
+    MemberExpression(node, state, c) {
       if (node.property && node.property.type === 'Identifier') {
         currentContext.props.push(node.property.name);
       } else if (node.property && node.property.type === 'Literal') {
         currentContext.props.push(node.property.value.toString());
       }
+      //  TODO: some missing cases
+      //  else {
+      //   console.log('Unknown member expression:', node);
+      //   currentContext.props.push('unknown');
+      // }
+      walk.base[node.type](node, state, c);
     },
   };
 
   // Start the recursive walk
   walk.recursive(func.body, {}, visitors);
 
+  //   Clean up the tree by removing empty children and props for better visualization
   //   const cleanupTree = (node) => {
   //     if (node.children && node.children.length === 0) {
   //       delete node.children;
