@@ -1,8 +1,5 @@
 const acorn = require('acorn');
 const walk = require('acorn-walk');
-const escodegen = require('escodegen');
-const fs = require('fs');
-const path = require('path');
 
 function extractFunctions(code) {
   try {
@@ -27,26 +24,9 @@ function extractFunctions(code) {
       return `${startLine}_${node.id.name}`;
     }
 
-    function logFunctionCode(node, functionName) {
-      // Generate code for the function node
-      const functionCode = escodegen.generate(node, {
-        format: { indent: { style: '  ' } },
-      });
-      const outputDir = path.join(__dirname, 'functions');
-      fs.mkdirSync(outputDir, { recursive: true });
-      fs.writeFileSync(
-        path.join(outputDir, `${functionName}.js`),
-        functionCode,
-        'utf-8'
-      );
-      return functionCode;
-    }
-
     function recordFunction(node) {
       const functionName = getUniqueFunctionName(node);
-      logFunctionCode(node, functionName);
       functions[functionName] = {
-        name: functionName,
         params: node.params.map((p) => p.name),
         body: node.body,
       };

@@ -2,18 +2,17 @@ const fs = require('fs');
 const path = require('path');
 const { exec } = require('child_process');
 
-function createDotGraph(tree, outputPath, functionName) {
+function formatProps(props) {
+  if (!props || props.length === 0) return '[]';
+  return `[${props.join(', ')}]`;
+}
+function generateDotContent(tree, functionName, fileName) {
   let nodeId = 0;
   const getNextId = () => `node${nodeId++}`;
 
   let dot = 'digraph G {\n';
   dot += `  label="Function: ${functionName}";\n`;
   dot += '  node [shape=box, style=rounded];\n';
-
-  function formatProps(props) {
-    if (!props || props.length === 0) return '[]';
-    return `[${props.join(', ')}]`;
-  }
 
   function processBranch(node, parentId = null) {
     const currentId = getNextId();
@@ -46,17 +45,14 @@ function createDotGraph(tree, outputPath, functionName) {
 
     // Process children
     if (node.children) {
-      for (const child of node.children) {
-        processBranch(child, currentId);
-      }
+      node.children.forEach((child) => processBranch(child, currentId));
     }
   }
 
   processBranch(tree);
   dot += '}';
 
-  // Create output directory if it doesn't exist
-  const outputDir = path.join(outputPath, 'function-trees');
+  const outputDir = path.join(__dirname, 'logs', 'function-trees', fileName);
   if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir, { recursive: true });
   }
@@ -71,10 +67,19 @@ function createDotGraph(tree, outputPath, functionName) {
   exec(`dot -Tpng ${dotPath} -o ${pngPath}`, (error) => {
     if (error) {
       console.error(`Error generating graph for ${functionName}:`, error);
-    } else {
-      console.log(`Graph for ${functionName} saved to ${pngPath}`);
     }
   });
+}
+
+function createDotGraph(functions, fileName) {
+  try {
+    return Object.entries(functions).map(([name, func]) => {
+      const tree = func.proptree;
+      generateDotContent(tree, name, fileName);
+    });
+  } catch (error) {
+    console.error('Error creating dot graph:', error);
+  }
 }
 
 module.exports = createDotGraph;

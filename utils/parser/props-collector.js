@@ -1,6 +1,4 @@
 const walk = require('acorn-walk');
-const createDotGraph = require('./graph-visualize');
-const path = require('path');
 
 function makePropstree(func) {
   // Track the current path we're analyzing
@@ -108,7 +106,7 @@ function makePropstree(func) {
   };
 
   // Start the recursive walk
-  walk.recursive(func.body, {}, visitors);
+  walk.recursive(func, {}, visitors);
 
   //   Clean up the tree by removing empty children and props for better visualization
   //   const cleanupTree = (node) => {
@@ -128,21 +126,19 @@ function makePropstree(func) {
   //     }
   //   };
 
-  //   cleanupTree(rootTree);
-
-  const outputDir = path.dirname(require.main.filename);
-  createDotGraph(rootTree, outputDir, func.name);
+  //   cleanupTree(rootTree);s
 
   return rootTree;
 }
 
-function collectProps(func) {
-  const functions = {
-    name: func.name,
-    param: func.params,
-    proptree: makePropstree(func),
-  };
-  return functions;
+function collectProps(functions) {
+  return Object.entries(functions).reduce((acc, [name, func]) => {
+    acc[name] = {
+      params: func.params,
+      proptree: makePropstree(func.body),
+    };
+    return acc;
+  }, {});
 }
 
 module.exports = collectProps;
