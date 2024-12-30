@@ -1,5 +1,8 @@
 const acorn = require('acorn');
 const walk = require('acorn-walk');
+const escodegen = require('escodegen');
+const fs = require('fs');
+const path = require('path');
 
 function extractFunctions(code) {
   try {
@@ -13,49 +16,48 @@ function extractFunctions(code) {
     });
 
     const functions = {};
-
     let anonymousCounter = 0;
+
     function getUniqueFunctionName(node) {
-      // For null/anonymous functions
+      const startLine = node.loc.start.line;
       if (!node.id) {
         anonymousCounter++;
-        return `anonymous_${anonymousCounter}`;
+        return `${startLine}_anonymous_${anonymousCounter}`;
       }
+      return `${startLine}_${node.id.name}`;
+    }
 
-      // For existing names
-      let baseName = node.id.name;
-      let uniqueName = baseName;
-      let counter = 1;
+    function logFunctionCode(node, functionName) {
+      // Generate code for the function node
+      const functionCode = escodegen.generate(node, {
+        format: { indent: { style: '  ' } },
+      });
+      const outputDir = path.join(__dirname, 'functions');
+      fs.mkdirSync(outputDir, { recursive: true });
+      fs.writeFileSync(
+        path.join(outputDir, `${functionName}.js`),
+        functionCode,
+        'utf-8'
+      );
+      return functionCode;
+    }
 
-      while (uniqueName in functions) {
-        uniqueName = `${baseName}_${counter}`;
-        counter++;
-      }
-
-      return uniqueName;
+    function recordFunction(node) {
+      const functionName = getUniqueFunctionName(node);
+      logFunctionCode(node, functionName);
+      functions[functionName] = {
+        name: functionName,
+        params: node.params.map((p) => p.name),
+        body: node.body,
+      };
     }
 
     walk.simple(ast, {
       FunctionDeclaration(node) {
-        const functionName = getUniqueFunctionName(node);
-        functions[functionName] = {
-          name: functionName,
-          params: node.params.map((p) => p.name),
-          location: node.loc,
-          body: node.body,
-        };
+        recordFunction(node);
       },
-    });
-
-    walk.simple(ast, {
       FunctionExpression(node) {
-        const functionName = getUniqueFunctionName(node);
-        functions[functionName] = {
-          name: functionName,
-          params: node.params.map((p) => p.name),
-          location: node.loc,
-          body: node.body,
-        };
+        recordFunction(node);
       },
     });
     return {
@@ -66,7 +68,6 @@ function extractFunctions(code) {
     return {
       success: false,
       error: error.message,
-      location: error.loc,
     };
   }
 }

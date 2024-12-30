@@ -140,7 +140,6 @@ function collectProps(func) {
   const functions = {
     name: func.name,
     param: func.params,
-    location: func.loc,
     proptree: makePropstree(func),
   };
   return functions;
