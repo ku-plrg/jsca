@@ -97,12 +97,6 @@ function makePropstree(func) {
         node.property.type === 'Identifier'
       ) {
         currentContext.props.push(node.property.name);
-      } else if (
-        !node.computed &&
-        node.property &&
-        node.property.type === 'Literal'
-      ) {
-        currentContext.props.push(node.property.value.toString());
       }
       //  TODO: some missing cases
       //  else {
