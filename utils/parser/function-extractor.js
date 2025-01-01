@@ -24,11 +24,34 @@ function extractFunctions(code) {
       return `${startLine}_${node.id.name}`;
     }
 
+    function stripFunctions(node) {
+      if (!node) return node;
+
+      // Replace function declarations/expressions with empty statements
+      if (
+        node.type === 'FunctionDeclaration' ||
+        node.type === 'FunctionExpression'
+      ) {
+        return {
+          type: 'EmptyStatement',
+        };
+      }
+
+      // Recursively process all properties
+      Object.keys(node).forEach((key) => {
+        if (typeof node[key] === 'object') {
+          node[key] = stripFunctions(node[key]);
+        }
+      });
+
+      return node;
+    }
+
     function recordFunction(node) {
       const functionName = getUniqueFunctionName(node);
       functions[functionName] = {
         params: node.params.map((p) => p.name),
-        body: node.body,
+        body: stripFunctions(node.body),
       };
     }
 
