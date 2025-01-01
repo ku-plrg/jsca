@@ -13,6 +13,7 @@ const code2 = fs.readFileSync(`./${file2}`, 'utf-8');
 const functions = extractFunctions(code).functions;
 console.log('function_count:', Object.keys(functions).length);
 const functions2 = extractFunctions(code2).functions;
+console.log('function_count:', Object.keys(functions2).length);
 
 logFunctionCode(functions, file1);
 logFunctionCode(functions2, file2);
@@ -20,8 +21,12 @@ logFunctionCode(functions2, file2);
 const proptree = collectProps(functions);
 const proptree2 = collectProps(functions2);
 
-createDotGraph(proptree, file1);
-createDotGraph(proptree2, file2);
+// createDotGraph(proptree, file1);
+// createDotGraph(proptree2, file2);
 
-// // TODO: add series
-// const result = functionComparator(proptree, proptree2);
+// TODO: add series
+const result = functionComparator(proptree, proptree2);
+console.log('result1:', result.differentTrees1.length);
+console.log(JSON.stringify(result.differentTrees1, null, 2));
+console.log('result2:', result.differentTrees2.length);
+console.log(JSON.stringify(result.differentTrees2, null, 2));
