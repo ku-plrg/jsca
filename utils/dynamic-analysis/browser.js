@@ -34,6 +34,14 @@ function getFullDepthVariableTree() {
         children: [],
       };
     }
+    if (name === 'prototype' || name === 'constructor') {
+      return {
+        propertyName: name,
+        type: typeof variable,
+        value: 'Prototype/Constructor',
+        children: [],
+      };
+    }
 
     if (typeof variable === 'object' || typeof variable === 'function') {
       console.log('<div>start collect children:', variablePath);
@@ -60,7 +68,6 @@ function getFullDepthVariableTree() {
         children,
       };
     }
-    console.log('hi');
     return {
       propertyName: name,
       type: typeof variable,
@@ -76,7 +83,7 @@ function getFullDepthVariableTree() {
       gv !== 'getFullDepthVariableTree'
   );
 
-  console.log('vbs', JSON.stringify(variablesByScripts));
+  // console.log('vbs', JSON.stringify(variablesByScripts));
 
   const tree = variablesByScripts.map((variable) =>
     traverse(`${variable}`, variable)

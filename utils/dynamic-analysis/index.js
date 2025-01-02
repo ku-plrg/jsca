@@ -22,7 +22,11 @@ const scriptPath = SCRIPT_PATH.startsWith('http')
 function flattenFunctionNodes(node) {
   const results = [];
   function traverse(node, path = '') {
-    if (node.type === 'function' && !node.value.startsWith('Cyclic')) {
+    if (
+      node.type === 'function' &&
+      !node.value.startsWith('Cyclic') &&
+      !node.value.startsWith('Prototype/Constructor')
+    ) {
       results.push({
         name: `${path}${node.propertyName}`,
         body: node.value,
@@ -52,4 +56,5 @@ function flattenFunctionNodes(node) {
     .reduce((acc, cur) => [...acc, flattenFunctionNodes(cur)], [])
     .flat();
   fs.writeFileSync(FUNC_OUTPUT_PATH, JSON.stringify(functions, null, 2));
+  console.log(`Done with ${functions.length} functions`);
 })();
