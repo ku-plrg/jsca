@@ -8,24 +8,26 @@ function compare(tree1, tree2) {
     return props1.every((prop, i) => prop === props2[i]);
   };
 
+  const getChild = (node) => {
+    const paths = node?.paths || {};
+    return {
+      left: paths.true || paths.left,
+      right: paths.false || paths.right,
+    };
+  };
+
   const comparePathNodes = (t1, t2) => {
-    if (t1.type !== t2.type) return false;
+    // if (t1.type !== t2.type) return false;
 
     // if (t1.type === 'logical' && t1.operator !== t2.operator) return false;
 
-    if (t1.type === 'if' || t1.type === 'conditional') {
-      return (
-        compareTree(t1.paths.true, t2.paths.true) &&
-        compareTree(t1.paths.false, t2.paths.false)
-      );
-    } else if (t1.type === 'logical') {
-      return (
-        compareTree(t1.paths.left, t2.paths.left) &&
-        compareTree(t1.paths.right, t2.paths.right)
-      );
-    }
+    const { left: left1, right: right1 } = getChild(t1, 'left');
+    const { left: left2, right: right2 } = getChild(t2, 'left');
 
-    return true;
+    return (
+      (compareTree(left1, left2) && compareTree(right1, right2)) ||
+      (compareTree(left1, right2) && compareTree(right1, left2))
+    );
   };
 
   const compareTree = (t1, t2) => {
@@ -52,7 +54,6 @@ function compare(tree1, tree2) {
   return compareTree(tree1, tree2);
 }
 
-module.exports = compare;
 function functionComparator(functions1, functions2) {
   const results = { differentTrees1: [], differentTrees2: [] };
 
