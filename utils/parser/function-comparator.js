@@ -1,4 +1,4 @@
-function compare(tree1, tree2) {
+function compare(tree1, tree2, options) {
   const sortArray = (arr) => [...(arr || [])].sort();
 
   const compareProps = (t1, t2) => {
@@ -17,17 +17,17 @@ function compare(tree1, tree2) {
   };
 
   const comparePathNodes = (t1, t2) => {
-    // if (t1.type !== t2.type) return false;
+    if (!options.node_type && t1.type !== t2.type) return false;
 
     // if (t1.type === 'logical' && t1.operator !== t2.operator) return false;
 
     const { left: left1, right: right1 } = getChild(t1, 'left');
     const { left: left2, right: right2 } = getChild(t2, 'left');
 
-    return (
-      (compareTree(left1, left2) && compareTree(right1, right2)) ||
-      (compareTree(left1, right2) && compareTree(right1, left2))
-    );
+    return options.order
+      ? (compareTree(left1, left2) && compareTree(right1, right2)) ||
+          (compareTree(left1, right2) && compareTree(right1, left2))
+      : compareTree(left1, left2) && compareTree(right1, right2);
   };
 
   const compareTree = (t1, t2) => {
@@ -54,7 +54,7 @@ function compare(tree1, tree2) {
   return compareTree(tree1, tree2);
 }
 
-function functionComparator(functions1, functions2) {
+function functionComparator(functions1, functions2, options) {
   const results = { differentTrees1: [], differentTrees2: [] };
 
   function makeTreeSet(functions) {
@@ -75,7 +75,7 @@ function functionComparator(functions1, functions2) {
     sourceSet.forEach((source) => {
       let hasMatch = false;
       targetSet.forEach((target) => {
-        if (compare(source.tree, target.tree)) hasMatch = true;
+        if (compare(source.tree, target.tree, options)) hasMatch = true;
       });
       if (!hasMatch) differences.push(source.name);
     });

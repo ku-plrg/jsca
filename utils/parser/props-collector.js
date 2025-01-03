@@ -1,27 +1,28 @@
 const walk = require('acorn-walk');
 
-function makePropstree(func) {
-  // Track the current path we're analyzing
-  const pathStack = [];
+function makePropstree(func, options) {
+  const rootTree = { props: [], children: [] };
 
-  // Root tree structure
-  const rootTree = {
-    props: [],
-    children: [],
-  };
-
-  // Current context for property collection
   let currentContext = rootTree;
+  const contextStack = [];
 
-  // Helper function to handle path changes
   const withContext = (newContext, callback) => {
     if (!newContext.children) newContext.children = [];
     if (!newContext.props) newContext.props = [];
-    pathStack.push(currentContext);
+    contextStack.push(currentContext);
     currentContext = newContext;
     callback();
-    currentContext = pathStack.pop();
+    currentContext = contextStack.pop();
   };
+
+  function containsReturn(node) {
+    if (!node) return false;
+    if (node.type === 'ReturnStatement') return true;
+    if (node.type === 'BlockStatement') {
+      return node.body.some(containsReturn);
+    }
+    return false;
+  }
 
   const visitors = {
     IfStatement(node, state, c) {
@@ -36,8 +37,11 @@ function makePropstree(func) {
 
       currentContext.children.push(ifNode);
 
-      // Handle condition
-      withContext(ifNode, () => c(node.test, state));
+      const hasRet = containsReturn(node.consequent);
+
+      options.if_condition
+        ? withContext(ifNode.paths.false, () => c(node.test, state))
+        : withContext(ifNode, () => c(node.test, state));
 
       // Handle true branch
       withContext(ifNode.paths.true, () => c(node.consequent, state));
@@ -45,6 +49,19 @@ function makePropstree(func) {
       // Handle false branch if it exists
       if (node.alternate) {
         withContext(ifNode.paths.false, () => c(node.alternate, state));
+      } else if (options.early_return && hasRet) {
+        const ancestors = state.ancestors;
+        const parentNode = ancestors[ancestors.length - 2];
+        if (parentNode && parentNode.type === 'BlockStatement') {
+          const idx = parentNode.body.indexOf(node);
+          if (idx !== -1) {
+            const subsequent = parentNode.body.slice(idx + 1);
+            parentNode.body.splice(idx + 1);
+            withContext(ifNode.paths.false, () => {
+              subsequent.forEach((stmt) => c(stmt, state));
+            });
+          }
+        }
       }
     },
 
@@ -91,53 +108,36 @@ function makePropstree(func) {
     },
 
     MemberExpression(node, state, c) {
-      if (
-        !node.computed &&
-        node.property &&
-        node.property.type === 'Identifier'
-      ) {
+      if (!node.computed && node.property?.type === 'Identifier') {
         currentContext.props.push(node.property.name);
       }
-      //  TODO: some missing cases
-      //  else {
-      //   console.log('Unknown member expression:', node);
-      //   currentContext.props.push('unknown');
-      // }
-      walk.base[node.type](node, state, c);
+
+      walk.base.MemberExpression(node, state, c);
     },
   };
-
-  // Start the recursive walk
-  walk.recursive(func, {}, visitors);
-
-  //   Clean up the tree by removing empty children and props for better visualization
-  //   const cleanupTree = (node) => {
-  //     if (node.children && node.children.length === 0) {
-  //       delete node.children;
-  //     }
-  //     if (node.props && node.props.length === 0) {
-  //       delete node.props;
-  //     }
-  //     if (node.paths) {
-  //       for (const path of Object.values(node.paths)) {
-  //         cleanupTree(path);
-  //       }
-  //     }
-  //     if (node.children) {
-  //       node.children.forEach(cleanupTree);
-  //     }
-  //   };
-
-  //   cleanupTree(rootTree);s
+  function myWalker(node, state, visitors) {
+    state.ancestors.push(node);
+    const visitor = visitors[node.type];
+    if (visitor) {
+      visitor(node, state, (child) => myWalker(child, state, visitors));
+    } else {
+      walk.base[node.type](node, state, (child) =>
+        myWalker(child, state, visitors)
+      );
+    }
+    state.ancestors.pop();
+  }
+  const state = { ancestors: [] };
+  myWalker(func, state, visitors);
 
   return rootTree;
 }
 
-function collectProps(functions) {
+function collectProps(functions, options) {
   return Object.entries(functions).reduce((acc, [name, func]) => {
     acc[name] = {
       params: func.params,
-      proptree: makePropstree(func.body),
+      proptree: makePropstree(func.body, options),
     };
     return acc;
   }, {});
