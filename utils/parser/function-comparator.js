@@ -55,7 +55,12 @@ function compare(tree1, tree2, options) {
 }
 
 function functionComparator(functions1, functions2, options) {
-  const results = { differentTrees1: [], differentTrees2: [] };
+  const results = {
+    differentTrees1: [],
+    differentTrees2: [],
+    distiguished1: [],
+    distiguished2: [],
+  };
 
   function makeTreeSet(functions) {
     const propOrderMap = Object.entries(functions).sort(
@@ -70,14 +75,18 @@ function functionComparator(functions1, functions2, options) {
     return treeSet;
   }
 
-  function findDiff(sourceSet, targetSet) {
+  function findDiff(sourceSet, targetSet, distinguished) {
     const differences = [];
     sourceSet.forEach((source) => {
-      let hasMatch = false;
+      let matchCount = 0;
       targetSet.forEach((target) => {
-        if (compare(source.tree, target.tree, options)) hasMatch = true;
+        if (compare(source.tree, target.tree, options)) matchCount++;
       });
-      if (!hasMatch) differences.push(source.name);
+      if (matchCount === 0) {
+        differences.push(source.name);
+      } else if (matchCount === 1) {
+        distinguished.push(source.name);
+      }
     });
     return differences;
   }
@@ -85,8 +94,8 @@ function functionComparator(functions1, functions2, options) {
   const treeSet1 = makeTreeSet(functions1);
   const treeSet2 = makeTreeSet(functions2);
 
-  results.differentTrees1 = findDiff(treeSet1, treeSet2);
-  results.differentTrees2 = findDiff(treeSet2, treeSet1);
+  results.differentTrees1 = findDiff(treeSet1, treeSet2, results.distiguished1);
+  results.differentTrees2 = findDiff(treeSet2, treeSet1, results.distiguished2);
   return results;
 }
 

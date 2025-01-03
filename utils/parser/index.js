@@ -28,7 +28,17 @@ const proptree2 = collectProps(functions2, collecter_options);
 const comaparator_options = { order: true, node_type: true };
 // TODO: add series
 const result = functionComparator(proptree, proptree2, comaparator_options);
-console.log(`result_${file1}:`, result.differentTrees1.length);
+console.log(
+  `result_${file1}:`,
+  result.differentTrees1.length,
+  result.distiguished1.length
+);
 console.log(JSON.stringify(result.differentTrees1, null, 2));
-console.log(`result_${file2}:`, result.differentTrees2.length);
+console.log(JSON.stringify(result.distiguished1, null, 2));
+console.log(
+  `result_${file2}:`,
+  result.differentTrees2.length,
+  result.distiguished2.length
+);
 console.log(JSON.stringify(result.differentTrees2, null, 2));
+console.log(JSON.stringify(result.distiguished2, null, 2));
