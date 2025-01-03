@@ -58,8 +58,10 @@ function functionComparator(functions1, functions2, options) {
   const results = {
     differentTrees1: [],
     differentTrees2: [],
-    distiguished1: [],
-    distiguished2: [],
+    distinguished1: [],
+    distinguished2: [],
+    self1: [],
+    self2: [],
   };
 
   function makeTreeSet(functions) {
@@ -91,11 +93,42 @@ function functionComparator(functions1, functions2, options) {
     return differences;
   }
 
+  function findSelfSimilar(treeSet) {
+    const selfList = [];
+    const trees = Array.from(treeSet);
+
+    trees.forEach((source, sourceIndex) => {
+      let hasEqual = false;
+      trees.forEach((target, targetIndex) => {
+        if (
+          sourceIndex !== targetIndex &&
+          compare(source.tree, target.tree, options)
+        ) {
+          hasEqual = true;
+        }
+      });
+      if (!hasEqual) {
+        selfList.push(source.name);
+      }
+    });
+    return selfList;
+  }
+
   const treeSet1 = makeTreeSet(functions1);
   const treeSet2 = makeTreeSet(functions2);
 
-  results.differentTrees1 = findDiff(treeSet1, treeSet2, results.distiguished1);
-  results.differentTrees2 = findDiff(treeSet2, treeSet1, results.distiguished2);
+  results.differentTrees1 = findDiff(
+    treeSet1,
+    treeSet2,
+    results.distinguished1
+  );
+  results.differentTrees2 = findDiff(
+    treeSet2,
+    treeSet1,
+    results.distinguished2
+  );
+  results.self1 = findSelfSimilar(treeSet1);
+  results.self2 = findSelfSimilar(treeSet2);
   return results;
 }
 
