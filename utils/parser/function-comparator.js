@@ -1,5 +1,29 @@
+function deepEqual(obj1, obj2) {
+  if (obj1 === obj2) return true;
+
+  if (
+    typeof obj1 !== 'object' ||
+    obj1 === null ||
+    typeof obj2 !== 'object' ||
+    obj2 === null
+  ) {
+    return false;
+  }
+
+  const keys1 = Object.keys(obj1);
+  const keys2 = Object.keys(obj2);
+
+  if (keys1.length !== keys2.length) return false;
+
+  return keys1.every((key) => deepEqual(obj1[key], obj2[key]));
+}
+
 function compare(tree1, tree2, options) {
   const sortArray = (arr) => [...(arr || [])].sort();
+
+  const compareOtherProps = (t1, t2) => {
+    return deepEqual(t1.otherProps, t2.otherProps);
+  };
 
   const compareProps = (t1, t2) => {
     const props1 = sortArray(t1.props);
@@ -38,6 +62,8 @@ function compare(tree1, tree2, options) {
     if (t1.type || t2.type) {
       if (!comparePathNodes(t1, t2)) return false;
     }
+
+    if (options.compare_other_props && !compareOtherProps(t1, t2)) return false;
 
     const children1 = t1.children || [];
     const children2 = t2.children || [];

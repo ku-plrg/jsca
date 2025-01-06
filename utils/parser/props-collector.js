@@ -1,7 +1,7 @@
 const walk = require('acorn-walk');
 
 function makePropstree(func, options) {
-  const rootTree = { props: [], children: [] };
+  const rootTree = { props: [], children: [], otherProps: {} };
 
   let currentContext = rootTree;
   const contextStack = [];
@@ -9,6 +9,7 @@ function makePropstree(func, options) {
   const withContext = (newContext, callback) => {
     if (!newContext.children) newContext.children = [];
     if (!newContext.props) newContext.props = [];
+    if (!newContext.otherProps) newContext.otherProps = {};
     contextStack.push(currentContext);
     currentContext = newContext;
     callback();
@@ -30,8 +31,8 @@ function makePropstree(func, options) {
         type: 'if',
         props: [],
         paths: {
-          true: { props: [], children: [] },
-          false: { props: [], children: [] },
+          true: { props: [], children: [], otherProps: {} },
+          false: { props: [], children: [], otherProps: {} },
         },
       };
 
@@ -70,8 +71,8 @@ function makePropstree(func, options) {
         type: 'conditional',
         props: [],
         paths: {
-          true: { props: [], children: [] },
-          false: { props: [], children: [] },
+          true: { props: [], children: [], otherProps: {} },
+          false: { props: [], children: [], otherProps: {} },
         },
       };
 
@@ -93,8 +94,8 @@ function makePropstree(func, options) {
         operator: node.operator,
         props: [],
         paths: {
-          left: { props: [], children: [] },
-          right: { props: [], children: [] },
+          left: { props: [], children: [], otherProps: {} },
+          right: { props: [], children: [], otherProps: {} },
         },
       };
 
@@ -114,7 +115,29 @@ function makePropstree(func, options) {
 
       walk.base.MemberExpression(node, state, c);
     },
+
+    BinaryExpression(node, state, c) {
+      if (options.operators) {
+        const operator = node.operator;
+        if (options.operators.includes(operator))
+          incValue(currentContext.otherProps, operator);
+      }
+
+      walk.base.BinaryExpression(node, state, c);
+    },
+
+    Literal(node, state, c) {
+      if (options.literals) {
+        const literal = node.raw;
+        if (currentContext.otherProps.literals)
+          currentContext.otherProps.literals.push(literal);
+        else currentContext.otherProps.literals = [literal];
+      }
+
+      walk.base.Literal(node, state, c);
+    },
   };
+
   function myWalker(node, state, visitors) {
     state.ancestors.push(node);
     const visitor = visitors[node.type];
@@ -141,6 +164,14 @@ function collectProps(functions, options) {
     };
     return acc;
   }, {});
+}
+
+function incValue(obj, key) {
+  if (obj[key]) {
+    obj[key] += 1;
+  } else {
+    obj[key] = 1;
+  }
 }
 
 module.exports = collectProps;
