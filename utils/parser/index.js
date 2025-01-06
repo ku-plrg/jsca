@@ -5,6 +5,14 @@ const logFunctionCode = require('./function-logger');
 const functionComparator = require('./function-comparator');
 const fs = require('fs');
 
+function measureTime(label, fn) {
+  const start = process.hrtime();
+  const result = fn();
+  const diff = process.hrtime(start);
+  console.log(`${label} took ${diff[0]}s ${diff[1] / 1000000}ms`);
+  return result;
+}
+
 const file1 = 'jquery_3.7.1.js';
 const file2 = 'jquery_3.7.1_min.js';
 const code = fs.readFileSync(`./${file1}`, 'utf-8');
@@ -20,9 +28,15 @@ const options = {
   compare_other_props: true,
 };
 
-const functions = extractFunctions(code).functions;
+const functions = measureTime(
+  `Extracting functions from ${file1}`,
+  () => extractFunctions(code).functions
+);
 console.log('function_count:', Object.keys(functions).length);
-const functions2 = extractFunctions(code2).functions;
+const functions2 = measureTime(
+  `Extracting functions from ${file2}`,
+  () => extractFunctions(code2).functions
+);
 console.log('function_count:', Object.keys(functions2).length);
 
 logFunctionCode(functions, file1);
@@ -35,8 +49,12 @@ const collecter_options = {
   literals: options.literals,
 };
 
-const proptree = collectProps(functions, collecter_options);
-const proptree2 = collectProps(functions2, collecter_options);
+const proptree = measureTime(`makePropstree from ${file1}`, () =>
+  collectProps(functions, collecter_options)
+);
+const proptree2 = measureTime(`makePropstree from ${file2}`, () =>
+  collectProps(functions2, collecter_options)
+);
 
 // createDotGraph(proptree, file1);
 // createDotGraph(proptree2, file2);
@@ -47,20 +65,31 @@ const comaparator_options = {
   compare_other_props: options.compare_other_props,
 };
 // TODO: add series
-const result = functionComparator(proptree, proptree2, comaparator_options);
-console.log(
-  `result_${file1}:`,
-  result.differentTrees1.length,
-  result.distinguished1.length,
-  result.self1.length
+const result = measureTime('Comparing functions', () =>
+  functionComparator(proptree, proptree2, comaparator_options)
 );
-console.log(JSON.stringify(result.differentTrees1, null, 2));
-console.log(JSON.stringify(result.distinguished1, null, 2));
-console.log(
-  `result_${file2}:`,
-  result.differentTrees2.length,
-  result.distinguished2.length,
-  result.self2.length
-);
-console.log(JSON.stringify(result.differentTrees2, null, 2));
-console.log(JSON.stringify(result.distinguished2, null, 2));
+
+function logResults(filename, results, index) {
+  const data = {
+    filename,
+    different: results[`differentTrees${index}`].length,
+    distinguished: results[`distinguished${index}`].length,
+    self: results[`self${index}`].length,
+  };
+
+  console.log('\n=== Analysis Results ===');
+  console.table(data);
+
+  console.log(`\nDetailed Results for ${filename}:`);
+  console.log(
+    'Different Trees:',
+    JSON.stringify(results[`differentTrees${index}`], null, 2)
+  );
+  console.log(
+    'Distinguished:',
+    JSON.stringify(results[`distinguished${index}`], null, 2)
+  );
+}
+
+logResults(file1, result, 1);
+logResults(file2, result, 2);
