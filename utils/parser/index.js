@@ -23,11 +23,9 @@ const options = {
   if_condition: true,
   order: true,
   node_type: true,
-  operators: ['+', '-', '*', '/', '%', '>', '<', '>=', '<='],
-  literals: true,
-  compare_other_props: true,
+  operators: [],
+  literals: false,
 };
-
 const functions = measureTime(
   `Extracting functions from ${file1}`,
   () => extractFunctions(code).functions
@@ -48,7 +46,6 @@ const collecter_options = {
   operators: options.operators,
   literals: options.literals,
 };
-
 const proptree = measureTime(`makePropstree from ${file1}`, () =>
   collectProps(functions, collecter_options)
 );
@@ -62,9 +59,9 @@ const proptree2 = measureTime(`makePropstree from ${file2}`, () =>
 const comaparator_options = {
   order: options.order,
   node_type: options.node_type,
-  compare_other_props: options.compare_other_props,
+  compare_other_props: Boolean(options.operators.length) || options.literals,
 };
-// TODO: add series
+
 const result = measureTime('Comparing functions', () =>
   functionComparator(proptree, proptree2, comaparator_options)
 );
