@@ -1,28 +1,24 @@
-function deepEqual(obj1, obj2) {
-  if (obj1 === obj2) return true;
-
-  if (
-    typeof obj1 !== 'object' ||
-    obj1 === null ||
-    typeof obj2 !== 'object' ||
-    obj2 === null
-  ) {
-    return false;
-  }
-
+const hasSameMembers = (arr1, arr2) => {
+  const set1 = new Set(arr1);
+  const set2 = new Set(arr2);
+  return (
+    set1.length === set2.length && [...set1].every((value) => set2.has(value))
+  );
+};
+const isEqualObject = (obj1, obj2) => {
   const keys1 = Object.keys(obj1);
   const keys2 = Object.keys(obj2);
-
   if (keys1.length !== keys2.length) return false;
-
-  return keys1.every((key) => deepEqual(obj1[key], obj2[key]));
-}
+  return keys1.every((key) => obj1[key] === obj2[key]);
+};
 
 function compare(tree1, tree2, options) {
   const sortArray = (arr) => [...(arr || [])].sort();
 
   const compareOtherProps = (t1, t2) => {
-    return deepEqual(t1.otherProps, t2.otherProps);
+    const { literals: l1 = [], ...op1 } = t1.otherProps ?? {};
+    const { literals: l2 = [], ...op2 } = t2.otherProps ?? {};
+    return hasSameMembers(l1, l2) && isEqualObject(op1, op2);
   };
 
   const compareProps = (t1, t2) => {

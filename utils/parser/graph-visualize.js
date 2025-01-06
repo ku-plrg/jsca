@@ -6,6 +6,15 @@ function formatProps(props) {
   if (!props || props.length === 0) return '[]';
   return `[${props.join(', ')}]`;
 }
+function formatOtherProps(otherProps) {
+  if (!otherProps || Object.keys(otherProps).length === 0) return '{}';
+  const operators = Object.keys(otherProps)
+    .filter((key) => key !== 'literals')
+    .map((key) => `${key}: ${otherProps[key]}`)
+    .join(', ');
+  const literals = otherProps.literals?.join(', ').replaceAll('"', '') || '';
+  return `{${operators}}\\n[${literals}]`;
+}
 function generateDotContent(tree, functionName, fileName) {
   let nodeId = 0;
   const getNextId = () => `node${nodeId++}`;
@@ -17,6 +26,7 @@ function generateDotContent(tree, functionName, fileName) {
   function processBranch(node, parentId = null) {
     const currentId = getNextId();
     const nodeProps = formatProps(node.props);
+    const nodeOtherProps = formatOtherProps(node.otherProps);
 
     // Node styling based on type
     let nodeStyle = '';
@@ -25,7 +35,7 @@ function generateDotContent(tree, functionName, fileName) {
     else if (node.type === 'conditional') nodeStyle = ', color=green';
 
     // Node label with props
-    const label = `${node.type || 'node'}\\n${nodeProps}`;
+    const label = `${node.type || 'node'}\\n${nodeProps}\\n${nodeOtherProps}`;
     dot += `  ${currentId} [label="${label}"${nodeStyle}];\n`;
 
     // Connect to parent
