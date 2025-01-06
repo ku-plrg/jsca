@@ -69,6 +69,27 @@ const result = measureTime('Comparing functions', () =>
   functionComparator(proptree, proptree2, comaparator_options)
 );
 
+const logLinks = (file, result, options) => {
+  if (options.log_limit) {
+    console.log('[[HEAD]]');
+    result.slice(0, options.log_limit.head).forEach((f) => logLink(file, f));
+    console.log('[[TAIL]]');
+    result.slice(-options.log_limit.tail).forEach((f) => logLink(file, f));
+  } else result.forEach((f) => logLink(file, f));
+};
+
+const logLink = (foldername, filename) =>
+  console.log(
+    `logs/functions/${foldername}/${filename}.js\n\tlogs/function-trees/${foldername}/tree_${filename}.png`
+  );
+
+const log_options = {
+  log_limit: {
+    head: 5,
+    tail: 5,
+  }, // if not set, log all
+};
+
 function logResults(filename, results, index) {
   const data = {
     filename,
@@ -81,14 +102,11 @@ function logResults(filename, results, index) {
   console.table(data);
 
   console.log(`\nDetailed Results for ${filename}:`);
-  console.log(
-    'Different Trees:',
-    JSON.stringify(results[`differentTrees${index}`], null, 2)
-  );
-  console.log(
-    'Distinguished:',
-    JSON.stringify(results[`distinguished${index}`], null, 2)
-  );
+  console.log('Different Trees:');
+  logLinks(filename, results[`differentTrees${index}`], log_options);
+
+  console.log('Distinguished:');
+  logLinks(filename, results[`distinguished${index}`], log_options);
 }
 
 logResults(file1, result, 1);
