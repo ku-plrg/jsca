@@ -15,6 +15,9 @@ const options = {
   if_condition: true,
   order: true,
   node_type: true,
+  operators: ['+', '-', '*', '/', '%', '>', '<', '>=', '<='],
+  literals: true,
+  compare_other_props: true,
 };
 
 const functions = extractFunctions(code).functions;
@@ -28,6 +31,8 @@ logFunctionCode(functions2, file2);
 const collecter_options = {
   early_return: options.early_return,
   if_condition: options.if_condition,
+  operators: options.operators,
+  literals: options.literals,
 };
 
 const proptree = collectProps(functions, collecter_options);
@@ -39,6 +44,7 @@ const proptree2 = collectProps(functions2, collecter_options);
 const comaparator_options = {
   order: options.order,
   node_type: options.node_type,
+  compare_other_props: options.compare_other_props,
 };
 // TODO: add series
 const result = functionComparator(proptree, proptree2, comaparator_options);
