@@ -1,5 +1,4 @@
 import { Node, Pattern } from 'acorn';
-import exp from 'constants';
 
 export interface Function {
   name: string;
@@ -19,6 +18,7 @@ export interface AbsFunctionBase {
 
 export interface proptree extends AbsFunctionBase {
   type: 'proptree';
+  tree: proptreeNode;
 }
 export interface prop extends AbsFunctionBase {
   type: 'prop';
@@ -29,3 +29,44 @@ export interface cfg extends AbsFunctionBase {
 }
 
 export type AbsFunction = proptree | prop | cfg;
+
+export interface proptreeNodeBase {
+  type: 'normal' | 'if' | 'logical' | 'conditional';
+  props: string[];
+  children: proptreeNode[];
+  otherProps?: Record<string, any>;
+}
+
+export interface proptreeNodeNormal extends proptreeNodeBase {
+  type: 'normal';
+}
+export interface proptreeNodeif extends proptreeNodeBase {
+  type: 'if';
+  paths: {
+    true: proptreeNode;
+    false: proptreeNode;
+  };
+}
+
+export interface proptreeNodeConditional extends proptreeNodeBase {
+  type: 'conditional';
+  paths: {
+    true: proptreeNode;
+    false: proptreeNode;
+  };
+}
+
+export interface proptreeNodeLogical extends proptreeNodeBase {
+  type: 'logical';
+  operator: '&&' | '||' | '??';
+  paths: {
+    left: proptreeNode;
+    right: proptreeNode;
+  };
+}
+
+export type proptreeNode =
+  | proptreeNodeNormal
+  | proptreeNodeif
+  | proptreeNodeConditional
+  | proptreeNodeLogical;

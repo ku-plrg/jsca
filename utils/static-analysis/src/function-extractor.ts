@@ -1,6 +1,6 @@
 import * as acorn from 'acorn';
 import * as walk from 'acorn-walk';
-import { Functions } from './utils/types';
+import { Function } from './utils/types';
 
 function stripFunctions(node: acorn.Node): acorn.Node {
   if (!node) return node;
@@ -21,7 +21,7 @@ function stripFunctions(node: acorn.Node): acorn.Node {
   return node;
 }
 
-function extractFunctions(code: string): Functions {
+function extractFunctions(code: string): Function[] {
   const ast: acorn.Node = acorn.parse(code, {
     ecmaVersion: 'latest', // Support the ES6
     sourceType: 'script', // Treat the code as a script (not a module)
@@ -30,7 +30,7 @@ function extractFunctions(code: string): Functions {
     allowReserved: true, // Allow reserved words
   });
 
-  const functions: Functions = {};
+  const functions: Function[] = [];
   let anonymousCounter: number = 0;
 
   function getUniqueFunctionName(node: acorn.Function): string {
@@ -44,10 +44,11 @@ function extractFunctions(code: string): Functions {
 
   function recordFunction(node: acorn.Function): void {
     const functionName = getUniqueFunctionName(node);
-    functions[functionName] = {
+    functions.push({
+      name: functionName,
       params: node.params,
       body: stripFunctions(node.body),
-    };
+    });
   }
 
   walk.simple(ast, {

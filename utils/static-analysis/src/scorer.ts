@@ -1,40 +1,31 @@
-import { measureTime } from './utils';
-import { createDotGraph } from './utils/dot';
-import { Functions, AbsFunctions } from './utils/types';
+import measureTime from './utils/timer';
+import createDotGraph from './utils/graph-visualize';
+import { Function, AbsFunction, Library, proptree } from './utils/types';
 
-function FunctionScorer<T>(
-  functions1: Functions,
-  functions2: Functions,
-  abstraction: (f: Functions) => AbsFunctions,
-  comparison: () => T
+function FunctionScorer(
+  lib1: Library,
+  lb2: Library,
+  abstraction: (f: Function[]) => AbsFunction[],
+  comparison: <T>(f1: T, f2: T) => boolean
 ): void {
-  const proptree = measureTime('makePropstree from file1', () =>
-    abstraction(functions1)
+  const proptree1 = measureTime('makePropstree from file1', () =>
+    abstraction(lib1.functions)
   );
   const proptree2 = measureTime('makePropstree from file2', () =>
-    abstraction(functions2)
+    abstraction(lb2.functions)
   );
 
-  // createDotGraph(proptree, file1);
+  //createDotGraph(proptree, file1);
   //createDotGraph(proptree2, file2);
 
-  const comaparator_options = {
-    order: options.order,
-    node_type: options.node_type,
-    compare_other_props: Boolean(options.operators.length) || options.literals,
-  };
-
   const result = measureTime('Comparing functions', () =>
-    comparison(proptree, proptree2, comaparator_options)
+    proptree1.map((f1) => proptree2.map((f2) => comparison(f1, f2)))
   );
+
   function functionComparator(functions1, functions2) {
     const results = {
       differentTrees1: [],
       differentTrees2: [],
-      distinguished1: [],
-      distinguished2: [],
-      self1: [],
-      self2: [],
     };
 
     function makeTreeSet(functions) {

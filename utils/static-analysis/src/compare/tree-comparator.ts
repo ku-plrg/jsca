@@ -1,9 +1,25 @@
-import { proptree, proptreeNode } from '../utils/types';
+import {
+  proptree,
+  proptreeNode,
+  proptreeNodeConditional,
+  proptreeNodeLogical,
+  proptreeNodeif,
+} from '../utils/types';
 
 type Option = {
   node_type: boolean;
   order: boolean;
   compare_other_props: boolean;
+};
+type proptreeNodebranch =
+  | proptreeNodeif
+  | proptreeNodeConditional
+  | proptreeNodeLogical;
+
+const options: Option = {
+  node_type: true,
+  order: true,
+  compare_other_props: true,
 };
 
 const hasSameMembers = (arr1: string[], arr2: string[]) => {
@@ -22,7 +38,7 @@ const isEqualObject = (
   return keys1.every((key) => obj1[key] === obj2[key]);
 };
 
-function compare(func1: proptree, func2: proptree, options: Option) {
+function compare<T>(func1: T, func2: T): boolean {
   const sortArray = (arr: any[]) => [...(arr || [])].sort();
 
   const compareOtherProps = (t1: proptreeNode, t2: proptreeNode) => {
@@ -38,7 +54,7 @@ function compare(func1: proptree, func2: proptree, options: Option) {
     return props1.every((prop, i) => prop === props2[i]);
   };
 
-  const getChild = (node: proptreeNode) => {
+  const getChild = (node: proptreeNodebranch) => {
     switch (node.type) {
       case 'if':
       case 'conditional':
@@ -54,7 +70,7 @@ function compare(func1: proptree, func2: proptree, options: Option) {
     }
   };
 
-  const comparePathNodes = (t1: proptreeNode, t2: proptreeNode) => {
+  const comparePathNodes = (t1: proptreeNodebranch, t2: proptreeNodebranch) => {
     if (!options.node_type && t1.type !== t2.type) return false;
 
     // if (t1.type === 'logical' && t1.operator !== t2.operator) return false;
@@ -72,8 +88,8 @@ function compare(func1: proptree, func2: proptree, options: Option) {
     if (!t1 || !t2) return t1 === t2;
 
     if (!compareProps(t1, t2)) return false;
-
-    if (t1.type || t2.type) {
+    //TODO: check normal case with other cases
+    if (t1.type !== 'normal' && t2.type !== 'normal') {
       if (!comparePathNodes(t1, t2)) return false;
     }
 

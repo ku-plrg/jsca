@@ -1,9 +1,9 @@
 import * as escodegen from 'escodegen';
 import * as fs from 'fs';
 import * as path from 'path';
-import { Functions } from './types';
+import { Function } from './types';
 
-function logFunctionCode(functions: Functions, filename: string): void {
+function logFunctionCode(functions: Function[], filename: string): void {
   Object.entries(functions).forEach(([name, func]) => {
     // Generate code for the function node
     const functionCode = escodegen.generate(func.body, {

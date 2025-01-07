@@ -1,3 +1,3 @@
-import functionComparator from './tree-comparator';
+import compare from './tree-comparator';
 
-export default { functionComparator };
+export default { compare };
