@@ -40,6 +40,15 @@ function getId(node: acorn.Node): string {
         value = templateValue;
       }
     },
+    Literal(node: acorn.Literal) {
+      if (
+        value === undefined &&
+        typeof node.value === 'string' &&
+        node.value.startsWith('JSCA_')
+      ) {
+        value = node.value;
+      }
+    },
   });
   return value || '';
 }

@@ -101,19 +101,6 @@ function FunctionScorer<T extends AbsFunction>(
     let mdContent = '';
     mdContent += `## Scores\n|Recall|Precision|\n|---|---|\n|${score.recall}|${score.precision}|\n|${score.recallString}|${score.precisionString}|\n\n`;
     mdContent += `|TP|TN|FP|FN|\n|---|---|---|---|\n|${score.truePositives.length}|${score.trueNegatives.length}|${score.falsePositives.length}|${score.falseNegatives.length}|\n`;
-    mdContent += `## True Negatives : ${
-      score.trueNegatives.length
-    }\n|f1|f2|\n|--|--|\n${score.trueNegatives
-      .slice(0, 20)
-      .map(
-        (fn) =>
-          `|${TEMPLATE(fn.id1, fn.f1Name, l1)}|${TEMPLATE(
-            fn.id2,
-            fn.f2Name,
-            l2
-          )}|`
-      )
-      .join('\n')}\n`;
 
     mdContent += `## False Negatives: ${
       score.falseNegatives.length
@@ -151,8 +138,8 @@ function FunctionScorer<T extends AbsFunction>(
   const scores1 = getScores(proptree1, proptree2);
   const scores2 = getScores(proptree2, proptree1);
 
-  writeReport(scores1, 'jquery_3.7.1_min.js', 'jquery_3.7.1_babel-minify.js');
-  writeReport(scores2, 'jquery_3.7.1_babel-minify.js', 'jquery_3.7.1_min.js');
+  writeReport(scores1, 'jquery_3.7.1_min.js', 'jquery_3.7.1_min_terser.js');
+  writeReport(scores2, 'jquery_3.7.1_min_terser.js', 'jquery_3.7.1_min.js');
 }
 
 export default FunctionScorer;

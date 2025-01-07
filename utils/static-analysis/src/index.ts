@@ -9,7 +9,7 @@ import measureTime from './utils/timer';
 import { Function, Library, props, propstree } from './utils/types';
 
 const file1: string = 'jquery_3.7.1_min.js';
-const file2: string = 'jquery_3.7.1_babel-minify.js';
+const file2: string = 'jquery_3.7.1_min_terser.js';
 
 const filePath1 = join(__dirname, '../target', file1);
 const filePath2 = join(__dirname, '../target', file2);
