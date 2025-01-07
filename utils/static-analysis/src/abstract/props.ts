@@ -1,18 +1,9 @@
 import { simple } from 'acorn-walk';
 import { Node } from 'acorn';
 
-interface FunctionNode {
-  params: any[];
-  body: Node;
-}
-
-interface Functions {
-  [key: string]: FunctionNode;
-}
-
+import { Function, prop } from '../utils/types';
 function collectProps(func: Node): string[] {
   const props: string[] = [];
-
   simple(func, {
     MemberExpression(node: any) {
       if (!node.computed && node.property?.type === 'Identifier') {
@@ -24,16 +15,12 @@ function collectProps(func: Node): string[] {
   return props;
 }
 
-function props(
-  functions: Functions
-): Record<string, { params: any[]; props: string[] }> {
-  return Object.entries(functions).reduce((acc, [name, func]) => {
-    acc[name] = {
-      params: func.params,
-      props: collectProps(func.body),
-    };
-    return acc;
-  }, {} as Record<string, { params: any[]; props: string[] }>);
+function props(functions: Function[]): prop[] {
+  return functions.map((func) => ({
+    name: func.name,
+    type: 'prop',
+    props: collectProps(func.body),
+  }));
 }
 
 export default props;
