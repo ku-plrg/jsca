@@ -2,16 +2,20 @@ import { parse } from 'acorn';
 import { generate } from 'astring';
 import estraverse from 'estraverse';
 
-const injectLiteral = (code) => {
-  const ast = parse(code, {
-    ecmaVersion: 'latest',
-    sourceType: 'script', // Treat the code as a script (not a module)
-    locations: true, // Include location information
-    ranges: true, // Include range information
-    allowReserved: true, // Allow reserved words
-  });
+const parserOptions = {
+  ecmaVersion: 'latest',
+  sourceType: 'script', // Treat the code as a script (not a module)
+  locations: true, // Include location information
+  ranges: true, // Include range information
+  allowReserved: true, // Allow reserved words
+};
 
-  estraverse.replace(ast, {
+const injectLiteral = (code) => {
+  const ast = parse(code, parserOptions);
+  const formattedCode = generate(ast);
+  const formattedAst = parse(formattedCode, parserOptions);
+
+  estraverse.replace(formattedAst, {
     enter(node) {
       if (
         node.type === 'FunctionDeclaration' ||
@@ -47,7 +51,7 @@ const injectLiteral = (code) => {
   });
 
   // Generate the modified code
-  const modifiedCode = generate(ast, {
+  const modifiedCode = generate(formattedAst, {
     comments: true, // Preserve comments
   });
   return modifiedCode;

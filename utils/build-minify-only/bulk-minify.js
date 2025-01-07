@@ -8,7 +8,7 @@ import getLibInfo from '../cdn-crawler/data/index.js';
 import injectLiteral from './inject-literal.js';
 
 const TARGET_PACKAGE = 'jquery'; // available name in https://cdnjs.com/
-const TARGET_MINIFIER = 'esbuild'; // all | swc | esbuild | uglifyjs | terser | babel-minify
+const TARGET_MINIFIER = 'all'; // all | swc | esbuild | uglifyjs | terser | babel-minify
 const TARGET_VERSIONS = ['3.6.1']; // undefined for all versions
 const INJECT_LITERAL = true;
 
