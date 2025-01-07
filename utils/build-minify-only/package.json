@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:all": "npm run build:terser && npm run build:uglify-js && npm run build:esbuild && npm run build:babel-minify && npm run build:swc",
-    "build:terser": "terser $npm_config_filename -o dist/terser/$npm_config_filename --mangle --mangle-props",
+    "build:terser": "terser $npm_config_filename -o dist/terser/$npm_config_filename --mangle",
     "build:uglify-js": "cross-env OUTPUT_FILE=dist/uglify-js/${npm_config_filename:-index.js} sh -c 'mkdir -p $(dirname $OUTPUT_FILE) && uglifyjs ${npm_config_filename:-input.js} -o $OUTPUT_FILE --mangle'",
     "build:esbuild": "esbuild $npm_config_filename --minify --format=esm --target=es6 --minify-syntax=false --outfile=dist/esbuild/$npm_config_filename",
     "build:babel-minify": "cross-env OUTPUT_FILE=dist/babel-minify/${npm_config_filename:-index.js} sh -c 'mkdir -p $(dirname $OUTPUT_FILE) && minify ${npm_config_filename:-input.js} -o $OUTPUT_FILE --mangle true'",
