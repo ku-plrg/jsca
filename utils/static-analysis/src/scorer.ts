@@ -151,8 +151,8 @@ function FunctionScorer<T extends AbsFunction>(
   const scores1 = getScores(proptree1, proptree2);
   const scores2 = getScores(proptree2, proptree1);
 
-  writeReport(scores1, 'jquery_3.7.1_babel-minify.js', 'jquery_3.7.1_min.js');
-  writeReport(scores2, 'jquery_3.7.1_min.js', 'jquery_3.7.1_babel-minify.js');
+  writeReport(scores1, 'jquery_3.7.1_min.js', 'jquery_3.7.1_babel-minify.js');
+  writeReport(scores2, 'jquery_3.7.1_babel-minify.js', 'jquery_3.7.1_min.js');
   console.log('scores1', scores1.precision);
   console.log('scores2', scores2.precision);
 }
