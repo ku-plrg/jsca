@@ -144,7 +144,7 @@ function FunctionScorer<T extends AbsFunction>(
       .join('\n')}\n`;
 
     const fileDir = './src/logs/reports';
-    const filePath = path.resolve(fileDir, `${logFileName}-${l1}.md`);
+    const filePath = path.resolve(fileDir, `${logFileName}-${l1}-${l2}.md`);
     mkdirSync(fileDir, { recursive: true });
     writeFileSync(filePath, mdContent, 'utf-8');
   }
@@ -153,8 +153,6 @@ function FunctionScorer<T extends AbsFunction>(
 
   writeReport(scores1, 'jquery_3.7.1_min.js', 'jquery_3.7.1_babel-minify.js');
   writeReport(scores2, 'jquery_3.7.1_babel-minify.js', 'jquery_3.7.1_min.js');
-  console.log('scores1', scores1.precision);
-  console.log('scores2', scores2.precision);
 }
 
 export default FunctionScorer;
