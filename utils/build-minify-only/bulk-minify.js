@@ -1,12 +1,16 @@
 import axios from 'axios';
 import { exec } from 'child_process';
 import fs from 'fs';
+import fsExtra from 'fs-extra';
 import path from 'path';
 import util from 'util';
 import getLibInfo from '../cdn-crawler/data/index.js';
+import injectLiteral from './inject-literal.js';
 
 const TARGET_PACKAGE = 'jquery'; // available name in https://cdnjs.com/
-const TARGET_MINIFIER = 'all'; // all | swc | esbuild | uglifyjs | terser | babel-minify
+const TARGET_MINIFIER = 'esbuild'; // all | swc | esbuild | uglifyjs | terser | babel-minify
+const TARGET_VERSIONS = ['3.6.1']; // undefined for all versions
+const INJECT_LITERAL = true;
 
 const execPromise = util.promisify(exec);
 
@@ -21,8 +25,9 @@ const bulkBundle = async () => {
   }
 
   const { versions, allFiles } = packageInfo;
+  const targetVersions = TARGET_VERSIONS.length ? TARGET_VERSIONS : versions;
 
-  for (const version of versions) {
+  for (const version of targetVersions) {
     try {
       console.log(`Processing ${TARGET_PACKAGE}@${version}...`);
 
@@ -32,6 +37,11 @@ const bulkBundle = async () => {
         if (!res) continue;
         const script = res.data;
         fs.promises.writeFile(`${file}`, script);
+        if (INJECT_LITERAL) {
+          const targetScript = injectLiteral(script);
+          fs.promises.unlink(`${file}`);
+          fs.promises.writeFile(`${file}`, targetScript);
+        }
         await execPromise(
           `npm run build:${TARGET_MINIFIER} --filename=${file}`
         );
@@ -48,7 +58,9 @@ const bulkBundle = async () => {
           const source = path.join(distFolder, distFile);
           const destination = path.join(targetFolder, distFile);
 
-          await fs.promises.rename(source, destination);
+          await fsExtra.move(path.resolve(source), path.join(destination), {
+            overwrite: true,
+          });
         }
         await fs.promises.mkdir(path.join(targetFolder, 'original'), {
           recursive: true,
@@ -56,9 +68,10 @@ const bulkBundle = async () => {
 
         for (const file of allFiles) {
           if (fs.existsSync(path.resolve(file))) {
-            await fs.promises.rename(
+            await fsExtra.move(
               path.resolve(file),
-              path.join(targetFolder, 'original', file)
+              path.join(targetFolder, 'original', file),
+              { overwrite: true }
             );
           }
         }

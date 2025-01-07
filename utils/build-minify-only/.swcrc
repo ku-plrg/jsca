@@ -3,7 +3,9 @@
     "jsc": {
       "minify": {
         "compress": {
-          "unused": true
+          "unused": true,
+          "conditionals": true,
+          "directives": false
         },
         "mangle": true
       }
