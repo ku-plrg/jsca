@@ -2,11 +2,11 @@ import * as acorn from 'acorn';
 import * as walk from 'acorn-walk';
 import {
   Function,
-  propstree,
-  proptreeNode,
-  proptreeNodeConditional,
-  proptreeNodeif,
-  proptreeNodeLogical,
+  Propstree,
+  PropstreeNode,
+  PropstreeNodeConditional,
+  PropstreeNodeif,
+  PropstreeNodeLogical,
 } from '../utils/types';
 
 type Options = {
@@ -27,18 +27,18 @@ const options: Options = {
   literals: false,
 };
 
-function makePropstree(func: acorn.Node): proptreeNode {
-  const rootTree: proptreeNode = {
+function makePropstree(func: acorn.Node): PropstreeNode {
+  const rootTree: PropstreeNode = {
     type: 'normal',
     props: [],
     children: [],
     otherProps: {},
   };
 
-  let currentContext: proptreeNode = rootTree;
-  const contextStack: proptreeNode[] = [];
+  let currentContext: PropstreeNode = rootTree;
+  const contextStack: PropstreeNode[] = [];
 
-  const withContext = (newContext: proptreeNode, callback: () => void) => {
+  const withContext = (newContext: PropstreeNode, callback: () => void) => {
     if (!newContext.children) newContext.children = [];
     if (!newContext.props) newContext.props = [];
     if (!newContext.otherProps) newContext.otherProps = {};
@@ -64,7 +64,7 @@ function makePropstree(func: acorn.Node): proptreeNode {
 
   const visitors = {
     IfStatement(node: acorn.IfStatement, state: State, c: visitor) {
-      const ifNode: proptreeNodeif = {
+      const ifNode: PropstreeNodeif = {
         type: 'if',
         props: [],
         children: [],
@@ -112,7 +112,7 @@ function makePropstree(func: acorn.Node): proptreeNode {
       state: State,
       c: visitor
     ) {
-      const condNode: proptreeNodeConditional = {
+      const condNode: PropstreeNodeConditional = {
         type: 'conditional',
         props: [],
         children: [],
@@ -135,7 +135,7 @@ function makePropstree(func: acorn.Node): proptreeNode {
     },
 
     LogicalExpression(node: acorn.LogicalExpression, state: State, c: visitor) {
-      const logicNode: proptreeNodeLogical = {
+      const logicNode: PropstreeNodeLogical = {
         type: 'logical',
         operator: node.operator,
         children: [],
@@ -214,11 +214,11 @@ function makePropstree(func: acorn.Node): proptreeNode {
   return rootTree;
 }
 
-function propstree(functions: Function[]): propstree[] {
+function propstree(functions: Function[]): Propstree[] {
   return functions.map((func) => ({
     id: func.id,
     name: func.name,
-    type: 'proptree',
+    type: 'propstree',
     tree: makePropstree(func.body),
   }));
 }

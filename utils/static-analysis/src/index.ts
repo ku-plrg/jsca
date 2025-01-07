@@ -6,7 +6,8 @@ import extractFunctions from './function-extractor';
 import scorer from './scorer';
 import logFunctionCode from './utils/function-logger';
 import measureTime from './utils/timer';
-import { Function, Library, props, propstree } from './utils/types';
+import { Function, Library, Props, Propstree } from './utils/types';
+import propstree from './abstract/propstree';
 
 const file1: string = 'jquery_3.7.1_min.js';
 const file2: string = 'jquery_3.7.1_min_terser.js';
@@ -37,11 +38,11 @@ const lib2: Library = {
   functions: extractAndLogFunctions(file2, code2),
 };
 
-scorer<propstree>(
+scorer<Propstree>(
   lib1,
   lib2,
   abstraction.propstree,
   comparator.propstree,
-  'propstree'
+  'Propstree'
 );
-scorer<props>(lib1, lib2, abstraction.props, comparator.props, 'props');
+scorer<Props>(lib1, lib2, abstraction.props, comparator.props, 'Props');

@@ -1,7 +1,7 @@
 import { Node } from 'acorn';
 import { simple } from 'acorn-walk';
 
-import { Function, props } from '../utils/types';
+import { Function, Props } from '../utils/types';
 function collectProps(func: Node): string[] {
   const props: string[] = [];
   simple(func, {
@@ -11,11 +11,10 @@ function collectProps(func: Node): string[] {
       }
     },
   });
-
   return props;
 }
 
-function props(functions: Function[]): props[] {
+function props(functions: Function[]): Props[] {
   return functions.map((func) => ({
     id: func.id,
     name: func.name,

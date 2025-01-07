@@ -1,9 +1,9 @@
 import {
-  propstree,
-  proptreeNode,
-  proptreeNodeConditional,
-  proptreeNodeLogical,
-  proptreeNodeif,
+  Propstree,
+  PropstreeNode,
+  PropstreeNodeConditional,
+  PropstreeNodeLogical,
+  PropstreeNodeif,
 } from '../utils/types';
 
 type Option = {
@@ -11,15 +11,15 @@ type Option = {
   order: boolean;
   compare_other_props: boolean;
 };
-type proptreeNodebranch =
-  | proptreeNodeif
-  | proptreeNodeConditional
-  | proptreeNodeLogical;
+type PropstreeNodebranch =
+  | PropstreeNodeif
+  | PropstreeNodeConditional
+  | PropstreeNodeLogical;
 
 const options: Option = {
   node_type: true,
   order: true,
-  compare_other_props: true,
+  compare_other_props: false,
 };
 
 const hasSameMembers = (arr1: string[], arr2: string[]) => {
@@ -38,23 +38,24 @@ const isEqualObject = (
   return keys1.every((key) => obj1[key] === obj2[key]);
 };
 
-function propstreeComparator(func1: propstree, func2: propstree): boolean {
-  const sortArray = (arr: any[]) => [...(arr || [])].sort();
-
-  const compareOtherProps = (t1: proptreeNode, t2: proptreeNode) => {
+function propstreeComparator(func1: Propstree, func2: Propstree): boolean {
+  const sortArray = (arr: string[]) => arr.sort();
+  const compareOtherProps = (t1: PropstreeNode, t2: PropstreeNode) => {
     const { literals: l1 = [], ...op1 } = t1.otherProps ?? {};
     const { literals: l2 = [], ...op2 } = t2.otherProps ?? {};
     return hasSameMembers(l1, l2) && isEqualObject(op1, op2);
   };
 
-  const compareProps = (t1: proptreeNode, t2: proptreeNode) => {
+  const compareProps = (t1: PropstreeNode, t2: PropstreeNode) => {
     const props1 = sortArray(t1.props);
     const props2 = sortArray(t2.props);
     if (props1.length !== props2.length) return false;
     return props1.every((prop, i) => prop === props2[i]);
+
+    return true;
   };
 
-  const getChild = (node: proptreeNodebranch) => {
+  const getChild = (node: PropstreeNodebranch) => {
     switch (node.type) {
       case 'if':
       case 'conditional':
@@ -70,7 +71,10 @@ function propstreeComparator(func1: propstree, func2: propstree): boolean {
     }
   };
 
-  const comparePathNodes = (t1: proptreeNodebranch, t2: proptreeNodebranch) => {
+  const comparePathNodes = (
+    t1: PropstreeNodebranch,
+    t2: PropstreeNodebranch
+  ) => {
     if (!options.node_type && t1.type !== t2.type) return false;
 
     // if (t1.type === 'logical' && t1.operator !== t2.operator) return false;
@@ -84,7 +88,7 @@ function propstreeComparator(func1: propstree, func2: propstree): boolean {
       : compareTree(left1, left2) && compareTree(right1, right2);
   };
 
-  const compareTree = (t1: proptreeNode, t2: proptreeNode) => {
+  const compareTree = (t1: PropstreeNode, t2: PropstreeNode) => {
     if (!t1 || !t2) return t1 === t2;
 
     if (!compareProps(t1, t2)) return false;

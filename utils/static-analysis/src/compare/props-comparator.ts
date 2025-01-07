@@ -1,5 +1,5 @@
-import { props } from '../utils/types';
-function propsComparator(func1: props, func2: props): boolean {
+import { Props } from '../utils/types';
+function propsComparator(func1: Props, func2: Props): boolean {
   const sortArray = (arr: any[]) => [...(arr || [])].sort();
 
   const props1 = sortArray(func1.props);

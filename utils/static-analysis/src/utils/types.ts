@@ -15,60 +15,60 @@ export interface Library {
 export interface AbsFunctionBase {
   id: string;
   name: string;
-  type: 'prop' | 'proptree' | 'cfg';
+  type: 'prop' | 'propstree' | 'cfg';
 }
 
-export interface propstree extends AbsFunctionBase {
-  type: 'proptree';
-  tree: proptreeNode;
+export interface Propstree extends AbsFunctionBase {
+  type: 'propstree';
+  tree: PropstreeNode;
 }
-export interface props extends AbsFunctionBase {
+export interface Props extends AbsFunctionBase {
   type: 'prop';
   props: string[];
 }
-export interface cfg extends AbsFunctionBase {
+export interface CFG extends AbsFunctionBase {
   type: 'cfg';
 }
 
-export type AbsFunction = propstree | props | cfg;
+export type AbsFunction = Propstree | Props | CFG;
 
-export interface proptreeNodeBase {
+export interface PropstreeNodeBase {
   type: 'normal' | 'if' | 'logical' | 'conditional';
   props: string[];
-  children: proptreeNode[];
+  children: PropstreeNode[];
   otherProps?: Record<string, any>;
 }
 
-export interface proptreeNodeNormal extends proptreeNodeBase {
+export interface PropstreeNodeNormal extends PropstreeNodeBase {
   type: 'normal';
 }
-export interface proptreeNodeif extends proptreeNodeBase {
+export interface PropstreeNodeif extends PropstreeNodeBase {
   type: 'if';
   paths: {
-    true: proptreeNode;
-    false: proptreeNode;
+    true: PropstreeNode;
+    false: PropstreeNode;
   };
 }
 
-export interface proptreeNodeConditional extends proptreeNodeBase {
+export interface PropstreeNodeConditional extends PropstreeNodeBase {
   type: 'conditional';
   paths: {
-    true: proptreeNode;
-    false: proptreeNode;
+    true: PropstreeNode;
+    false: PropstreeNode;
   };
 }
 
-export interface proptreeNodeLogical extends proptreeNodeBase {
+export interface PropstreeNodeLogical extends PropstreeNodeBase {
   type: 'logical';
   operator: '&&' | '||' | '??';
   paths: {
-    left: proptreeNode;
-    right: proptreeNode;
+    left: PropstreeNode;
+    right: PropstreeNode;
   };
 }
 
-export type proptreeNode =
-  | proptreeNodeNormal
-  | proptreeNodeif
-  | proptreeNodeConditional
-  | proptreeNodeLogical;
+export type PropstreeNode =
+  | PropstreeNodeNormal
+  | PropstreeNodeif
+  | PropstreeNodeConditional
+  | PropstreeNodeLogical;
