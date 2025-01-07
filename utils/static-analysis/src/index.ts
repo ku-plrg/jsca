@@ -37,5 +37,11 @@ const lib2: Library = {
   functions: extractAndLogFunctions(file2, code2),
 };
 
-scorer<propstree>(lib1, lib2, abstraction.propstree, comparator.propstree);
-scorer<props>(lib1, lib2, abstraction.props, comparator.props);
+scorer<propstree>(
+  lib1,
+  lib2,
+  abstraction.propstree,
+  comparator.propstree,
+  'propstree'
+);
+scorer<props>(lib1, lib2, abstraction.props, comparator.props, 'props');
