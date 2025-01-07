@@ -1,13 +1,40 @@
 import { Node } from 'acorn';
 
-interface FunctionNode {
-  params: any[];
-  body: Node;
+interface proptreeNodeBase {
+  type: 'if' | 'logical' | 'conditional';
+  props: string[];
+  children: proptreeNode[];
+  otherProps?: Record<string, any>;
 }
 
-interface Functions {
-  [key: string]: FunctionNode;
+interface proptreeNodeif extends proptreeNodeBase {
+  type: 'if';
+  paths: {
+    true: proptreeNode;
+    false: proptreeNode;
+  };
 }
+
+interface proptreeNodeConditional extends proptreeNodeBase {
+  type: 'conditional';
+  paths: {
+    true: proptreeNode;
+    false: proptreeNode;
+  };
+}
+
+interface proptreeNodeLogical extends proptreeNodeBase {
+  type: 'logical';
+  paths: {
+    left: proptreeNode;
+    right: proptreeNode;
+  };
+}
+
+type proptreeNode =
+  | proptreeNodeif
+  | proptreeNodeConditional
+  | proptreeNodeLogical;
 
 function makePropstree(func: Node): any {
   // Implementation of makePropstree
