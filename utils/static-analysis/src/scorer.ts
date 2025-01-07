@@ -1,12 +1,11 @@
 import measureTime from './utils/timer';
-import createDotGraph from './utils/graph-visualize';
-import { Function, AbsFunction, Library, proptree } from './utils/types';
+import { AbsFunction, Function, Library } from './utils/types';
 
-function FunctionScorer(
+function FunctionScorer<T extends AbsFunction>(
   lib1: Library,
   lb2: Library,
-  abstraction: (f: Function[]) => AbsFunction[],
-  comparison: <T>(f1: T, f2: T) => boolean
+  abstraction: (f: Function[]) => T[],
+  comparison: (f1: T, f2: T) => boolean
 ): void {
   const proptree1 = measureTime('makePropstree from file1', () =>
     abstraction(lib1.functions)
