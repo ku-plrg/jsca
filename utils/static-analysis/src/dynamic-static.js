@@ -1,9 +1,9 @@
 const fs = require('fs');
 const acorn = require('acorn');
 const walk = require('acorn-walk');
-const collectProps = require('./props-collector');
+const collectProps = require('./abstraction/proptree');
 const createDotGraph = require('./graph-visualize');
-const logFunctionCode = require('./function-logger');
+const logFunctionCode = require('../function-logger');
 
 const FILE_PATH = 'dynamic-functions';
 const MAX_DEPTH = 3;

@@ -1,6 +1,12 @@
 const walk = require('acorn-walk');
 
-function makePropstree(func, options) {
+const options = {
+  if_condition: true,
+  early_return: true,
+  operators: ['+', '-', '*', '/', '%', '==', '>', '>=', '<', '<='],
+  literals: true,
+};
+function makePropstree(func) {
   const rootTree = { props: [], children: [], otherProps: {} };
 
   let currentContext = rootTree;
@@ -156,7 +162,7 @@ function makePropstree(func, options) {
   return rootTree;
 }
 
-function collectProps(functions, options) {
+function propstree(functions, options) {
   return Object.entries(functions).reduce((acc, [name, func]) => {
     acc[name] = {
       params: func.params,
@@ -174,4 +180,4 @@ function incValue(obj, key) {
   }
 }
 
-module.exports = collectProps;
+module.exports = propstree;

@@ -135,6 +135,7 @@ dist
 # build
 build
 dist
+utils/static-analysis/target
 
 # utils/license-crawler
 utils/license-crawler/data
