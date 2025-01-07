@@ -1,3 +1,4 @@
+import * as acorn from 'acorn';
 import { Node } from 'acorn';
 import * as escodegen from 'escodegen';
 
@@ -189,6 +190,16 @@ function processLogicalExpression(
 //   return variableId;
 // }
 
+function processSequenceNode(
+  state: CFGState,
+  exprs: acorn.Node[],
+  nextId: number,
+  exitId: number
+) {
+  const ids = exprs.map((expr) => processNode(state, expr, nextId, exitId));
+  return ids[ids.length - 1];
+}
+
 function processNode(
   state: CFGState,
   node: Node,
@@ -232,31 +243,112 @@ function processNode(
     case 'ThisExpression':
     case 'ArrayExpression':
     case 'ObjectExpression':
+      return processSequenceNode(
+        state,
+        (node as acorn.ObjectExpression).properties.map((prop) => {
+          switch (prop.type) {
+            case 'Property':
+              return prop.value;
+            case 'SpreadElement':
+              return prop.argument;
+          }
+        }),
+        nextId,
+        exitId
+      );
     case 'FunctionExpression':
     case 'UnaryExpression':
-    case 'UpdateExpression':
+      return processNode(
+        state,
+        (node as acorn.UnaryExpression).argument,
+        nextId,
+        exitId
+      );
+    case 'UpdateExpression': // ++, --
+      return processNode(
+        state,
+        (node as acorn.UpdateExpression).argument,
+        nextId,
+        exitId
+      );
     case 'BinaryExpression':
-    case 'AssignmentExpression':
+      processNode(state, (node as acorn.BinaryExpression).left, nextId, exitId);
+      return processNode(
+        state,
+        (node as acorn.BinaryExpression).right,
+        nextId,
+        exitId
+      );
+    case 'AssignmentExpression': // variable declaration이랑 똑같이 하기?
     case 'LogicalExpression':
     case 'MemberExpression':
+      const meNode = node as acorn.MemberExpression;
+      return processSequenceNode(
+        state,
+        [meNode.object, meNode.property],
+        nextId,
+        exitId
+      );
     case 'ConditionalExpression':
     case 'CallExpression':
+      return nextId; // 의미상 함수 호출이지만, CFG에서는 다음 노드로 이동
     case 'NewExpression':
+      return nextId;
     case 'SequenceExpression':
-    case 'ArrowFunctionExpression':
-    case 'YieldExpression':
+      return processSequenceNode(
+        state,
+        (node as acorn.SequenceExpression).expressions,
+        nextId,
+        exitId
+      );
+    case 'ArrowFunctionExpression': // FunctionExpression과 같이?
+    case 'YieldExpression': // BreakStatement와 같이?
     case 'TemplateLiteral':
-    case 'TaggedTemplateExpression':
+      return nextId;
+    case 'TaggedTemplateExpression': // foo`\\u{abcdx`
+      return nextId;
     case 'ClassExpression':
-    case 'MetaProperty':
+      return processSequenceNode(
+        state,
+        (node as acorn.ClassExpression).body.body,
+        nextId,
+        exitId
+      );
+    case 'MetaProperty': // import.meta
+      return nextId;
     case 'AwaitExpression':
-    case 'ChainExpression':
-    case 'ImportExpression':
-    case 'ParenthesizedExpression':
-    case 'ObjectPattern':
-    case 'ArrayPattern':
-    case 'RestElement':
-    case 'AssignmentPattern':
+      return processNode(
+        state,
+        (node as acorn.AwaitExpression).argument,
+        nextId,
+        exitId
+      );
+    case 'ChainExpression': // ?.
+      return processNode(
+        state,
+        (node as acorn.ChainExpression).expression,
+        nextId,
+        exitId
+      );
+    case 'ImportExpression': // 사용되지 않을 듯..
+    case 'ParenthesizedExpression': // "(obj.aaa).bbb" 에서 (obj.aaa)
+      return processNode(
+        state,
+        (node as acorn.ParenthesizedExpression).expression,
+        nextId,
+        exitId
+      );
+    case 'ObjectPattern': // FunctionExpression과 같이?
+    case 'ArrayPattern': // FunctionExpression과 같이?
+    case 'RestElement': // 구조 분해 할당 시 rest. {a:aa,...rest} = obj;
+      return processNode(
+        state,
+        (node as acorn.RestElement).argument,
+        nextId,
+        exitId
+      );
+
+    case 'AssignmentPattern': // FunctionExpression과 같이?
     default:
       const id = createNode(state, node.type, getNodeCode(node));
       addEdge(state, id, nextId);
@@ -303,7 +395,6 @@ function saveDotToPng(dot: string, filename: string): void {
   fs.writeFileSync(dotPath, dot, 'utf-8');
   execSync(`dot -Tpng ${dotPath} -o ${filename}.png`);
 }
-import * as acorn from 'acorn';
 
 const code = `
 function example() {
