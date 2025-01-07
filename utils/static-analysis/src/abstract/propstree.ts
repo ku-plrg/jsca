@@ -16,7 +16,7 @@ type Options = {
   literals: boolean;
 };
 type State = {
-  ancestors: Node[];
+  ancestors: acorn.Node[];
 };
 type visitor = (node: acorn.Node, state: State) => void;
 
@@ -57,7 +57,7 @@ function makePropstree(func: acorn.Node): proptreeNode {
     if (!node) return false;
     if (node.type === 'ReturnStatement') return true;
     if (node.type === 'BlockStatement') {
-      return node.body.some(containsReturn);
+      return (node as acorn.BlockStatement).body.some(containsReturn);
     }
     return false;
   }
@@ -87,15 +87,18 @@ function makePropstree(func: acorn.Node): proptreeNode {
 
       // Handle false branch if it exists
       if (node.alternate) {
-        withContext(ifNode.paths.false, () => c(node.alternate, state));
+        withContext(ifNode.paths.false, () =>
+          c(node.alternate as acorn.Statement, state)
+        );
       } else if (options.early_return && hasRet) {
         const ancestors = state.ancestors;
         const parentNode = ancestors[ancestors.length - 2];
+        const body = (parentNode as acorn.BlockStatement).body;
         if (parentNode && parentNode.type === 'BlockStatement') {
-          const idx = parentNode.body.indexOf(node);
+          const idx = body.indexOf(node);
           if (idx !== -1) {
-            const subsequent = parentNode.body.slice(idx + 1);
-            parentNode.body.splice(idx + 1);
+            const subsequent = body.slice(idx + 1);
+            body.splice(idx + 1);
             withContext(ifNode.paths.false, () => {
               subsequent.forEach((stmt) => c(stmt, state));
             });
@@ -157,28 +160,36 @@ function makePropstree(func: acorn.Node): proptreeNode {
         currentContext.props.push(node.property.name);
       }
 
-      walk.base.MemberExpression(node, state, c);
+      if (walk.base.MemberExpression) {
+        walk.base.MemberExpression(node, state, c);
+      }
     },
 
-    BinaryExpression(node, state, c) {
+    BinaryExpression(node: acorn.BinaryExpression, state: State, c: visitor) {
       if (options.operators) {
         const operator = node.operator;
         if (options.operators.includes(operator))
-          incValue(currentContext.otherProps, operator);
+          if (currentContext.otherProps)
+            currentContext.otherProps[operator] += 1;
+          else currentContext.otherProps = { [operator]: 1 };
       }
-
-      walk.base.BinaryExpression(node, state, c);
+      if (walk.base.BinaryExpression)
+        walk.base.BinaryExpression(node, state, c);
     },
 
-    Literal(node, state, c) {
+    Literal(node: acorn.Literal, state: State, c: visitor) {
       if (options.literals) {
         const literal = node.raw;
-        if (currentContext.otherProps.literals)
+        if (currentContext.otherProps?.literals)
           currentContext.otherProps.literals.push(literal);
-        else currentContext.otherProps.literals = [literal];
+        else {
+          if (!currentContext.otherProps) {
+            currentContext.otherProps = {};
+          }
+          currentContext.otherProps.literals = [literal];
+        }
       }
-
-      walk.base.Literal(node, state, c);
+      if (walk.base.Literal) walk.base.Literal(node, state, c);
     },
   };
 
@@ -186,9 +197,12 @@ function makePropstree(func: acorn.Node): proptreeNode {
     state.ancestors.push(node);
     const visitor = visitors[node.type];
     if (visitor) {
-      visitor(node, state, (child) => myWalker(child, state, visitors));
+      visitor(node, state, (child: acorn.Node) =>
+        myWalker(child, state, visitors)
+      );
     } else {
-      walk.base[node.type](node, state, (child) =>
+      //TODO: precise walk.base type
+      (walk.base as any)[node.type](node, state, (child: acorn.Node) =>
         myWalker(child, state, visitors)
       );
     }
@@ -206,14 +220,6 @@ function propstree(functions: Function[]): proptree[] {
     type: 'proptree',
     tree: makePropstree(func.body),
   }));
-}
-
-function incValue(obj: Record<string, number>, key: string): void {
-  if (obj[key]) {
-    obj[key] += 1;
-  } else {
-    obj[key] = 1;
-  }
 }
 
 export default propstree;
