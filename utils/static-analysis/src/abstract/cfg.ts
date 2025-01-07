@@ -159,6 +159,21 @@ function processReturnStatement(
   return returnId;
 }
 
+function processLogicalExpression(
+  state: CFGState,
+  node: any,
+  nextId: number,
+  exitId: number
+): number {
+  const logicalId = createNode(
+    state,
+    'LogicalExpression',
+    `${getNodeCode(node.left)} ${node.operator} ${getNodeCode(node.right)}`
+  );
+  addEdge(state, logicalId, nextId);
+  return logicalId;
+}
+
 // function processVariableDeclaration(
 //   state: CFGState,
 //   node: any,
@@ -181,20 +196,67 @@ function processNode(
   exitId: number
 ): number {
   switch (node.type) {
+    case 'ExpressionStatement':
+      return processNode(state, (node as any).expression, nextId, exitId);
     case 'BlockStatement':
       return processBlockStatement(state, node as any, nextId, exitId);
-    case 'IfStatement':
-      return processIfStatement(state, node as any, nextId, exitId);
-    case 'WhileStatement':
-      return processWhileStatement(state, node as any, nextId, exitId);
-    case 'ForStatement':
-      return processForStatement(state, node as any, nextId, exitId);
-    // case 'ForInStatement':
-    //   return processForInStatement(state, node as any, nextId, exitId);
+    case 'EmptyStatement':
+      return nextId;
+    case 'DebuggerStatement':
+      return nextId;
+    case 'WithStatement':
     case 'ReturnStatement':
       return processReturnStatement(state, node as any, nextId, exitId);
-    // case 'VariableDeclaration':
-    //   return processVariableDeclaration(state, node as any, nextId, exitId);
+    case 'LabeledStatement':
+    case 'BreakStatement':
+    case 'ContinueStatement':
+    case 'IfStatement':
+      return processIfStatement(state, node as any, nextId, exitId);
+    case 'SwitchStatement':
+    case 'ThrowStatement':
+    case 'TryStatement':
+    case 'WhileStatement':
+      return processWhileStatement(state, node as any, nextId, exitId);
+    case 'DoWhileStatement':
+    case 'ForStatement':
+      return processForStatement(state, node as any, nextId, exitId);
+    case 'ForInStatement':
+      return processForInStatement(state, node as any, nextId, exitId);
+    case 'ForOfStatement':
+    case 'Declaration':
+    case 'FunctionDeclaration':
+    case 'VariableDeclaration':
+    case 'ClassDeclaration':
+    case 'Identifier':
+    case 'Literal':
+    case 'ThisExpression':
+    case 'ArrayExpression':
+    case 'ObjectExpression':
+    case 'FunctionExpression':
+    case 'UnaryExpression':
+    case 'UpdateExpression':
+    case 'BinaryExpression':
+    case 'AssignmentExpression':
+    case 'LogicalExpression':
+    case 'MemberExpression':
+    case 'ConditionalExpression':
+    case 'CallExpression':
+    case 'NewExpression':
+    case 'SequenceExpression':
+    case 'ArrowFunctionExpression':
+    case 'YieldExpression':
+    case 'TemplateLiteral':
+    case 'TaggedTemplateExpression':
+    case 'ClassExpression':
+    case 'MetaProperty':
+    case 'AwaitExpression':
+    case 'ChainExpression':
+    case 'ImportExpression':
+    case 'ParenthesizedExpression':
+    case 'ObjectPattern':
+    case 'ArrayPattern':
+    case 'RestElement':
+    case 'AssignmentPattern':
     default:
       const id = createNode(state, node.type, getNodeCode(node));
       addEdge(state, id, nextId);
