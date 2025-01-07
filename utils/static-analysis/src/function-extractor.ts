@@ -1,5 +1,6 @@
 import * as acorn from 'acorn';
 import * as walk from 'acorn-walk';
+import { simple } from 'acorn-walk';
 import { Function } from './utils/types';
 
 function stripFunctions(node: acorn.Node): acorn.Node {
@@ -18,7 +19,29 @@ function stripFunctions(node: acorn.Node): acorn.Node {
     };
   }
 
+  // Recursively process all properties
+  Object.keys(node).forEach((key) => {
+    // @ts-ignore
+    if (typeof node[key] === 'object') {
+      // @ts-ignore
+      node[key] = stripFunctions(node[key]);
+    }
+  });
+
   return node;
+}
+
+function getId(node: acorn.Node): string {
+  let value: string | undefined;
+  simple(node, {
+    TemplateLiteral(node: acorn.TemplateLiteral) {
+      const templateValue = node.quasis[0]?.value.raw;
+      if (value === undefined && templateValue.startsWith('JSCA_')) {
+        value = templateValue;
+      }
+    },
+  });
+  return value || '';
 }
 
 function extractFunctions(code: string): Function[] {
@@ -44,11 +67,15 @@ function extractFunctions(code: string): Function[] {
 
   function recordFunction(node: acorn.Function): void {
     const functionName = getUniqueFunctionName(node);
-    functions.push({
-      name: functionName,
-      params: node.params,
-      body: stripFunctions(node.body),
-    });
+    const body = stripFunctions(node.body);
+    const id = getId(body);
+    if (id)
+      functions.push({
+        id,
+        name: functionName,
+        params: node.params,
+        body,
+      });
   }
 
   walk.simple(ast, {

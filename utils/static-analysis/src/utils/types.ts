@@ -1,6 +1,7 @@
 import { Node, Pattern } from 'acorn';
 
 export interface Function {
+  id: string;
   name: string;
   params: Pattern[];
   body: Node;
@@ -12,6 +13,7 @@ export interface Library {
 }
 
 export interface AbsFunctionBase {
+  id: string;
   name: string;
   type: 'prop' | 'proptree' | 'cfg';
 }

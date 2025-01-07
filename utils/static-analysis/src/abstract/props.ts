@@ -1,5 +1,5 @@
-import { simple } from 'acorn-walk';
 import { Node } from 'acorn';
+import { simple } from 'acorn-walk';
 
 import { Function, props } from '../utils/types';
 function collectProps(func: Node): string[] {
@@ -17,6 +17,7 @@ function collectProps(func: Node): string[] {
 
 function props(functions: Function[]): props[] {
   return functions.map((func) => ({
+    id: func.id,
     name: func.name,
     type: 'prop',
     props: collectProps(func.body),

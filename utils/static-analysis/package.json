@@ -12,11 +12,11 @@
     "@types/escodegen": "^0.0.10",
     "acorn": "^8.14.0",
     "acorn-walk": "^8.3.4",
-    "escodegen": "^2.1.0",
-    "typescript": "^5.7.2"
+    "escodegen": "^2.1.0"
   },
   "devDependencies": {
     "@types/node": "^20.17.12",
-    "ts-node": "^10.9.2"
+    "ts-node": "10.9.2",
+    "typescript": "5.7.2"
   }
 }

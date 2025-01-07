@@ -3,7 +3,7 @@ import { AbsFunction, Function, Library } from './utils/types';
 
 function FunctionScorer<T extends AbsFunction>(
   lib1: Library,
-  lb2: Library,
+  lib2: Library,
   abstraction: (f: Function[]) => T[],
   comparison: (f1: T, f2: T) => boolean
 ): void {
@@ -11,132 +11,80 @@ function FunctionScorer<T extends AbsFunction>(
     abstraction(lib1.functions)
   );
   const proptree2 = measureTime('makePropstree from file2', () =>
-    abstraction(lb2.functions)
+    abstraction(lib2.functions)
   );
 
   //createDotGraph(proptree, file1);
   //createDotGraph(proptree2, file2);
+  function getScores(pt1: T[], pt2: T[]) {
+    const truePositives: { f1Name: string; f2Name: string; id: string }[] = [];
+    const falsePositives: {
+      f1Name: string;
+      f2Name: string;
+      id1: string;
+      id2: string;
+    }[] = [];
+    const falseNegatives: {
+      f1Name: string;
+      f2Name: string;
+      id1: string;
+      id2: string;
+    }[] = [];
 
-  const result = measureTime('Comparing functions', () =>
-    proptree1.map((f1) => proptree2.map((f2) => comparison(f1, f2)))
-  );
+    pt1.forEach((f1) => {
+      pt2.forEach((f2) => {
+        const logicallySame = comparison(f1, f2);
+        const reallySame = f1.id === f2.id;
+        if (logicallySame && reallySame)
+          truePositives.push({ f1Name: f1.name, f2Name: f2.name, id: f1.id });
+        else if (logicallySame)
+          falsePositives.push({
+            f1Name: f1.name,
+            f2Name: f2.name,
+            id1: f1.id,
+            id2: f2.id,
+          });
+        if (reallySame && !logicallySame)
+          falseNegatives.push({
+            f1Name: f1.name,
+            f2Name: f2.name,
+            id1: f1.id,
+            id2: f2.id,
+          });
+      });
+    });
 
-  function functionComparator(functions1, functions2) {
-    const results = {
-      differentTrees1: [],
-      differentTrees2: [],
+    const numTP = truePositives.length;
+    const numFP = falsePositives.length;
+
+    const numFN = falseNegatives.length;
+    console.log(falseNegatives);
+
+    const precisionString = `${numTP} / (${numTP} + ${numFP})`;
+    const precision = numTP / (numTP + numFP);
+
+    const recallString = `${numTP} / (${numTP} + ${numFN})`;
+    const recall = numTP / (numTP + numFN);
+
+    console.table({
+      precisionString,
+      precision,
+      recallString,
+      recall,
+    });
+    return {
+      truePositives,
+      falsePositives,
+      precision,
+      precisionString,
+      recall,
+      recallString,
     };
-
-    function makeTreeSet(functions) {
-      const propOrderMap = Object.entries(functions).sort(
-        (a, b) => +a[0].split('_')[0] - +b[0].split('_')[0]
-      );
-      const treeSet = new Set();
-
-      propOrderMap.forEach(([name, func]) => {
-        treeSet.add({ name, tree: func.proptree });
-      });
-
-      return treeSet;
-    }
-
-    function findDiff(sourceSet, targetSet, distinguished) {
-      const differences = [];
-      sourceSet.forEach((source) => {
-        let matchCount = 0;
-        targetSet.forEach((target) => {
-          if (compare(source.tree, target.tree, options)) matchCount++;
-        });
-        if (matchCount === 0) {
-          differences.push(source.name);
-        } else if (matchCount === 1) {
-          distinguished.push(source.name);
-        }
-      });
-      return differences;
-    }
-
-    function findSelfSimilar(treeSet) {
-      const selfList = [];
-      const trees = Array.from(treeSet);
-
-      trees.forEach((source, sourceIndex) => {
-        let hasEqual = false;
-        trees.forEach((target, targetIndex) => {
-          if (
-            sourceIndex !== targetIndex &&
-            compare(source.tree, target.tree, options)
-          ) {
-            hasEqual = true;
-          }
-        });
-        if (!hasEqual) {
-          selfList.push(source.name);
-        }
-      });
-      return selfList;
-    }
-
-    const treeSet1 = makeTreeSet(functions1);
-    const treeSet2 = makeTreeSet(functions2);
-
-    results.differentTrees1 = findDiff(
-      treeSet1,
-      treeSet2,
-      results.distinguished1
-    );
-    results.differentTrees2 = findDiff(
-      treeSet2,
-      treeSet1,
-      results.distinguished2
-    );
-    results.self1 = findSelfSimilar(treeSet1);
-    results.self2 = findSelfSimilar(treeSet2);
-    return results;
   }
-
-  const logLinks = (file, result, options) => {
-    if (options.log_limit) {
-      console.log('[[HEAD]]');
-      result.slice(0, options.log_limit.head).forEach((f) => logLink(file, f));
-      console.log('[[TAIL]]');
-      result.slice(-options.log_limit.tail).forEach((f) => logLink(file, f));
-    } else result.forEach((f) => logLink(file, f));
-  };
-
-  const logLink = (foldername, filename) =>
-    console.log(
-      `logs/functions/${foldername}/${filename}.js\n\tlogs/function-trees/${foldername}/tree_${filename}.png`
-    );
-
-  const log_options = {
-    log_limit: {
-      head: 5,
-      tail: 5,
-    }, // if not set, log all
-  };
-
-  function logResults(filename, results, index) {
-    const data = {
-      filename,
-      different: results[`differentTrees${index}`].length,
-      distinguished: results[`distinguished${index}`].length,
-      self: results[`self${index}`].length,
-    };
-
-    console.log('\n=== Analysis Results ===');
-    console.table(data);
-
-    console.log(`\nDetailed Results for ${filename}:`);
-    console.log('Different Trees:');
-    logLinks(filename, results[`differentTrees${index}`], log_options);
-
-    console.log('Distinguished:');
-    logLinks(filename, results[`distinguished${index}`], log_options);
-  }
-
-  logResults(file1, result, 1);
-  logResults(file2, result, 2);
+  const scores1 = getScores(proptree1, proptree2);
+  const scores2 = getScores(proptree2, proptree1);
+  console.log('scores1', scores1.precision);
+  console.log('scores2', scores2.precision);
 }
 
 export default FunctionScorer;

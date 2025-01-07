@@ -1,12 +1,12 @@
 import * as acorn from 'acorn';
 import * as walk from 'acorn-walk';
 import {
+  Function,
+  propstree,
   proptreeNode,
+  proptreeNodeConditional,
   proptreeNodeif,
   proptreeNodeLogical,
-  proptreeNodeConditional,
-  propstree,
-  Function,
 } from '../utils/types';
 
 type Options = {
@@ -23,8 +23,8 @@ type visitor = (node: acorn.Node, state: State) => void;
 const options: Options = {
   if_condition: true,
   early_return: true,
-  operators: ['+', '-', '*', '/', '%', '==', '>', '>=', '<', '<='],
-  literals: true,
+  operators: [], //['+', '-', '*', '/', '%', '==', '>', '>=', '<', '<='],
+  literals: false,
 };
 
 function makePropstree(func: acorn.Node): proptreeNode {
@@ -216,6 +216,7 @@ function makePropstree(func: acorn.Node): proptreeNode {
 
 function propstree(functions: Function[]): propstree[] {
   return functions.map((func) => ({
+    id: func.id,
     name: func.name,
     type: 'proptree',
     tree: makePropstree(func.body),

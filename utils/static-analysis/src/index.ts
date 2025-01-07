@@ -1,16 +1,21 @@
 import { readFileSync } from 'fs';
+import { join } from 'path';
 import abstraction from './abstract';
 import comparator from './compare';
 import extractFunctions from './function-extractor';
 import scorer from './scorer';
 import logFunctionCode from './utils/function-logger';
 import measureTime from './utils/timer';
-import { Function, Library, propstree } from './utils/types';
+import { Function, Library, props, propstree } from './utils/types';
 
 const file1: string = 'jquery_3.7.1_min.js';
-const file2: string = 'lodash_4.17.21_min.js';
-const code: string = readFileSync(`../target/${file1}`, 'utf-8');
-const code2: string = readFileSync(`../target/${file2}`, 'utf-8');
+const file2: string = 'jquery_3.7.1_babel-minify.js';
+
+const filePath1 = join(__dirname, '../target', file1);
+const filePath2 = join(__dirname, '../target', file2);
+
+const code: string = readFileSync(filePath1, 'utf-8');
+const code2: string = readFileSync(filePath2, 'utf-8');
 
 function extractAndLogFunctions(file: string, code: string): Function[] {
   return measureTime(`Extracting functions from ${file}`, () => {
@@ -33,3 +38,4 @@ const lib2: Library = {
 };
 
 scorer<propstree>(lib1, lib2, abstraction.propstree, comparator.propstree);
+scorer<props>(lib1, lib2, abstraction.props, comparator.props);
