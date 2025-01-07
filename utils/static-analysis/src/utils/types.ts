@@ -16,11 +16,11 @@ export interface AbsFunctionBase {
   type: 'prop' | 'proptree' | 'cfg';
 }
 
-export interface proptree extends AbsFunctionBase {
+export interface propstree extends AbsFunctionBase {
   type: 'proptree';
   tree: proptreeNode;
 }
-export interface prop extends AbsFunctionBase {
+export interface props extends AbsFunctionBase {
   type: 'prop';
   props: string[];
 }
@@ -28,7 +28,7 @@ export interface cfg extends AbsFunctionBase {
   type: 'cfg';
 }
 
-export type AbsFunction = proptree | prop | cfg;
+export type AbsFunction = propstree | props | cfg;
 
 export interface proptreeNodeBase {
   type: 'normal' | 'if' | 'logical' | 'conditional';

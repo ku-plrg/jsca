@@ -1,3 +1,4 @@
-import compare from './tree-comparator';
+import propstree from './propstree-comparator';
+import props from './props-comparator';
 
-export default { compare };
+export default { props, propstree };

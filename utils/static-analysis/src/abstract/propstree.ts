@@ -5,7 +5,7 @@ import {
   proptreeNodeif,
   proptreeNodeLogical,
   proptreeNodeConditional,
-  proptree,
+  propstree,
   Function,
 } from '../utils/types';
 
@@ -214,7 +214,7 @@ function makePropstree(func: acorn.Node): proptreeNode {
   return rootTree;
 }
 
-function propstree(functions: Function[]): proptree[] {
+function propstree(functions: Function[]): propstree[] {
   return functions.map((func) => ({
     name: func.name,
     type: 'proptree',

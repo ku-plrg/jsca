@@ -1,5 +1,5 @@
 import {
-  proptree,
+  propstree,
   proptreeNode,
   proptreeNodeConditional,
   proptreeNodeLogical,
@@ -38,7 +38,7 @@ const isEqualObject = (
   return keys1.every((key) => obj1[key] === obj2[key]);
 };
 
-function compare(func1: proptree, func2: proptree): boolean {
+function propstreeComparator(func1: propstree, func2: propstree): boolean {
   const sortArray = (arr: any[]) => [...(arr || [])].sort();
 
   const compareOtherProps = (t1: proptreeNode, t2: proptreeNode) => {
@@ -110,4 +110,4 @@ function compare(func1: proptree, func2: proptree): boolean {
   return compareTree(func1.tree, func2.tree);
 }
 
-export default compare;
+export default propstreeComparator;

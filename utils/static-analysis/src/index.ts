@@ -5,7 +5,7 @@ import extractFunctions from './function-extractor';
 import scorer from './scorer';
 import logFunctionCode from './utils/function-logger';
 import measureTime from './utils/timer';
-import { Function, Library, proptree } from './utils/types';
+import { Function, Library, propstree } from './utils/types';
 
 const file1: string = 'jquery_3.7.1_min.js';
 const file2: string = 'lodash_4.17.21_min.js';
@@ -32,4 +32,4 @@ const lib2: Library = {
   functions: extractAndLogFunctions(file2, code2),
 };
 
-scorer<proptree>(lib1, lib2, abstraction.propstree, comparator.compare);
+scorer<propstree>(lib1, lib2, abstraction.propstree, comparator.propstree);
