@@ -2,6 +2,8 @@ import { mkdirSync, writeFileSync } from 'fs';
 import path from 'path';
 import measureTime from './utils/timer';
 import { AbsFunction, Function, Library } from './utils/types';
+import fs from 'fs';
+import { stringifyIR } from './utils/ir_stringifier';
 
 function FunctionScorer<T extends AbsFunction>(
   lib1: Library,
@@ -16,7 +18,24 @@ function FunctionScorer<T extends AbsFunction>(
   const propstree2 = measureTime('makePropstree from file2', () =>
     abstraction(lib2.functions)
   );
+  propstree1.forEach((fun) => {
+    // Create logs directory if it doesn't exist
+    const logDir = path.join(__dirname, './logs', 'ir');
+    if (!fs.existsSync(logDir)) {
+      fs.mkdirSync(logDir, { recursive: true });
+    }
 
+    const id = fun.id;
+    const logFile = path.join(logDir, `ir_log_${id}.txt`);
+
+    try {
+      // Write stringified IR to file
+      const irString = stringifyIR(fun as any);
+      fs.writeFileSync(logFile, irString, 'utf8');
+    } catch (error) {
+      console.error('Failed to write IR log:', error);
+    }
+  });
   //createDotGraph(propstree, file1);
   //createDotGraph(propstree2, file2);
   function compare(pt1: T[], pt2: T[]) {
@@ -168,10 +187,10 @@ function FunctionScorer<T extends AbsFunction>(
     writeFileSync(filePath, mdContent, 'utf-8');
   }
   const scores1 = getScores(propstree1, propstree2);
-  const scores2 = getScores(propstree2, propstree1);
+  // const scores2 = getScores(propstree2, propstree1);
 
-  writeReport(scores1, lib1.name, lib2.name);
-  writeReport(scores2, lib2.name, lib1.name);
+  writeReport(scores1, 'jquery_3.7.1_min.js', 'jquery_3.7.1_min_esbuild.js');
+  // writeReport(scores2, 'jquery_3.7.1_min_esbuild.js', 'jquery_3.7.1_min.js');
 }
 
 export default FunctionScorer;

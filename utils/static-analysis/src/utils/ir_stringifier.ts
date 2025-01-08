@@ -1,0 +1,80 @@
+import { IRNode, IR, IRInst } from './types';
+
+function stringifyIRNode(node: IRNode, indent: number = 0): string {
+  const padding = '  '.repeat(indent);
+
+  switch (node.type) {
+    case IRInst.EMPTY:
+      return ``;
+
+    case IRInst.BLANK:
+      return `_`;
+
+    case IRInst.SEQ:
+      if (!node.children || node.children.length !== 2) {
+        throw new Error('SEQ node must have exactly 2 children');
+      }
+      return [
+        stringifyIRNode(node.children[0], indent + 1),
+        stringifyIRNode(node.children[1], indent + 1) + ';',
+      ].join('\n');
+
+    case IRInst.ASSIGN:
+      if (!node.children || node.children.length !== 2) {
+        throw new Error('ASSIGN node must have exactly 2 children');
+      }
+      return [
+        stringifyIRNode(node.children[0], indent + 1) +
+          ' =' +
+          stringifyIRNode(node.children[1], indent + 1),
+      ].join('\n');
+
+    case IRInst.PROP:
+      if (!node.children || node.children.length !== 1) {
+        throw new Error('PROP node must have exactly 1 child');
+      }
+      return [
+        `$.(${node.id})`,
+        stringifyIRNode(node.children[0], indent + 1),
+      ].join('\n');
+
+    case IRInst.COND:
+      if (!node.children || node.children.length !== 3) {
+        throw new Error('COND node must have exactly 3 children');
+      }
+      return [
+        stringifyIRNode(node.children[0], indent + 1) +
+          ' ?' +
+          stringifyIRNode(node.children[1], indent + 1) +
+          ':' +
+          stringifyIRNode(node.children[2], indent + 1),
+      ].join('\n');
+
+    case IRInst.FORIN:
+      if (!node.children || node.children.length !== 2) {
+        throw new Error('FORIN node must have exactly 2 children');
+      }
+      return [
+        `${padding}FORIN`,
+        stringifyIRNode(node.children[0], indent + 1),
+        stringifyIRNode(node.children[1], indent + 1),
+      ].join('\n');
+
+    case IRInst.LOOP:
+      if (!node.children || node.children.length !== 2) {
+        throw new Error('LOOP node must have exactly 2 children');
+      }
+      return [
+        `${padding}LOOP`,
+        stringifyIRNode(node.children[0], indent + 1),
+        stringifyIRNode(node.children[1], indent + 1),
+      ].join('\n');
+
+    default:
+      throw new Error(`Unknown IR type: ${node.type}`);
+  }
+}
+
+export function stringifyIR(ir: IR): string {
+  return stringifyIRNode(ir.ir);
+}

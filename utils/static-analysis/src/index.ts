@@ -6,11 +6,10 @@ import extractFunctions from './function-extractor';
 import scorer from './scorer';
 import logFunctionCode from './utils/function-logger';
 import measureTime from './utils/timer';
-import { Function, Library, Props, Propstree } from './utils/types';
-import propstree from './abstract/propstree';
+import { Function, Library, Props, Propstree, IR } from './utils/types';
 
-const file1: string = 'jquery_3.7.1_min.js';
-const file2: string = 'jquery_3.7.1_min_terser-compress.js';
+const file1: string = 'jquery_min.js';
+const file2: string = 'jquery_min_esbuild.js';
 
 const filePath1 = join(__dirname, '../target', file1);
 const filePath2 = join(__dirname, '../target', file2);
@@ -38,11 +37,12 @@ const lib2: Library = {
   functions: extractAndLogFunctions(file2, code2),
 };
 
-scorer<Propstree>(
-  lib1,
-  lib2,
-  abstraction.propstree,
-  comparator.propstree,
-  'Propstree'
-);
-scorer<Props>(lib1, lib2, abstraction.props, comparator.props, 'Props');
+// scorer<Propstree>(
+//   lib1,
+//   lib2,
+//   abstraction.propstree,
+//   comparator.propstree,
+//   'Propstree'
+// );
+// scorer<Props>(lib1, lib2, abstraction.props, comparator.props, 'Props');
+scorer<IR>(lib1, lib2, abstraction.ir, comparator.ir, 'IR');

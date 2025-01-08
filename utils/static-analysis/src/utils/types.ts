@@ -1,4 +1,5 @@
 import { Node, Pattern } from 'acorn';
+import exp from 'constants';
 
 export interface Function {
   id: string;
@@ -15,7 +16,7 @@ export interface Library {
 export interface AbsFunctionBase {
   id: string;
   name: string;
-  type: 'prop' | 'propstree' | 'cfg';
+  type: 'prop' | 'propstree' | 'cfg' | 'ir';
 }
 
 export interface Propstree extends AbsFunctionBase {
@@ -29,8 +30,12 @@ export interface Props extends AbsFunctionBase {
 export interface CFG extends AbsFunctionBase {
   type: 'cfg';
 }
+export interface IR extends AbsFunctionBase {
+  type: 'ir';
+  ir: IRNode;
+}
 
-export type AbsFunction = Propstree | Props | CFG;
+export type AbsFunction = Propstree | Props | CFG | IR;
 
 export interface PropstreeNodeBase {
   type: 'normal' | 'if' | 'logical' | 'conditional';
@@ -72,3 +77,58 @@ export type PropstreeNode =
   | PropstreeNodeif
   | PropstreeNodeConditional
   | PropstreeNodeLogical;
+
+export enum IRInst {
+  EMPTY,
+  BLANK,
+  SEQ,
+  ASSIGN,
+  PROP,
+  COND,
+  FORIN,
+  LOOP,
+}
+
+export interface IRNode {
+  type: IRInst;
+  id?: string;
+  children?: IRNode[];
+}
+
+export interface EmptyNode extends IRNode {
+  type: IRInst.EMPTY;
+}
+
+export interface BlankNode extends IRNode {
+  type: IRInst.BLANK;
+}
+
+export interface SeqNode extends IRNode {
+  type: IRInst.SEQ;
+  children: [IRNode, IRNode];
+}
+
+export interface AssignNode extends IRNode {
+  type: IRInst.ASSIGN;
+  children: [IRNode, IRNode];
+}
+
+export interface PropNode extends IRNode {
+  type: IRInst.PROP;
+  id: string;
+  children: [BlankNode];
+}
+
+export interface CondNode extends IRNode {
+  type: IRInst.COND;
+  children: [BlankNode, BlankNode, BlankNode];
+}
+
+export interface ForInNode extends IRNode {
+  type: IRInst.FORIN;
+  children: [IRNode, IRNode];
+}
+export interface LoopNode extends IRNode {
+  type: IRInst.LOOP;
+  children: [IRNode, IRNode];
+}
