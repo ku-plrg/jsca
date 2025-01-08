@@ -22,38 +22,37 @@ const injectLiteral = (code) => {
         node.type === 'FunctionExpression'
       ) {
         const startLine = node.loc.start.line;
+        const endLine = node.loc.end.line;
 
-        // Create a TemplateLiteral node
-        const templateLiteral = {
-          type: 'TemplateLiteral',
-          quasis: [
+        // Create a CallExpression for Symbol
+        const callExpression = {
+          type: 'CallExpression',
+          callee: {
+            type: 'Identifier',
+            name: 'Symbol',
+          },
+          arguments: [
             {
-              type: 'TemplateElement',
-              value: {
-                raw: `JSCA_${startLine}`,
-                cooked: `JSCA_${startLine}`,
-              },
-              tail: true,
+              type: 'Literal',
+              value: `JSCA_${startLine}_${endLine}`,
             },
           ],
-          expressions: [],
         };
 
-        // Insert the TemplateLiteral at the top of the body
-        const newNode = {
+        // Insert the Symbol creation call as a statement
+        const expressionStatement = {
           type: 'ExpressionStatement',
-          expression: templateLiteral,
+          expression: callExpression,
         };
 
-        node.body.body.unshift(newNode);
+        node.body.body.unshift(expressionStatement);
       }
     },
   });
 
   // Generate the modified code
-  const modifiedCode = generate(formattedAst, {
-    comments: true, // Preserve comments
-  });
+  const modifiedCode = generate(formattedAst);
+
   return modifiedCode;
 };
 
