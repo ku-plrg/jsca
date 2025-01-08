@@ -1,9 +1,8 @@
-import { mkdirSync, writeFileSync } from 'fs';
+import fs, { mkdirSync, writeFileSync } from 'fs';
 import path from 'path';
+import { stringifyIR } from './utils/ir_stringifier';
 import measureTime from './utils/timer';
 import { AbsFunction, Function, Library } from './utils/types';
-import fs from 'fs';
-import { stringifyIR } from './utils/ir_stringifier';
 
 function FunctionScorer<T extends AbsFunction>(
   lib1: Library,
@@ -75,21 +74,20 @@ function FunctionScorer<T extends AbsFunction>(
           });
           uniqueMatch = false;
         }
-        if (reallySame && !logicallySame)
-          if (reallySame && !logicallySame) {
-            falseNegatives.push({
-              f1Name: f1.name,
-              f2Name: f2.name,
-              id: f1.id,
-            });
-            console.log(f1, f2);
-          } else if (!logicallySame)
-            trueNegatives.push({
-              f1Name: f1.name,
-              f2Name: f2.name,
-              id1: f1.id,
-              id2: f2.id,
-            });
+        if (reallySame && !logicallySame) {
+          falseNegatives.push({
+            f1Name: f1.name,
+            f2Name: f2.name,
+            id: f1.id,
+          });
+          console.log(f1, f2);
+        } else if (!logicallySame)
+          trueNegatives.push({
+            f1Name: f1.name,
+            f2Name: f2.name,
+            id1: f1.id,
+            id2: f2.id,
+          });
       });
       if (uniqueMatch) {
         uniquefuncs.push({ f1Name: f1.name, id: f1.id });
