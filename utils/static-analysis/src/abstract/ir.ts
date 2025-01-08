@@ -1,5 +1,5 @@
-import { Function, IRNode, IRInst, IR } from '../utils/types';
 import * as acorn from 'acorn';
+import { Function, IR, IRInst, IRNode } from '../utils/types';
 
 type Visitor = {
   [key: string]: (node: acorn.Node) => IRNode;
@@ -328,14 +328,18 @@ function UnsupportedStatementError(statement: string) {
 
 function compile(node: acorn.Node): IRNode {
   const visitor = createVisitor();
-  const handler = visitor[node.type];
+  try {
+    const handler = visitor[node.type];
 
-  if (!handler) {
-    console.error(`Unsupported node type: ${node.type}`);
+    if (!handler) {
+      console.error(`Unsupported node type: ${node.type}`);
+      return { type: IRInst.EMPTY };
+    }
+
+    return handler(node);
+  } catch (e) {
     return { type: IRInst.EMPTY };
   }
-
-  return handler(node);
 }
 
 function ir(functions: Function[]): IR[] {
