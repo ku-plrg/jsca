@@ -57,18 +57,20 @@ function FunctionScorer<T extends AbsFunction>(
           uniqueMatch = false;
         }
         if (reallySame && !logicallySame)
-          falseNegatives.push({
-            f1Name: f1.name,
-            f2Name: f2.name,
-            id: f1.id,
-          });
-        else if (!logicallySame)
-          trueNegatives.push({
-            f1Name: f1.name,
-            f2Name: f2.name,
-            id1: f1.id,
-            id2: f2.id,
-          });
+          if (reallySame && !logicallySame) {
+            falseNegatives.push({
+              f1Name: f1.name,
+              f2Name: f2.name,
+              id: f1.id,
+            });
+            console.log(f1, f2);
+          } else if (!logicallySame)
+            trueNegatives.push({
+              f1Name: f1.name,
+              f2Name: f2.name,
+              id1: f1.id,
+              id2: f2.id,
+            });
       });
       if (uniqueMatch) {
         uniquefuncs.push({ f1Name: f1.name, id: f1.id });
@@ -125,8 +127,7 @@ function FunctionScorer<T extends AbsFunction>(
     const TEMPLATE = (id: string, name: string, loc: string) =>
       `[${id}(${name})](${LOG_DIR}/${loc}/${name}.js)`;
     let mdContent = '';
-    mdContent += `## Scores\n|Recall|Precision|\n|---|---|\n|${score.recall}|${score.precision}|\n|${score.recallString}|${score.precisionString}|\n\n`;
-    mdContent += `|TP|TN|FP|FN|\n|---|---|---|---|\n|${score.truePositives.length}|${score.trueNegatives.length}|${score.falsePositives.length}|${score.falseNegatives.length}|\n`;
+    mdContent += `## Scores\n|Precision|Recall|TP|TN|FP|FN|\n|---|---|---|---|---|---|\n|${score.precision}|${score.recall}|${score.truePositives.length}|${score.trueNegatives.length}|${score.falsePositives.length}|${score.falseNegatives.length}|\n\n`;
 
     mdContent += `## False Negatives: ${
       score.falseNegatives.length
@@ -169,8 +170,8 @@ function FunctionScorer<T extends AbsFunction>(
   const scores1 = getScores(propstree1, propstree2);
   const scores2 = getScores(propstree2, propstree1);
 
-  writeReport(scores1, 'jquery_3.7.1_min.js', 'jquery_3.7.1_min_terser.js');
-  writeReport(scores2, 'jquery_3.7.1_min_terser.js', 'jquery_3.7.1_min.js');
+  writeReport(scores1, lib1.name, lib2.name);
+  writeReport(scores2, lib2.name, lib1.name);
 }
 
 export default FunctionScorer;

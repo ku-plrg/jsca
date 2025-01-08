@@ -34,6 +34,20 @@ function stripFunctions(node: acorn.Node): acorn.Node {
 function getId(node: acorn.Node): string {
   let value: string | undefined;
   simple(node, {
+    CallExpression(node: acorn.CallExpression) {
+      if (
+        node.callee.type === 'Identifier' &&
+        node.callee.name === 'Symbol' &&
+        node.arguments.length > 0 &&
+        node.arguments[0].type === 'Literal' &&
+        typeof node.arguments[0].value === 'string'
+      ) {
+        const symbolValue = node.arguments[0].value;
+        if (value === undefined && symbolValue.startsWith('JSCA_')) {
+          value = symbolValue;
+        }
+      }
+    },
     TemplateLiteral(node: acorn.TemplateLiteral) {
       const templateValue = node.quasis[0]?.value.raw;
       if (value === undefined && templateValue.startsWith('JSCA_')) {

@@ -10,7 +10,7 @@ import { Function, Library, Props, Propstree } from './utils/types';
 import propstree from './abstract/propstree';
 
 const file1: string = 'jquery_3.7.1_min.js';
-const file2: string = 'jquery_3.7.1_min_terser.js';
+const file2: string = 'jquery_3.7.1_min_terser-compress.js';
 
 const filePath1 = join(__dirname, '../target', file1);
 const filePath2 = join(__dirname, '../target', file2);
@@ -30,11 +30,11 @@ function extractAndLogFunctions(file: string, code: string): Function[] {
   });
 }
 const lib1: Library = {
-  name: 'file1',
+  name: file1,
   functions: extractAndLogFunctions(file1, code),
 };
 const lib2: Library = {
-  name: 'file2',
+  name: file2,
   functions: extractAndLogFunctions(file2, code2),
 };
 
