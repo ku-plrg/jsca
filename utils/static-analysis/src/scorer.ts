@@ -10,11 +10,11 @@ function FunctionScorer<T extends AbsFunction>(
   abstraction: (f: Function[]) => T[],
   comparison: (f1: T, f2: T) => boolean,
   logFileName: string
-): void {
-  const propstree1 = measureTime('makePropstree from file1', () =>
+) {
+  const propstree1 = measureTime(`make abstraction from ${lib1.name}`, () =>
     abstraction(lib1.functions)
   );
-  const propstree2 = measureTime('makePropstree from file2', () =>
+  const propstree2 = measureTime(`make abstraction from ${lib2.name}`, () =>
     abstraction(lib2.functions)
   );
   propstree1.forEach((fun) => {
@@ -80,7 +80,6 @@ function FunctionScorer<T extends AbsFunction>(
             f2Name: f2.name,
             id: f1.id,
           });
-          console.log(f1, f2);
         } else if (!logicallySame)
           trueNegatives.push({
             f1Name: f1.name,
@@ -187,8 +186,9 @@ function FunctionScorer<T extends AbsFunction>(
   const scores1 = getScores(propstree1, propstree2);
   // const scores2 = getScores(propstree2, propstree1);
 
-  writeReport(scores1, 'jquery_3.7.1_min.js', 'jquery_3.7.1_min_esbuild.js');
-  // writeReport(scores2, 'jquery_3.7.1_min_esbuild.js', 'jquery_3.7.1_min.js');
+  writeReport(scores1, lib1.name, lib2.name);
+  // writeReport(scores2, lib2.name, lib1.name);
+  return scores1;
 }
 
 export default FunctionScorer;
