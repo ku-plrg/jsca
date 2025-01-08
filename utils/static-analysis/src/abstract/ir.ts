@@ -9,7 +9,7 @@ function createVisitor(): Visitor {
   return {
     // Statements
     ExpressionStatement(node: acorn.Node): IRNode {
-      return { type: IRInst.BLANK };
+      return compile((node as any).expression);
     },
     BlockStatement(node: acorn.Node): IRNode {
       const statements = (node as any).body;
@@ -85,13 +85,13 @@ function createVisitor(): Visitor {
       };
     },
     SwitchStatement(): IRNode {
-      return { type: IRInst.BLANK };
+      return { type: IRInst.EMPTY };
     },
     ThrowStatement(): IRNode {
-      return { type: IRInst.BLANK };
+      return { type: IRInst.EMPTY };
     },
     TryStatement(): IRNode {
-      return { type: IRInst.BLANK };
+      return { type: IRInst.EMPTY };
     },
     WhileStatement(node: acorn.Node): IRNode {
       return {
@@ -219,26 +219,23 @@ function createVisitor(): Visitor {
         children: [left, { type: IRInst.SEQ, children: [cond_node, right] }],
       };
     },
+    //TODO: MemberExpression can have some missing cases
     MemberExpression(node: acorn.Node): IRNode {
       const { computed, property, object } = node as any;
 
       if (!computed && property?.type === 'Identifier') {
-        const objectIR = compile(object);
+        return {
+          type: IRInst.PROP,
+          id: property.name,
+          children: [{ type: IRInst.BLANK }],
+        };
+      } else if (property)
         return {
           type: IRInst.SEQ,
-          children: [
-            objectIR,
-            {
-              type: IRInst.PROP,
-              id: property.name,
-              children: [{ type: IRInst.BLANK }],
-            },
-          ],
+          children: [compile(object), compile(property)],
         };
-      } else
-        return {
-          type: IRInst.BLANK,
-        };
+
+      return { type: IRInst.EMPTY };
     },
     ConditionalExpression(node: acorn.Node): IRNode {
       const test = compile((node as any).test);
@@ -273,7 +270,6 @@ function createVisitor(): Visitor {
     CallExpression(node: acorn.Node): IRNode {
       const callee = compile((node as any).callee);
       const args = (node as any).arguments;
-
       if (args.length === 0) {
         return callee;
       }
@@ -336,7 +332,7 @@ function compile(node: acorn.Node): IRNode {
 
   if (!handler) {
     console.error(`Unsupported node type: ${node.type}`);
-    return { type: IRInst.BLANK };
+    return { type: IRInst.EMPTY };
   }
 
   return handler(node);

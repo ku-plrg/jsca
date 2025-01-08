@@ -3,6 +3,8 @@ import { IRNode, IR, IRInst } from './types';
 function stringifyIRNode(node: IRNode, indent: number = 0): string {
   const padding = '  '.repeat(indent);
 
+  const none = IRInst.EMPTY;
+
   switch (node.type) {
     case IRInst.EMPTY:
       return ``;
@@ -14,9 +16,18 @@ function stringifyIRNode(node: IRNode, indent: number = 0): string {
       if (!node.children || node.children.length !== 2) {
         throw new Error('SEQ node must have exactly 2 children');
       }
+      if (node.children[0].type === none && node.children[1].type === none) {
+        return ``;
+      }
+      if (node.children[0].type === none) {
+        return stringifyIRNode(node.children[1], indent);
+      }
+      if (node.children[1].type === none) {
+        return stringifyIRNode(node.children[0], indent);
+      }
       return [
         stringifyIRNode(node.children[0], indent + 1),
-        stringifyIRNode(node.children[1], indent + 1) + ';',
+        stringifyIRNode(node.children[1], indent + 1),
       ].join('\n');
 
     case IRInst.ASSIGN:
@@ -25,17 +36,16 @@ function stringifyIRNode(node: IRNode, indent: number = 0): string {
       }
       return [
         stringifyIRNode(node.children[0], indent + 1) +
-          ' =' +
+          ' = ' +
           stringifyIRNode(node.children[1], indent + 1),
       ].join('\n');
 
     case IRInst.PROP:
-      if (!node.children || node.children.length !== 1) {
+      if (!node.children) {
         throw new Error('PROP node must have exactly 1 child');
       }
       return [
-        `$.(${node.id})`,
-        stringifyIRNode(node.children[0], indent + 1),
+        `${stringifyIRNode(node.children[0], indent + 1)}.${node.id}`,
       ].join('\n');
 
     case IRInst.COND:
@@ -44,9 +54,9 @@ function stringifyIRNode(node: IRNode, indent: number = 0): string {
       }
       return [
         stringifyIRNode(node.children[0], indent + 1) +
-          ' ?' +
+          ' ? ' +
           stringifyIRNode(node.children[1], indent + 1) +
-          ':' +
+          ' : ' +
           stringifyIRNode(node.children[2], indent + 1),
       ].join('\n');
 
