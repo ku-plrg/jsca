@@ -81,7 +81,7 @@ TARGET_ABSTRACTIONS.forEach((abstractionType) => {
     )
     .join('\n')}`;
   writeFileSync(
-    `./src/logs/reports/scores_${abstractionType}.md`,
+    `./logs/reports/scores_${abstractionType}.md`,
     mdContent,
     'utf-8'
   );

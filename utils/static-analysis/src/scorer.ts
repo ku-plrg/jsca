@@ -1,8 +1,8 @@
-import fs, { mkdirSync, writeFileSync } from 'fs';
+import { mkdirSync, writeFileSync } from 'fs';
 import path from 'path';
-import { stringifyIR } from './utils/ir_stringifier';
 import measureTime from './utils/timer';
 import { AbsFunction, Function, Library } from './utils/types';
+import LogIR from './utils/ir-logger';
 
 function FunctionScorer<T extends AbsFunction>(
   lib1: Library,
@@ -11,30 +11,18 @@ function FunctionScorer<T extends AbsFunction>(
   comparison: (f1: T, f2: T) => boolean,
   logFileName: string
 ) {
-  const propstree1 = measureTime(`make abstraction from ${lib1.name}`, () =>
+  const absfuncs1 = measureTime(`make abstraction from ${lib1.name}`, () =>
     abstraction(lib1.functions)
   );
-  const propstree2 = measureTime(`make abstraction from ${lib2.name}`, () =>
+  const absfuncs2 = measureTime(`make abstraction from ${lib2.name}`, () =>
     abstraction(lib2.functions)
   );
-  propstree1.forEach((fun) => {
-    // Create logs directory if it doesn't exist
-    const logDir = path.join(__dirname, './logs', 'ir');
-    if (!fs.existsSync(logDir)) {
-      fs.mkdirSync(logDir, { recursive: true });
-    }
+  if (absfuncs1[0].type === 'ir') {
+    // Log IR
+    LogIR(absfuncs1, lib1);
+    LogIR(absfuncs2, lib2);
+  }
 
-    const id = fun.id;
-    const logFile = path.join(logDir, `ir_log_${id}.txt`);
-
-    try {
-      // Write stringified IR to file
-      const irString = stringifyIR(fun as any);
-      fs.writeFileSync(logFile, irString, 'utf8');
-    } catch (error) {
-      console.error('Failed to write IR log:', error);
-    }
-  });
   //createDotGraph(propstree, file1);
   //createDotGraph(propstree2, file2);
   function compare(pt1: T[], pt2: T[]) {
@@ -178,12 +166,12 @@ function FunctionScorer<T extends AbsFunction>(
       .slice(0, 20)
       .map((fn) => `|${TEMPLATE(fn.id, fn.f1Name, l1)}|`)
       .join('\n')}\n`;
-    const fileDir = './src/logs/reports';
+    const fileDir = './logs/reports';
     const filePath = path.resolve(fileDir, `${logFileName}-${l1}-${l2}.md`);
     mkdirSync(fileDir, { recursive: true });
     writeFileSync(filePath, mdContent, 'utf-8');
   }
-  const scores1 = getScores(propstree1, propstree2);
+  const scores1 = getScores(absfuncs1, absfuncs2);
   // const scores2 = getScores(propstree2, propstree1);
 
   writeReport(scores1, lib1.name, lib2.name);
