@@ -30,12 +30,11 @@ function createVisitor(): Visitor {
       return { type: IRInst.EMPTY };
     },
     DebuggerStatement(): IRNode {
-      throw UnsupportedStatementError('WithStatement');
+      throw UnsupportedStatementError('DebuggerStatement');
     },
     WithStatement(): IRNode {
       throw UnsupportedStatementError('WithStatement');
     },
-
     ReturnStatement(node: acorn.Node): IRNode {
       const argument = (node as any).argument;
       if (!argument) {
@@ -44,7 +43,7 @@ function createVisitor(): Visitor {
       return compile(argument);
     },
     LabeledStatement(): IRNode {
-      return { type: IRInst.EMPTY };
+      throw UnsupportedStatementError('LabeledStatement');
     },
     BreakStatement(): IRNode {
       return { type: IRInst.EMPTY };
@@ -84,14 +83,46 @@ function createVisitor(): Visitor {
         ],
       };
     },
-    SwitchStatement(): IRNode {
-      return { type: IRInst.EMPTY };
+    SwitchStatement(node: acorn.Node): IRNode {
+      const discriminant = compile((node as any).discriminant);
+      const cases = (node as any).cases;
+      if (cases.length === 0) {
+        return { type: IRInst.EMPTY };
+      }
+
+      let result = compile(cases[0]);
+      for (let i = 1; i < cases.length; i++) {
+        result = {
+          type: IRInst.SEQ,
+          children: [result, compile(cases[i])],
+        };
+      }
+      return {
+        type: IRInst.SEQ,
+        children: [discriminant, result],
+      };
     },
-    ThrowStatement(): IRNode {
-      return { type: IRInst.EMPTY };
+    ThrowStatement(node: acorn.Node): IRNode {
+      return compile((node as any).argument);
     },
-    TryStatement(): IRNode {
-      return { type: IRInst.EMPTY };
+    TryStatement(node: acorn.Node): IRNode {
+      const block = compile((node as any).block);
+      const handler = (node as any).handler
+        ? compile((node as any).handler.body)
+        : { type: IRInst.EMPTY };
+      const finalizer = (node as any).finalizer
+        ? compile((node as any).finalizer)
+        : { type: IRInst.EMPTY };
+      return {
+        type: IRInst.SEQ,
+        children: [
+          block,
+          {
+            type: IRInst.SEQ,
+            children: [handler, finalizer],
+          },
+        ],
+      };
     },
     WhileStatement(node: acorn.Node): IRNode {
       return {
@@ -146,7 +177,20 @@ function createVisitor(): Visitor {
       throw UnsupportedStatementError('FunctionDeclaration');
     },
     VariableDeclaration(node: acorn.Node): IRNode {
-      return { type: IRInst.EMPTY };
+      const declarations = (node as any).declarations;
+      if (declarations.length === 0) {
+        return { type: IRInst.EMPTY };
+      }
+      let result = compile((declarations[0] as any).init);
+      for (let i = 1; i < declarations.length; i++) {
+        if ((declarations[i] as any).init) {
+          result = {
+            type: IRInst.SEQ,
+            children: [result, compile((declarations[i] as any).init)],
+          };
+        }
+      }
+      return result;
     },
     ClassDeclaration(): IRNode {
       return { type: IRInst.EMPTY };
@@ -160,7 +204,7 @@ function createVisitor(): Visitor {
       return { type: IRInst.EMPTY };
     },
     ThisExpression(): IRNode {
-      return { type: IRInst.BLANK };
+      return { type: IRInst.EMPTY };
     },
     ArrayExpression(node: acorn.Node): IRNode {
       const elements = (node as any).elements;
@@ -282,7 +326,19 @@ function createVisitor(): Visitor {
     },
     //TODO: NewExpression
     NewExpression(node: acorn.Node): IRNode {
-      return compile((node as any).callee);
+      const callee = compile((node as any).callee);
+      const args = (node as any).arguments;
+      if (args.length === 0) {
+        return callee;
+      }
+      let result = callee;
+      for (let i = 1; i < args.length; i++) {
+        result = {
+          type: IRInst.SEQ,
+          children: [result, compile(args[i])],
+        };
+      }
+      return result;
     },
     SequenceExpression(node: acorn.Node): IRNode {
       const expressions = (node as any).expressions;
@@ -306,10 +362,10 @@ function createVisitor(): Visitor {
       throw UnsupportedStatementError('YieldExpression');
     },
     TemplateLiteral(): IRNode {
-      return { type: IRInst.EMPTY };
+      throw UnsupportedStatementError('TemplateLiteral');
     },
     TaggedTemplateExpression(): IRNode {
-      return { type: IRInst.EMPTY };
+      throw UnsupportedStatementError('TaggedTemplateExpression');
     },
   } as Visitor;
 }
