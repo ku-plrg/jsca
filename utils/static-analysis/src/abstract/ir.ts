@@ -222,18 +222,16 @@ function createVisitor(): Visitor {
     //TODO: MemberExpression can have some missing cases
     MemberExpression(node: acorn.Node): IRNode {
       const { computed, property, object } = node as any;
+      const Objnode = compile(object);
 
       if (!computed && property?.type === 'Identifier') {
-        return {
+        const prop_node = {
           type: IRInst.PROP,
           id: property.name,
           children: [{ type: IRInst.BLANK }],
         };
-      } else if (property)
-        return {
-          type: IRInst.SEQ,
-          children: [compile(object), compile(property)],
-        };
+        return { type: IRInst.SEQ, children: [Objnode, prop_node] };
+      }
 
       return { type: IRInst.EMPTY };
     },

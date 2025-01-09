@@ -26,13 +26,22 @@ function stringifyIRNode(node: IRNode, indent: number = 0): string {
         return stringifyIRNode(node.children[0], indent);
       }
       return [
-        stringifyIRNode(node.children[0], indent + 1),
+        stringifyIRNode(node.children[0], indent + 1) + ';',
         stringifyIRNode(node.children[1], indent + 1),
       ].join('\n');
 
     case IRInst.ASSIGN:
       if (!node.children || node.children.length !== 2) {
         throw new Error('ASSIGN node must have exactly 2 children');
+      }
+      if (node.children[0].type === none && node.children[1].type === none) {
+        return ``;
+      }
+      if (node.children[0].type === none) {
+        return ' _ = ' + stringifyIRNode(node.children[1], indent);
+      }
+      if (node.children[1].type === none) {
+        return stringifyIRNode(node.children[0], indent) + ' = _';
       }
       return [
         stringifyIRNode(node.children[0], indent + 1) +
@@ -86,5 +95,5 @@ function stringifyIRNode(node: IRNode, indent: number = 0): string {
 }
 
 export function stringifyIR(ir: IR): string {
-  return stringifyIRNode(ir.ir);
+  return stringifyIRNode(ir.ir) + ';';
 }
