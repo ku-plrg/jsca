@@ -9,10 +9,12 @@ function createVisitor(): Visitor {
   return {
     // Statements
     ExpressionStatement(node: acorn.Node): IRNode {
-      return compile((node as any).expression);
+      const exprNode = node as acorn.ExpressionStatement;
+      return compile(exprNode.expression);
     },
     BlockStatement(node: acorn.Node): IRNode {
-      const statements = (node as any).body;
+      const blockNode = node as acorn.BlockStatement;
+      const statements = blockNode.body;
       if (statements.length === 0) {
         return { type: IRInst.EMPTY };
       }
@@ -36,7 +38,8 @@ function createVisitor(): Visitor {
       throw UnsupportedStatementError('WithStatement');
     },
     ReturnStatement(node: acorn.Node): IRNode {
-      const argument = (node as any).argument;
+      const returnNode = node as acorn.ReturnStatement;
+      const argument = returnNode.argument;
       if (!argument) {
         return { type: IRInst.EMPTY };
       }
@@ -52,10 +55,11 @@ function createVisitor(): Visitor {
       return { type: IRInst.EMPTY };
     },
     IfStatement(node: acorn.Node): IRNode {
-      const test = compile((node as any).test);
-      const consequent = compile((node as any).consequent);
-      const alternate = (node as any).alternate
-        ? compile((node as any).alternate)
+      const ifNode = node as acorn.IfStatement;
+      const test = compile(ifNode.test);
+      const consequent = compile(ifNode.consequent);
+      const alternate = ifNode.alternate
+        ? compile(ifNode.alternate)
         : { type: IRInst.EMPTY };
       const if_node = {
         type: IRInst.COND,
@@ -84,8 +88,9 @@ function createVisitor(): Visitor {
       };
     },
     SwitchStatement(node: acorn.Node): IRNode {
-      const discriminant = compile((node as any).discriminant);
-      const cases = (node as any).cases;
+      const switchNode = node as acorn.SwitchStatement;
+      const discriminant = compile(switchNode.discriminant);
+      const cases = switchNode.cases;
       if (cases.length === 0) {
         return { type: IRInst.EMPTY };
       }
@@ -103,15 +108,17 @@ function createVisitor(): Visitor {
       };
     },
     ThrowStatement(node: acorn.Node): IRNode {
-      return compile((node as any).argument);
+      const throwNode = node as acorn.ThrowStatement;
+      return compile(throwNode.argument);
     },
     TryStatement(node: acorn.Node): IRNode {
-      const block = compile((node as any).block);
-      const handler = (node as any).handler
-        ? compile((node as any).handler.body)
+      const tryNode = node as acorn.TryStatement;
+      const block = compile(tryNode.block);
+      const handler = tryNode.handler
+        ? compile(tryNode.handler.body)
         : { type: IRInst.EMPTY };
-      const finalizer = (node as any).finalizer
-        ? compile((node as any).finalizer)
+      const finalizer = tryNode.finalizer
+        ? compile(tryNode.finalizer)
         : { type: IRInst.EMPTY };
       return {
         type: IRInst.SEQ,
@@ -125,28 +132,31 @@ function createVisitor(): Visitor {
       };
     },
     WhileStatement(node: acorn.Node): IRNode {
+      const whileNode = node as acorn.WhileStatement;
       return {
         type: IRInst.LOOP,
-        children: [compile((node as any).test), compile((node as any).body)],
+        children: [compile(whileNode.test), compile(whileNode.body)],
       };
     },
     DoWhileStatement(node: acorn.Node): IRNode {
+      const doWhileNode = node as acorn.DoWhileStatement;
       return {
         type: IRInst.LOOP,
-        children: [compile((node as any).test), compile((node as any).body)],
+        children: [compile(doWhileNode.test), compile(doWhileNode.body)],
       };
     },
     ForStatement(node: acorn.Node): IRNode {
-      const init = (node as any).init
-        ? compile((node as any).init)
+      const forNode = node as acorn.ForStatement;
+      const init = forNode.init
+        ? compile(forNode.init)
         : { type: IRInst.EMPTY };
-      const test = (node as any).test
-        ? compile((node as any).test)
+      const test = forNode.test
+        ? compile(forNode.test)
         : { type: IRInst.EMPTY };
-      const update = (node as any).update
-        ? compile((node as any).update)
+      const update = forNode.update
+        ? compile(forNode.update)
         : { type: IRInst.EMPTY };
-      const body = compile((node as any).body);
+      const body = compile(forNode.body);
 
       return {
         type: IRInst.SEQ,
@@ -160,12 +170,13 @@ function createVisitor(): Visitor {
       };
     },
     ForInStatement(node: acorn.Node): IRNode {
+      const forInNode = node as acorn.ForInStatement;
       return {
         type: IRInst.FORIN,
         children: [
-          compile((node as any).left) as IRNode,
-          compile((node as any).right) as IRNode,
-          compile((node as any).body) as IRNode,
+          compile(forInNode.left),
+          compile(forInNode.right),
+          compile(forInNode.body),
         ],
       };
     },
@@ -177,16 +188,20 @@ function createVisitor(): Visitor {
       throw UnsupportedStatementError('FunctionDeclaration');
     },
     VariableDeclaration(node: acorn.Node): IRNode {
-      const declarations = (node as any).declarations;
+      const varNode = node as acorn.VariableDeclaration;
+      const declarations = varNode.declarations;
       if (declarations.length === 0) {
         return { type: IRInst.EMPTY };
       }
-      let result = compile((declarations[0] as any).init);
+      let result = compile(declarations[0].init as acorn.Expression);
       for (let i = 1; i < declarations.length; i++) {
-        if ((declarations[i] as any).init) {
+        if (declarations[i].init) {
           result = {
             type: IRInst.SEQ,
-            children: [result, compile((declarations[i] as any).init)],
+            children: [
+              result,
+              compile(declarations[i].init as acorn.Expression),
+            ],
           };
         }
       }
@@ -207,16 +222,16 @@ function createVisitor(): Visitor {
       return { type: IRInst.EMPTY };
     },
     ArrayExpression(node: acorn.Node): IRNode {
-      const elements = (node as any).elements;
+      const arrayNode = node as acorn.ArrayExpression;
+      const elements = arrayNode.elements;
       if (elements.length === 0) {
         return { type: IRInst.EMPTY };
       }
-
-      let result = compile(elements[0]);
+      let result = compile(elements[0] as acorn.Expression);
       for (let i = 1; i < elements.length; i++) {
         result = {
           type: IRInst.SEQ,
-          children: [result, compile(elements[i])],
+          children: [result, compile(elements[i] as acorn.Expression)],
         };
       }
       return result;
@@ -225,26 +240,31 @@ function createVisitor(): Visitor {
       return { type: IRInst.EMPTY };
     },
     UnaryExpression(node: acorn.Node): IRNode {
-      return compile((node as acorn.UnaryExpression).argument);
+      const unaryNode = node as acorn.UnaryExpression;
+      return compile(unaryNode.argument);
     },
     UpdateExpression(node: acorn.Node): IRNode {
-      return compile((node as acorn.UpdateExpression).argument);
+      const updateNode = node as acorn.UpdateExpression;
+      return compile(updateNode.argument);
     },
     BinaryExpression(node: acorn.Node): IRNode {
+      const binaryNode = node as acorn.BinaryExpression;
       return {
         type: IRInst.SEQ,
-        children: [compile((node as any).left), compile((node as any).right)],
+        children: [compile(binaryNode.left), compile(binaryNode.right)],
       };
     },
     AssignmentExpression(node: acorn.Node): IRNode {
+      const assignNode = node as acorn.AssignmentExpression;
       return {
         type: IRInst.ASSIGN,
-        children: [compile((node as any).left), compile((node as any).right)],
+        children: [compile(assignNode.left), compile(assignNode.right)],
       };
     },
     LogicalExpression(node: acorn.Node): IRNode {
-      const left = compile((node as any).left);
-      const right = compile((node as any).right);
+      const logicalNode = node as acorn.LogicalExpression;
+      const left = compile(logicalNode.left);
+      const right = compile(logicalNode.right);
       const cond_node = {
         type: IRInst.COND,
         children: [
@@ -260,13 +280,13 @@ function createVisitor(): Visitor {
     },
     //TODO: MemberExpression can have some missing cases
     MemberExpression(node: acorn.Node): IRNode {
-      const { computed, property, object } = node as any;
-      const Objnode = compile(object);
+      const memberNode = node as acorn.MemberExpression;
+      const Objnode = compile(memberNode.object);
 
-      if (!computed && property?.type === 'Identifier') {
+      if (!memberNode.computed && memberNode.property.type === 'Identifier') {
         const prop_node = {
           type: IRInst.PROP,
-          id: property.name,
+          id: memberNode.property.name,
           children: [{ type: IRInst.BLANK }],
         };
         return { type: IRInst.SEQ, children: [Objnode, prop_node] };
@@ -275,9 +295,10 @@ function createVisitor(): Visitor {
       return { type: IRInst.EMPTY };
     },
     ConditionalExpression(node: acorn.Node): IRNode {
-      const test = compile((node as any).test);
-      const consequent = compile((node as any).consequent);
-      const alternate = compile((node as any).alternate);
+      const condNode = node as acorn.ConditionalExpression;
+      const test = compile(condNode.test);
+      const consequent = compile(condNode.consequent);
+      const alternate = compile(condNode.alternate);
       const cond_node = {
         type: IRInst.COND,
         children: [
@@ -305,8 +326,9 @@ function createVisitor(): Visitor {
       };
     },
     CallExpression(node: acorn.Node): IRNode {
-      const callee = compile((node as any).callee);
-      const args = (node as any).arguments;
+      const callNode = node as acorn.CallExpression;
+      const callee = compile(callNode.callee);
+      const args = callNode.arguments;
       if (args.length === 0) {
         return callee;
       }
@@ -326,8 +348,9 @@ function createVisitor(): Visitor {
     },
     //TODO: NewExpression
     NewExpression(node: acorn.Node): IRNode {
-      const callee = compile((node as any).callee);
-      const args = (node as any).arguments;
+      const newNode = node as acorn.NewExpression;
+      const callee = compile(newNode.callee);
+      const args = newNode.arguments;
       if (args.length === 0) {
         return callee;
       }
@@ -341,7 +364,8 @@ function createVisitor(): Visitor {
       return result;
     },
     SequenceExpression(node: acorn.Node): IRNode {
-      const expressions = (node as any).expressions;
+      const seqNode = node as acorn.SequenceExpression;
+      const expressions = seqNode.expressions;
       if (expressions.length === 0) {
         return { type: IRInst.EMPTY };
       }

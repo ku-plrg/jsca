@@ -7,7 +7,9 @@ interface Option {
 const option: Option = { unique_only: true };
 
 function propsComparator(func1: Props, func2: Props): boolean {
-  const sortArray = (arr: any[]) => [...(arr || [])].sort();
+  function sortArray<T>(arr: T[]) {
+    return [...(arr || [])].sort();
+  }
 
   const props1 = sortArray(
     option.unique_only ? [...new Set(func1.props)] : func1.props
