@@ -126,7 +126,7 @@ export interface CondNode extends IRNode {
 
 export interface ForInNode extends IRNode {
   type: IRInst.FORIN;
-  children: [IRNode, IRNode];
+  children: [IRNode, IRNode, IRNode];
 }
 export interface LoopNode extends IRNode {
   type: IRInst.LOOP;

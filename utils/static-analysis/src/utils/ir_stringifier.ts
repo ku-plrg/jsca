@@ -1,8 +1,6 @@
 import { IRNode, IR, IRInst } from './types';
 
 function stringifyIRNode(node: IRNode, indent: number = 0): string {
-  const padding = '  '.repeat(indent);
-
   const none = IRInst.EMPTY;
 
   switch (node.type) {
@@ -38,7 +36,7 @@ function stringifyIRNode(node: IRNode, indent: number = 0): string {
         return ``;
       }
       if (node.children[0].type === none) {
-        return ' _ = ' + stringifyIRNode(node.children[1], indent);
+        return '_ = ' + stringifyIRNode(node.children[1], indent);
       }
       if (node.children[1].type === none) {
         return stringifyIRNode(node.children[0], indent) + ' = _';
@@ -70,13 +68,17 @@ function stringifyIRNode(node: IRNode, indent: number = 0): string {
       ].join('\n');
 
     case IRInst.FORIN:
-      if (!node.children || node.children.length !== 2) {
-        throw new Error('FORIN node must have exactly 2 children');
+      if (!node.children || node.children.length !== 3) {
+        throw new Error('FORIN node must have exactly 3 children');
       }
       return [
-        `${padding}FORIN`,
-        stringifyIRNode(node.children[0], indent + 1),
-        stringifyIRNode(node.children[1], indent + 1),
+        'for( ' +
+          stringifyIRNode(node.children[0], indent + 1) +
+          'in ' +
+          stringifyIRNode(node.children[1], indent + 1) +
+          ') {',
+        stringifyIRNode(node.children[2], indent + 1),
+        '}',
       ].join('\n');
 
     case IRInst.LOOP:
@@ -84,9 +86,9 @@ function stringifyIRNode(node: IRNode, indent: number = 0): string {
         throw new Error('LOOP node must have exactly 2 children');
       }
       return [
-        `${padding}LOOP`,
-        stringifyIRNode(node.children[0], indent + 1),
+        'while' + stringifyIRNode(node.children[0], indent + 1) + ' {',
         stringifyIRNode(node.children[1], indent + 1),
+        '}',
       ].join('\n');
 
     default:

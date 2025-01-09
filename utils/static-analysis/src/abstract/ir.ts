@@ -134,18 +134,13 @@ function createVisitor(): Visitor {
         children: [
           compile((node as any).left) as IRNode,
           compile((node as any).right) as IRNode,
-        ].filter((child): child is IRNode => child !== undefined),
+          compile((node as any).body) as IRNode,
+        ],
       };
     },
     //TODO: ForOfStatement
     ForofStatement(node: acorn.Node): IRNode {
-      return {
-        type: IRInst.FORIN,
-        children: [
-          compile((node as any).left) as IRNode,
-          compile((node as any).right) as IRNode,
-        ].filter((child): child is IRNode => child !== undefined),
-      };
+      throw UnsupportedStatementError('ForOfStatement');
     },
     FunctionDeclaration(): IRNode {
       throw UnsupportedStatementError('FunctionDeclaration');
