@@ -319,7 +319,7 @@ function UnsupportedStatementError(statement: string) {
   return error;
 }
 
-function compile(node: acorn.Node): IRNode {
+export function compile(node: acorn.Node): IRNode {
   const visitor = createVisitor();
   try {
     const handler = visitor[node.type];

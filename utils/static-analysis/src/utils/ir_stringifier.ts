@@ -96,6 +96,17 @@ function stringifyIRNode(node: IRNode, indent: number = 0): string {
   }
 }
 
-export function stringifyIR(ir: IR): string {
-  return stringifyIRNode(ir.ir) + ';';
+function cleanOutput(output: string): string {
+  return output
+    .split('\n')
+    .filter((line) => line.trim() !== ';')
+    .join('\n')
+    .trim();
 }
+function stringifyIR(ir: IR): string {
+  const rawOutpot = stringifyIRNode(ir.ir) + ';';
+  const cleanedOutput = cleanOutput(rawOutpot);
+  return cleanedOutput;
+}
+export { stringifyIRNode };
+export default stringifyIR;
