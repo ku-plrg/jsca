@@ -21,8 +21,6 @@ function flattenSequence(node: IRNode): IRNode[] {
 }
 
 function stringifyIRNode(node: IRNode, indent: number = 0): string {
-  const none = IRInst.EMPTY;
-
   switch (node.type) {
     case IRInst.EMPTY:
       return ``;
@@ -86,9 +84,9 @@ function stringifyIRNode(node: IRNode, indent: number = 0): string {
         throw new Error('LOOP node must have exactly 2 children');
       }
       return (
-        'while' +
+        'while(' +
         stringifyIRNode(node.children[0], indent + 1) +
-        ' {\n' +
+        ') {\n' +
         stringifyIRNode(node.children[1], indent + 1) +
         '\n}'
       );
@@ -101,7 +99,10 @@ function stringifyIRNode(node: IRNode, indent: number = 0): string {
 function cleanOutput(output: string): string {
   return output
     .split('\n')
-    .filter((line) => line.trim() !== '' && line.trim() !== ';')
+    .filter(
+      (line) =>
+        line.trim() !== '' && line.trim() !== ';' && line.trim() !== '= ;'
+    )
     .join('\n')
     .trim();
 }
