@@ -193,14 +193,23 @@ function createVisitor(): Visitor {
       if (declarations.length === 0) {
         return { type: IRInst.EMPTY };
       }
-      let result = compile(declarations[0].init as acorn.Expression);
-      for (let i = 1; i < declarations.length; i++) {
+      let result = {
+        type: IRInst.SEQ,
+        children: [{ type: IRInst.EMPTY }, { type: IRInst.EMPTY }],
+      };
+      for (let i = 0; i < declarations.length; i++) {
         if (declarations[i].init) {
           result = {
             type: IRInst.SEQ,
             children: [
               result,
-              compile(declarations[i].init as acorn.Expression),
+              {
+                type: IRInst.ASSIGN,
+                children: [
+                  compile(declarations[i].init as acorn.Expression),
+                  compile(declarations[i].id),
+                ],
+              },
             ],
           };
         }
@@ -258,7 +267,7 @@ function createVisitor(): Visitor {
       const assignNode = node as acorn.AssignmentExpression;
       return {
         type: IRInst.ASSIGN,
-        children: [compile(assignNode.left), compile(assignNode.right)],
+        children: [compile(assignNode.right), compile(assignNode.left)],
       };
     },
     LogicalExpression(node: acorn.Node): IRNode {
@@ -343,7 +352,7 @@ function createVisitor(): Visitor {
 
       return {
         type: IRInst.SEQ,
-        children: [callee, result],
+        children: [result, callee],
       };
     },
     //TODO: NewExpression
