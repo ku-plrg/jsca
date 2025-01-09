@@ -1,7 +1,7 @@
 import fs from 'fs';
 import * as acorn from 'acorn';
 import { compile } from '../abstract/ir';
-import { stringifyIRNode } from '../utils/ir_stringifier';
+import { stringifyIRNode, cleanOutput } from '../utils/ir_stringifier';
 
 const code = fs.readFileSync('test.js', 'utf-8');
 
@@ -10,7 +10,8 @@ function IRtest(code: string) {
   const func_body = ((ast as any).body[0] as any).body;
   const ir = compile(func_body);
   const irCode = stringifyIRNode(ir);
-  console.log(irCode);
+  const cleaned = cleanOutput(irCode);
+  console.log(cleaned);
 }
 
 IRtest(code);

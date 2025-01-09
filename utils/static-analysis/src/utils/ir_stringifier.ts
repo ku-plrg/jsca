@@ -111,5 +111,5 @@ function stringifyIR(ir: IR): string {
   const cleanedOutput = cleanOutput(rawOutput);
   return cleanedOutput;
 }
-export { stringifyIRNode };
+export { stringifyIRNode, cleanOutput };
 export default stringifyIR;
