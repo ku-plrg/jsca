@@ -189,31 +189,20 @@ function createVisitor(): Visitor {
     },
     VariableDeclaration(node: acorn.Node): IRNode {
       const varNode = node as acorn.VariableDeclaration;
-      const declarations = varNode.declarations;
+      const declarations = varNode.declarations.filter((decl) => decl.init);
       if (declarations.length === 0) {
         return { type: IRInst.EMPTY };
       }
-      let result = {
-        type: IRInst.SEQ,
-        children: [{ type: IRInst.EMPTY }, { type: IRInst.EMPTY }],
-      };
-      for (let i = 0; i < declarations.length; i++) {
-        if (declarations[i].init) {
-          result = {
-            type: IRInst.SEQ,
-            children: [
-              result,
-              {
-                type: IRInst.ASSIGN,
-                children: [
-                  compile(declarations[i].init as acorn.Expression),
-                  compile(declarations[i].id),
-                ],
-              },
-            ],
-          };
-        }
-      }
+      const result = declarations
+        .map((decl) => ({
+          type: IRInst.ASSIGN,
+          children: [compile(decl.init as acorn.Expression), compile(decl.id)],
+        }))
+        .reduce((acc, assignInst) => ({
+          type: IRInst.SEQ,
+          children: [acc, assignInst],
+        }));
+
       return result;
     },
     ClassDeclaration(): IRNode {
