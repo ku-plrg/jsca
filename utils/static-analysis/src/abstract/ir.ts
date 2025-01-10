@@ -265,7 +265,7 @@ function createVisitor(): Visitor {
         right: compile(node.right),
       };
     },
-    AssignmentExpression(node: acorn.AssignmentExpression) {
+    AssignmentExpression(node: acorn.AssignmentExpression): IRNode {
       const left = compile(node.left);
       const right = compile(node.right);
       function isSeqNode(node: IRNode): node is SeqNode {
@@ -274,9 +274,13 @@ function createVisitor(): Visitor {
       if (isSeqNode(left)) {
         if (left.right.type === IRInst.PROP) {
           return {
-            type: IRInst.UPDATE_PROP,
-            left: left.right,
-            right,
+            type: IRInst.SEQ,
+            left: right,
+            right: {
+              type: IRInst.UPDATE_PROP,
+              left: left.right,
+              right: { type: IRInst.BLOCK },
+            },
           };
         }
       }
@@ -297,7 +301,7 @@ function createVisitor(): Visitor {
             type: IRInst.COND,
             test: { type: IRInst.BLOCK },
             true: right,
-            false: { type: IRInst.BLOCK },
+            false: { type: IRInst.EMPTY },
           },
         };
       } else if (node.operator === '||') {
@@ -307,7 +311,7 @@ function createVisitor(): Visitor {
           right: {
             type: IRInst.COND,
             test: { type: IRInst.BLOCK },
-            true: { type: IRInst.BLOCK },
+            true: { type: IRInst.EMPTY },
             false: right,
           },
         };
@@ -323,7 +327,7 @@ function createVisitor(): Visitor {
         const prop_node = {
           type: IRInst.PROP,
           id: node.property.name,
-          children: [{ type: IRInst.BLOCK }],
+          object: { type: IRInst.BLOCK },
         };
         return { type: IRInst.SEQ, left: Objnode, right: prop_node };
       }

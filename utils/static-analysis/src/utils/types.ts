@@ -110,7 +110,7 @@ export interface SeqNode extends IRNodeBase {
 export interface UpdatePropNode extends IRNodeBase {
   type: IRInst.UPDATE_PROP;
   left: PropNode;
-  right: IRNode;
+  right: BlockNode;
 }
 
 export interface PropNode extends IRNodeBase {

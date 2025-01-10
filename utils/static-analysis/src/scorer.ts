@@ -1,8 +1,8 @@
 import { mkdirSync, writeFileSync } from 'fs';
 import path from 'path';
+import LogIR from './utils/ir-logger';
 import measureTime from './utils/timer';
 import { AbsFunction, Function, Library } from './utils/types';
-import LogIR from './utils/ir-logger';
 
 function FunctionScorer<T extends AbsFunction>(
   lib1: Library,
@@ -51,9 +51,10 @@ function FunctionScorer<T extends AbsFunction>(
       pt2.forEach((f2) => {
         const logicallySame = comparison(f1, f2);
         const reallySame = f1.id === f2.id;
+
         if (logicallySame && reallySame)
           truePositives.push({ f1Name: f1.name, f2Name: f2.name, id: f1.id });
-        else if (logicallySame) {
+        if (logicallySame && !reallySame) {
           falsePositives.push({
             f1Name: f1.name,
             f2Name: f2.name,
@@ -62,13 +63,15 @@ function FunctionScorer<T extends AbsFunction>(
           });
           uniqueMatch = false;
         }
-        if (reallySame && !logicallySame) {
+        if (!logicallySame && reallySame) {
           falseNegatives.push({
             f1Name: f1.name,
             f2Name: f2.name,
             id: f1.id,
           });
-        } else if (!logicallySame)
+          uniqueMatch = false;
+        }
+        if (!logicallySame && !reallySame)
           trueNegatives.push({
             f1Name: f1.name,
             f2Name: f2.name,
@@ -167,8 +170,12 @@ function FunctionScorer<T extends AbsFunction>(
       .map((fn) => `|${TEMPLATE(fn.id, fn.f1Name, l1)}|`)
       .join('\n')}\n`;
     const fileDir = './logs/reports';
-    const filePath = path.resolve(fileDir, `${logFileName}-${l1}-${l2}.md`);
-    mkdirSync(fileDir, { recursive: true });
+    const filePath = path.resolve(
+      __dirname,
+      fileDir,
+      `${logFileName}-${l1}-${l2}.md`
+    );
+    mkdirSync(path.resolve(__dirname, fileDir), { recursive: true });
     writeFileSync(filePath, mdContent, 'utf-8');
   }
   const scores1 = getScores(absfuncs1, absfuncs2);

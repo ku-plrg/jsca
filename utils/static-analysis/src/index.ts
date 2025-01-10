@@ -1,5 +1,5 @@
 import { readFileSync, writeFileSync } from 'fs';
-import { join } from 'path';
+import { join, resolve } from 'path';
 import abstraction from './abstract';
 import comparator from './compare';
 import extractFunctions from './function-extractor';
@@ -81,7 +81,7 @@ TARGET_ABSTRACTIONS.forEach((abstractionType) => {
     )
     .join('\n')}`;
   writeFileSync(
-    `./logs/reports/scores_${abstractionType}.md`,
+    resolve(__dirname, `./logs/reports/scores_${abstractionType}.md`),
     mdContent,
     'utf-8'
   );

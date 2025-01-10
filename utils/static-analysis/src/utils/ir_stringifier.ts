@@ -8,18 +8,18 @@ function flattenSequence(node: IRNode): IRNode[] {
   const result: IRNode[] = [];
 
   const leftFlattened = flattenSequence(node.left);
-  result.push(...leftFlattened);
+  result.push(...leftFlattened.filter((n) => n.type !== IRInst.EMPTY));
 
   const rightFlattened = flattenSequence(node.right);
-  result.push(...rightFlattened);
+  result.push(...rightFlattened.filter((n) => n.type !== IRInst.EMPTY));
 
   return result;
 }
 
-function stringifyIRNode(node: IRNode, indent: number = 0): string {
+function stringifyIRNode(node: IRNode): string {
   switch (node.type) {
     case IRInst.EMPTY:
-      return ``;
+      return '';
 
     case IRInst.BLOCK:
       return `_`;
@@ -27,57 +27,54 @@ function stringifyIRNode(node: IRNode, indent: number = 0): string {
     case IRInst.SEQ:
       const flattened = flattenSequence(node);
       return (
-        flattened.map((child) => stringifyIRNode(child, indent)).join(';\n') +
-        ';\n'
+        flattened.map((child) => stringifyIRNode(child)).join(';\n') +
+        (flattened.length > 1 ? ';\n' : '')
       );
     case IRInst.UPDATE_PROP:
-      return (
-        stringifyIRNode(node.left, indent + 1) +
-        ' = ' +
-        stringifyIRNode(node.right, indent + 1)
-      );
-
+      const l = stringifyIRNode(node.left);
+      const r = stringifyIRNode(node.right);
+      return l + ' = ' + r;
     case IRInst.PROP:
-      return `${stringifyIRNode(node.object, indent + 1)}.${node.id}`;
+      return `${stringifyIRNode(node.object)}.${node.id}`;
 
     case IRInst.COND:
-      const left = stringifyIRNode(node.true, indent + 1);
-      const right = stringifyIRNode(node.false, indent + 1);
+      const left = stringifyIRNode(node.true);
+      const right = stringifyIRNode(node.false);
       const [s1, s2] = left > right ? [left, right] : [right, left];
-      return (
-        stringifyIRNode(node.test, indent + 1) +
-        ' ? ' +
-        `(${s1})` +
-        ' : ' +
-        `(${s2})`
-      );
+      return stringifyIRNode(node.test) + ' ? ' + `(${s1})` + ' : ' + `(${s2})`;
 
     case IRInst.FORIN:
       return [
         'for( ' +
-          stringifyIRNode(node.left, indent + 1) +
+          stringifyIRNode(node.left) +
           'in ' +
-          stringifyIRNode(node.right, indent + 1) +
+          stringifyIRNode(node.right) +
           ') {',
-        stringifyIRNode(node.body, indent + 1),
-        '}',
+        stringifyIRNode(node.body) + '}',
       ].join('\n');
 
     case IRInst.LOOP:
       return (
         'for(' +
-        stringifyIRNode(node.init, indent + 1) +
-        +';' +
-        stringifyIRNode(node.test, indent + 1) +
-        +';' +
-        stringifyIRNode(node.update, indent + 1) +
+        stringifyIRNode(node.init) +
+        ';' +
+        stringifyIRNode(node.test) +
+        ';' +
+        stringifyIRNode(node.update) +
         ') {\n' +
-        stringifyIRNode(node.body, indent + 1) +
-        '\n}'
+        stringifyIRNode(node.body) +
+        '}'
       );
-
-    default:
-      throw new Error(`Unknown IR type: ${node.type}`);
+    case IRInst.DO_WHILE:
+      return (
+        'do {\n' +
+        stringifyIRNode(node.body) +
+        '} while(' +
+        stringifyIRNode(node.test) +
+        ')'
+      );
+    // default:
+    //   throw new Error(`Unknown IR type: ${node.type}`);
   }
 }
 
@@ -94,8 +91,8 @@ function cleanOutput(output: string): string {
 
 function stringifyIR(ir: IR): string {
   const rawOutput = stringifyIRNode(ir.ir);
-  const cleanedOutput = cleanOutput(rawOutput);
-  return cleanedOutput;
+  //const cleanedOutput = cleanOutput(rawOutput);
+  return rawOutput;
 }
 
 export { cleanOutput, stringifyIRNode };
