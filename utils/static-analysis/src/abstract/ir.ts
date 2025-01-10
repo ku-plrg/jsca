@@ -204,19 +204,17 @@ function createVisitor(): Visitor {
     FunctionDeclaration(): IRNode {
       throw UnsupportedStatementError('FunctionDeclaration');
     },
-    VariableDeclaration(node: acorn.VariableDeclaration): IRNode {
+    VariableDeclaration(node: acorn.VariableDeclaration) {
       const declarations = node.declarations.filter((decl) => decl.init);
       if (declarations.length === 0) {
         return { type: IRInst.EMPTY };
       }
       const result = declarations
-        .map((decl) => ({
-          type: IRInst.ASSIGN,
-          children: [compile(decl.init as acorn.Expression), compile(decl.id)],
-        }))
-        .reduce((acc, assignInst) => ({
+        .map((decl) => compile(decl.init as acorn.Expression))
+        .reduce((acc, curr) => ({
           type: IRInst.SEQ,
-          children: [acc, assignInst],
+          left: acc,
+          right: curr,
         }));
 
       return result;
@@ -267,30 +265,58 @@ function createVisitor(): Visitor {
         right: compile(node.right),
       };
     },
-    AssignmentExpression(node: acorn.AssignmentExpression): IRNode {
+    AssignmentExpression(node: acorn.AssignmentExpression) {
+      const left = compile(node.left);
+      const right = compile(node.right);
+      function isSeqNode(node: IRNode): node is SeqNode {
+        return node.type === IRInst.SEQ;
+      }
+      if (isSeqNode(left)) {
+        if (left.right.type === IRInst.PROP) {
+          return {
+            type: IRInst.UPDATE_PROP,
+            left: left.right,
+            right,
+          };
+        }
+      }
       return {
-        type: IRInst.ASSIGN,
-        children: [compile(node.right), compile(node.left)],
+        type: IRInst.SEQ,
+        left,
+        right,
       };
     },
     LogicalExpression(node: acorn.LogicalExpression): IRNode {
       const left = compile(node.left);
       const right = compile(node.right);
-      const cond_node = {
-        type: IRInst.COND,
-        children: [
-          { type: IRInst.BLOCK },
-          { type: IRInst.BLOCK },
-          { type: IRInst.BLOCK },
-        ],
-      };
-      return {
-        type: IRInst.SEQ,
-        children: [left, { type: IRInst.SEQ, children: [cond_node, right] }],
-      };
+      if (node.operator === '&&') {
+        return {
+          type: IRInst.SEQ,
+          left,
+          right: {
+            type: IRInst.COND,
+            test: { type: IRInst.BLOCK },
+            true: right,
+            false: { type: IRInst.BLOCK },
+          },
+        };
+      } else if (node.operator === '||') {
+        return {
+          type: IRInst.SEQ,
+          left,
+          right: {
+            type: IRInst.COND,
+            test: { type: IRInst.BLOCK },
+            true: { type: IRInst.BLOCK },
+            false: right,
+          },
+        };
+      } else {
+        throw UnsupportedStatementError('LogicalExpression : ??');
+      }
     },
     //TODO: MemberExpression can have some missing cases
-    MemberExpression(node: acorn.MemberExpression): IRNode {
+    MemberExpression(node: acorn.MemberExpression) {
       const Objnode = compile(node.object);
 
       if (!node.computed && node.property.type === 'Identifier') {
@@ -299,7 +325,7 @@ function createVisitor(): Visitor {
           id: node.property.name,
           children: [{ type: IRInst.BLOCK }],
         };
-        return { type: IRInst.SEQ, children: [Objnode, prop_node] };
+        return { type: IRInst.SEQ, left: Objnode, right: prop_node };
       }
 
       return { type: IRInst.EMPTY };
@@ -331,13 +357,15 @@ function createVisitor(): Visitor {
       for (let i = 1; i < args.length; i++) {
         result = {
           type: IRInst.SEQ,
-          children: [result, compile(args[i])],
+          left: result,
+          right: compile(args[i]),
         };
       }
 
       return {
         type: IRInst.SEQ,
-        children: [result, callee],
+        left: result,
+        right: callee,
       };
     },
     //TODO: NewExpression
@@ -351,7 +379,8 @@ function createVisitor(): Visitor {
       for (let i = 1; i < args.length; i++) {
         result = {
           type: IRInst.SEQ,
-          children: [result, compile(args[i])],
+          left: result,
+          right: compile(args[i]),
         };
       }
       return result;
@@ -366,7 +395,8 @@ function createVisitor(): Visitor {
       for (let i = 1; i < expressions.length; i++) {
         result = {
           type: IRInst.SEQ,
-          children: [result, compile(expressions[i])],
+          left: result,
+          right: compile(expressions[i]),
         };
       }
       return result;
