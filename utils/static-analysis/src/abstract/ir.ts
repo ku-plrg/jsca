@@ -1,9 +1,18 @@
 import * as acorn from 'acorn';
-import { Function, IR, IRInst, IRNode } from '../utils/types';
+import {
+  EmptyNode,
+  Function,
+  IR,
+  IRInst,
+  IRNode,
+  SeqNode,
+} from '../utils/types';
 
 type Visitor = {
   [key: string]: <T extends acorn.Node>(node: T) => IRNode;
 };
+
+const emptyNode: EmptyNode = { type: IRInst.EMPTY };
 
 function createVisitor(): Visitor {
   return {
@@ -13,21 +22,21 @@ function createVisitor(): Visitor {
     },
     BlockStatement(node: acorn.BlockStatement): IRNode {
       const statements = node.body;
-      if (statements.length === 0) {
-        return { type: IRInst.EMPTY };
-      }
+      if (statements.length === 0) return emptyNode;
 
       let result: IRNode = compile(statements[0]);
       for (let i = 1; i < statements.length; i++) {
-        result = {
+        const eachResult: SeqNode = {
           type: IRInst.SEQ,
-          children: [result, compile(statements[i])],
+          left: result,
+          right: compile(statements[i]),
         };
+        result = eachResult;
       }
       return result;
     },
     EmptyStatement(): IRNode {
-      return { type: IRInst.EMPTY };
+      return emptyNode;
     },
     DebuggerStatement(): IRNode {
       throw UnsupportedStatementError('DebuggerStatement');
@@ -38,7 +47,7 @@ function createVisitor(): Visitor {
     ReturnStatement(node: acorn.ReturnStatement): IRNode {
       const argument = node.argument;
       if (!argument) {
-        return { type: IRInst.EMPTY };
+        return emptyNode;
       }
       return compile(argument);
     },
@@ -46,119 +55,146 @@ function createVisitor(): Visitor {
       throw UnsupportedStatementError('LabeledStatement');
     },
     BreakStatement(): IRNode {
-      return { type: IRInst.EMPTY };
+      return emptyNode;
     },
     ContinueStatement(): IRNode {
-      return { type: IRInst.EMPTY };
+      return emptyNode;
     },
     IfStatement(node: acorn.IfStatement): IRNode {
       const test = compile(node.test);
       const consequent = compile(node.consequent);
-      const alternate = node.alternate
-        ? compile(node.alternate)
-        : { type: IRInst.EMPTY };
-      const if_node = {
-        type: IRInst.COND,
-        children: [
-          { type: IRInst.BLOCK },
-          { type: IRInst.BLOCK },
-          { type: IRInst.BLOCK },
-        ],
-      };
+      const alternate = node.alternate ? compile(node.alternate) : emptyNode;
 
       return {
         type: IRInst.SEQ,
-        children: [
-          test,
-          {
-            type: IRInst.SEQ,
-            children: [
-              if_node,
-              {
-                type: IRInst.SEQ,
-                children: [consequent, alternate],
-              },
-            ],
-          },
-        ],
+        left: test,
+        right: {
+          type: IRInst.COND,
+          test: { type: IRInst.BLOCK },
+          true: consequent,
+          false: alternate,
+        },
       };
     },
-    SwitchStatement(node: acorn.SwitchStatement): IRNode {
+    SwitchStatement(node: acorn.SwitchStatement) {
       const discriminant = compile(node.discriminant);
       const cases = node.cases;
       if (cases.length === 0) {
-        return { type: IRInst.EMPTY };
+        return emptyNode;
       }
 
       let result = compile(cases[0]);
       for (let i = 1; i < cases.length; i++) {
-        result = {
+        const eachResult: SeqNode = {
           type: IRInst.SEQ,
-          children: [result, compile(cases[i])],
+          left: result,
+          right: compile(cases[i]),
         };
+        result = eachResult;
       }
       return {
         type: IRInst.SEQ,
-        children: [discriminant, result],
+        left: discriminant,
+        right: result,
       };
     },
-    ThrowStatement(node: acorn.ThrowStatement): IRNode {
+    ThrowStatement(node: acorn.ThrowStatement) {
       return compile(node.argument);
     },
-    TryStatement(node: acorn.TryStatement): IRNode {
+    TryStatement(node: acorn.TryStatement) {
       const block = compile(node.block);
-      const handler = node.handler
-        ? compile(node.handler.body)
-        : { type: IRInst.EMPTY };
-      const finalizer = node.finalizer
-        ? compile(node.finalizer)
-        : { type: IRInst.EMPTY };
+      const handler = node.handler ? compile(node.handler.body) : emptyNode;
+      const finalizer = node.finalizer ? compile(node.finalizer) : emptyNode;
       return {
         type: IRInst.SEQ,
-        children: [
-          block,
-          {
+        left: block,
+        right: {
+          type: IRInst.SEQ,
+          left: handler,
+          right: finalizer,
+        },
+      };
+    },
+    WhileStatement(node: acorn.WhileStatement) {
+      let init: IRNode = emptyNode;
+      let test: IRNode = emptyNode;
+      if (node.test && node.test.type === 'SequenceExpression') {
+        const testExp = node.test.expressions.pop();
+        if (testExp) test = compile(testExp);
+        if (node.test.expressions.length > 0) {
+          let result: IRNode = compile(node.test.expressions[0]);
+          for (let i = 1; i < node.test.expressions.length - 1; i++) {
+            const eachResult: SeqNode = {
+              type: IRInst.SEQ,
+              left: result,
+              right: compile(node.test.expressions[i]),
+            };
+            result = eachResult;
+          }
+          init = result;
+        }
+      } else if (node.test) {
+        test = compile(node.test);
+      }
+
+      return {
+        type: IRInst.SEQ,
+        left: init,
+        right: {
+          type: IRInst.LOOP,
+          init: emptyNode,
+          test,
+          update: emptyNode,
+          body: compile(node.body),
+        },
+      };
+    },
+    DoWhileStatement(node: acorn.DoWhileStatement) {
+      return {
+        type: IRInst.DO_WHILE,
+        test: compile(node.test),
+        body: compile(node.body),
+      };
+    },
+    ForStatement(node: acorn.ForStatement) {
+      let init: IRNode = emptyNode;
+      if (node.init && node.init.type === 'SequenceExpression') {
+        let result: IRNode = compile(node.init.expressions[0]);
+        for (let i = 1; i < node.init.expressions.length; i++) {
+          const eachResult: SeqNode = {
             type: IRInst.SEQ,
-            children: [handler, finalizer],
-          },
-        ],
-      };
-    },
-    WhileStatement(node: acorn.WhileStatement): IRNode {
-      return {
-        type: IRInst.LOOP,
-        children: [compile(node.test), compile(node.body)],
-      };
-    },
-    DoWhileStatement(node: acorn.DoWhileStatement): IRNode {
-      return {
-        type: IRInst.LOOP,
-        children: [compile(node.test), compile(node.body)],
-      };
-    },
-    ForStatement(node: acorn.ForStatement): IRNode {
-      const init = node.init ? compile(node.init) : { type: IRInst.EMPTY };
-      const test = node.test ? compile(node.test) : { type: IRInst.EMPTY };
-      const update = node.update
-        ? compile(node.update)
-        : { type: IRInst.EMPTY };
+            left: result,
+            right: compile(node.init.expressions[i]),
+          };
+          result = eachResult;
+        }
+        init = result;
+      } else if (node.init) {
+        init = compile(node.init);
+      }
+
+      const test = node.test ? compile(node.test) : emptyNode;
+      const update = node.update ? compile(node.update) : emptyNode;
       const body = compile(node.body);
 
       return {
         type: IRInst.SEQ,
-        children: [
-          init,
-          {
-            type: IRInst.LOOP,
-            children: [test, { type: IRInst.SEQ, children: [body, update] }],
-          },
-        ],
+        left: init,
+        right: {
+          type: IRInst.LOOP,
+          init: emptyNode,
+          test,
+          update,
+          body,
+        },
       };
     },
-    ForInStatement(node: acorn.ForInStatement): IRNode {
+    ForInStatement(node: acorn.ForInStatement) {
       return {
         type: IRInst.FORIN,
-        children: [compile(node.left), compile(node.right), compile(node.body)],
+        left: compile(node.left),
+        right: compile(node.right),
+        body: compile(node.body),
       };
     },
     //TODO: ForOfStatement
@@ -206,10 +242,12 @@ function createVisitor(): Visitor {
       }
       let result = compile(elements[0] as acorn.Expression);
       for (let i = 1; i < elements.length; i++) {
-        result = {
+        const eachResult: SeqNode = {
           type: IRInst.SEQ,
-          children: [result, compile(elements[i] as acorn.Expression)],
+          left: result,
+          right: compile(elements[i] as acorn.Expression),
         };
+        result = eachResult;
       }
       return result;
     },
@@ -222,10 +260,11 @@ function createVisitor(): Visitor {
     UpdateExpression(node: acorn.UpdateExpression): IRNode {
       return compile(node.argument);
     },
-    BinaryExpression(node: acorn.BinaryExpression): IRNode {
+    BinaryExpression(node: acorn.BinaryExpression): SeqNode {
       return {
         type: IRInst.SEQ,
-        children: [compile(node.left), compile(node.right)],
+        left: compile(node.left),
+        right: compile(node.right),
       };
     },
     AssignmentExpression(node: acorn.AssignmentExpression): IRNode {
@@ -265,34 +304,20 @@ function createVisitor(): Visitor {
 
       return { type: IRInst.EMPTY };
     },
-    ConditionalExpression(node: acorn.ConditionalExpression): IRNode {
+    ConditionalExpression(node: acorn.ConditionalExpression) {
       const test = compile(node.test);
       const consequent = compile(node.consequent);
       const alternate = compile(node.alternate);
-      const cond_node = {
-        type: IRInst.COND,
-        children: [
-          { type: IRInst.BLOCK },
-          { type: IRInst.BLOCK },
-          { type: IRInst.BLOCK },
-        ],
-      };
 
       return {
         type: IRInst.SEQ,
-        children: [
-          test,
-          {
-            type: IRInst.SEQ,
-            children: [
-              cond_node,
-              {
-                type: IRInst.SEQ,
-                children: [consequent, alternate],
-              },
-            ],
-          },
-        ],
+        left: test,
+        right: {
+          type: IRInst.COND,
+          test: { type: IRInst.BLOCK },
+          true: consequent,
+          false: alternate,
+        },
       };
     },
     CallExpression(node: acorn.CallExpression): IRNode {

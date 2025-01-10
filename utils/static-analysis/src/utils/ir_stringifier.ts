@@ -5,16 +5,12 @@ function flattenSequence(node: IRNode): IRNode[] {
     return [node];
   }
 
-  if (!node.children || node.children.length !== 2) {
-    throw new Error('SEQ node must have exactly 2 children');
-  }
-
   const result: IRNode[] = [];
 
-  const leftFlattened = flattenSequence(node.children[0]);
+  const leftFlattened = flattenSequence(node.left);
   result.push(...leftFlattened);
 
-  const rightFlattened = flattenSequence(node.children[1]);
+  const rightFlattened = flattenSequence(node.right);
   result.push(...rightFlattened);
 
   return result;
@@ -29,65 +25,54 @@ function stringifyIRNode(node: IRNode, indent: number = 0): string {
       return `_`;
 
     case IRInst.SEQ:
-      if (!node.children || node.children.length !== 2) {
-        throw new Error('SEQ node must have exactly 2 children');
-      }
       const flattened = flattenSequence(node);
       return (
         flattened.map((child) => stringifyIRNode(child, indent)).join(';\n') +
         ';\n'
       );
-    case IRInst.ASSIGN:
-      if (!node.children || node.children.length !== 2) {
-        throw new Error('ASSIGN node must have exactly 2 children');
-      }
+    case IRInst.UPDATE_PROP:
       return (
-        stringifyIRNode(node.children[0], indent + 1) +
+        stringifyIRNode(node.left, indent + 1) +
         ' = ' +
-        stringifyIRNode(node.children[1], indent + 1)
+        stringifyIRNode(node.right, indent + 1)
       );
 
     case IRInst.PROP:
-      if (!node.children) {
-        throw new Error('PROP node must have exactly 1 child');
-      }
-      return `${stringifyIRNode(node.children[0], indent + 1)}.${node.id}`;
+      return `${stringifyIRNode(node.object, indent + 1)}.${node.id}`;
 
     case IRInst.COND:
-      if (!node.children || node.children.length !== 3) {
-        throw new Error('COND node must have exactly 3 children');
-      }
+      const left = stringifyIRNode(node.true, indent + 1);
+      const right = stringifyIRNode(node.false, indent + 1);
+      const [s1, s2] = left > right ? [left, right] : [right, left];
       return (
-        stringifyIRNode(node.children[0], indent + 1) +
+        stringifyIRNode(node.test, indent + 1) +
         ' ? ' +
-        stringifyIRNode(node.children[1], indent + 1) +
+        `(${s1})` +
         ' : ' +
-        stringifyIRNode(node.children[2], indent + 1)
+        `(${s2})`
       );
 
     case IRInst.FORIN:
-      if (!node.children || node.children.length !== 3) {
-        throw new Error('FORIN node must have exactly 3 children');
-      }
       return [
         'for( ' +
-          stringifyIRNode(node.children[0], indent + 1) +
+          stringifyIRNode(node.left, indent + 1) +
           'in ' +
-          stringifyIRNode(node.children[1], indent + 1) +
+          stringifyIRNode(node.right, indent + 1) +
           ') {',
-        stringifyIRNode(node.children[2], indent + 1),
+        stringifyIRNode(node.body, indent + 1),
         '}',
       ].join('\n');
 
     case IRInst.LOOP:
-      if (!node.children || node.children.length !== 2) {
-        throw new Error('LOOP node must have exactly 2 children');
-      }
       return (
-        'while(' +
-        stringifyIRNode(node.children[0], indent + 1) +
+        'for(' +
+        stringifyIRNode(node.init, indent + 1) +
+        +';' +
+        stringifyIRNode(node.test, indent + 1) +
+        +';' +
+        stringifyIRNode(node.update, indent + 1) +
         ') {\n' +
-        stringifyIRNode(node.children[1], indent + 1) +
+        stringifyIRNode(node.body, indent + 1) +
         '\n}'
       );
 
@@ -106,10 +91,12 @@ function cleanOutput(output: string): string {
     .join('\n')
     .trim();
 }
+
 function stringifyIR(ir: IR): string {
   const rawOutput = stringifyIRNode(ir.ir);
   const cleanedOutput = cleanOutput(rawOutput);
   return cleanedOutput;
 }
+
 export { cleanOutput, stringifyIRNode };
 export default stringifyIR;
