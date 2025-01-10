@@ -1,4 +1,4 @@
-import { IRNode, IR, IRInst } from './types';
+import { IR, IRInst, IRNode } from './types';
 
 function flattenSequence(node: IRNode): IRNode[] {
   if (node.type !== IRInst.SEQ) {
@@ -25,7 +25,7 @@ function stringifyIRNode(node: IRNode, indent: number = 0): string {
     case IRInst.EMPTY:
       return ``;
 
-    case IRInst.BLANK:
+    case IRInst.BLOCK:
       return `_`;
 
     case IRInst.SEQ:
@@ -111,5 +111,5 @@ function stringifyIR(ir: IR): string {
   const cleanedOutput = cleanOutput(rawOutput);
   return cleanedOutput;
 }
-export { stringifyIRNode, cleanOutput };
+export { cleanOutput, stringifyIRNode };
 export default stringifyIR;

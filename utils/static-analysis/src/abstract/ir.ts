@@ -60,9 +60,9 @@ function createVisitor(): Visitor {
       const if_node = {
         type: IRInst.COND,
         children: [
-          { type: IRInst.BLANK },
-          { type: IRInst.BLANK },
-          { type: IRInst.BLANK },
+          { type: IRInst.BLOCK },
+          { type: IRInst.BLOCK },
+          { type: IRInst.BLOCK },
         ],
       };
 
@@ -240,9 +240,9 @@ function createVisitor(): Visitor {
       const cond_node = {
         type: IRInst.COND,
         children: [
-          { type: IRInst.BLANK },
-          { type: IRInst.BLANK },
-          { type: IRInst.BLANK },
+          { type: IRInst.BLOCK },
+          { type: IRInst.BLOCK },
+          { type: IRInst.BLOCK },
         ],
       };
       return {
@@ -258,7 +258,7 @@ function createVisitor(): Visitor {
         const prop_node = {
           type: IRInst.PROP,
           id: node.property.name,
-          children: [{ type: IRInst.BLANK }],
+          children: [{ type: IRInst.BLOCK }],
         };
         return { type: IRInst.SEQ, children: [Objnode, prop_node] };
       }
@@ -272,9 +272,9 @@ function createVisitor(): Visitor {
       const cond_node = {
         type: IRInst.COND,
         children: [
-          { type: IRInst.BLANK },
-          { type: IRInst.BLANK },
-          { type: IRInst.BLANK },
+          { type: IRInst.BLOCK },
+          { type: IRInst.BLOCK },
+          { type: IRInst.BLOCK },
         ],
       };
 

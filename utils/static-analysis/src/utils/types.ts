@@ -1,5 +1,4 @@
 import { Node, Pattern } from 'acorn';
-import exp from 'constants';
 
 export interface Function {
   id: string;
@@ -80,55 +79,70 @@ export type PropstreeNode =
 
 export enum IRInst {
   EMPTY,
-  BLANK,
+  BLOCK,
   SEQ,
-  ASSIGN,
+  UPDATE_PROP,
   PROP,
   COND,
   FORIN,
   LOOP,
+  DO_WHILE,
 }
 
 export interface IRNode {
   type: IRInst;
-  id?: string;
-  children?: IRNode[];
 }
 
 export interface EmptyNode extends IRNode {
   type: IRInst.EMPTY;
 }
 
-export interface BlankNode extends IRNode {
-  type: IRInst.BLANK;
+export interface BlockNode extends IRNode {
+  type: IRInst.BLOCK;
 }
 
 export interface SeqNode extends IRNode {
   type: IRInst.SEQ;
-  children: [IRNode, IRNode];
+  left: IRNode;
+  right: IRNode;
 }
 
-export interface AssignNode extends IRNode {
-  type: IRInst.ASSIGN;
-  children: [IRNode, IRNode];
+export interface UpdatePropNode extends IRNode {
+  type: IRInst.UPDATE_PROP;
+  left: PropNode;
+  right: BlockNode;
 }
 
 export interface PropNode extends IRNode {
   type: IRInst.PROP;
   id: string;
-  children: [BlankNode];
+  object: BlockNode;
 }
 
 export interface CondNode extends IRNode {
   type: IRInst.COND;
-  children: [BlankNode, BlankNode, BlankNode];
+  test: BlockNode;
+  true: IRNode;
+  false: IRNode;
 }
 
 export interface ForInNode extends IRNode {
   type: IRInst.FORIN;
-  children: [IRNode, IRNode, IRNode];
+  left: BlockNode;
+  right: IRNode;
+  body: IRNode;
 }
+
 export interface LoopNode extends IRNode {
   type: IRInst.LOOP;
-  children: [IRNode, IRNode];
+  init: EmptyNode;
+  test: IRNode;
+  update: IRNode;
+  body: IRNode;
+}
+
+export interface DoWhileNode extends IRNode {
+  type: IRInst.DO_WHILE;
+  test: IRNode;
+  body: IRNode;
 }
