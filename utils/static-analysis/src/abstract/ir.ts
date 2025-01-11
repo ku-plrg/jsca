@@ -116,37 +116,12 @@ function createVisitor(): Visitor {
       };
     },
     WhileStatement(node: acorn.WhileStatement) {
-      let init: IRNode = emptyNode;
-      let test: IRNode = emptyNode;
-      if (node.test && node.test.type === 'SequenceExpression') {
-        const testExp = node.test.expressions.pop();
-        if (testExp) test = compile(testExp);
-        if (node.test.expressions.length > 0) {
-          let result: IRNode = compile(node.test.expressions[0]);
-          for (let i = 1; i < node.test.expressions.length - 1; i++) {
-            const eachResult: SeqNode = {
-              type: IRInst.SEQ,
-              left: result,
-              right: compile(node.test.expressions[i]),
-            };
-            result = eachResult;
-          }
-          init = result;
-        }
-      } else if (node.test) {
-        test = compile(node.test);
-      }
-
       return {
-        type: IRInst.SEQ,
-        left: init,
-        right: {
-          type: IRInst.LOOP,
-          init: emptyNode,
-          test,
-          update: emptyNode,
-          body: compile(node.body),
-        },
+        type: IRInst.LOOP,
+        init: emptyNode,
+        test: compile(node.test),
+        update: emptyNode,
+        body: compile(node.body),
       };
     },
     DoWhileStatement(node: acorn.DoWhileStatement) {
