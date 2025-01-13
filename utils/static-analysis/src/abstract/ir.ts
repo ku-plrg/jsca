@@ -1,4 +1,5 @@
 import * as acorn from 'acorn';
+import { stringifyIRNode } from '../utils/ir_stringifier';
 import {
   EmptyNode,
   Function,
@@ -65,6 +66,13 @@ function createVisitor(): Visitor {
       const consequent = compile(node.consequent);
       const alternate = node.alternate ? compile(node.alternate) : emptyNode;
 
+      const strConsequent = stringifyIRNode(consequent);
+      const strAlternate = stringifyIRNode(alternate);
+      const [left, right] =
+        strConsequent > strAlternate
+          ? [consequent, alternate]
+          : [alternate, consequent];
+
       return {
         type: IRInst.SEQ,
         left: test,
@@ -78,8 +86,8 @@ function createVisitor(): Visitor {
           },
           right: {
             type: IRInst.SEQ,
-            left: consequent,
-            right: alternate,
+            left,
+            right,
           },
         },
       };
@@ -348,6 +356,13 @@ function createVisitor(): Visitor {
       const consequent = compile(node.consequent);
       const alternate = compile(node.alternate);
 
+      const strConsequent = stringifyIRNode(consequent);
+      const strAlternate = stringifyIRNode(alternate);
+      const [left, right] =
+        strConsequent > strAlternate
+          ? [consequent, alternate]
+          : [alternate, consequent];
+
       return {
         type: IRInst.SEQ,
         left: test,
@@ -361,8 +376,8 @@ function createVisitor(): Visitor {
           },
           right: {
             type: IRInst.SEQ,
-            left: consequent,
-            right: alternate,
+            left,
+            right,
           },
         },
       };
