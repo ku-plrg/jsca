@@ -131,22 +131,29 @@ function FunctionScorer<T extends AbsFunction>(
     l2: string
   ) {
     const LOG_DIR = '/utils/static-analysis/src/logs/functions';
+    const IR_DIR = '/utils/static-analysis/src/logs/ir';
     const TEMPLATE = (id: string, name: string, loc: string) =>
       `[${id}(${name})](${LOG_DIR}/${loc}/${name}.js)`;
+    const IRTEMPLATE = (id: string, name: string, loc: string) =>
+      `[${id}(${name})](${IR_DIR}/${loc}/ir_log_${id}.txt)`;
     let mdContent = '';
     mdContent += `## Scores\n|Precision|Recall|TP|TN|FP|FN|\n|---|---|---|---|---|---|\n|${score.precision}|${score.recall}|${score.truePositives.length}|${score.trueNegatives.length}|${score.falsePositives.length}|${score.falseNegatives.length}|\n\n`;
 
     mdContent += `## False Negatives: ${
       score.falseNegatives.length
     }\n|f1|f2|\n|--|--|\n${score.falseNegatives
-      .slice(0, 20)
+      .slice(0, 50)
       .map(
         (fn) =>
           `|${TEMPLATE(fn.id, fn.f1Name, l1)}|${TEMPLATE(
             fn.id,
             fn.f2Name,
             l2
-          )}|`
+          )}|\n|${IRTEMPLATE(fn.id, fn.f1Name, l1)}|${IRTEMPLATE(
+            fn.id,
+            fn.f2Name,
+            l2
+          )}`
       )
       .join('\n')}\n`;
 
