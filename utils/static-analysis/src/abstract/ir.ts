@@ -69,10 +69,18 @@ function createVisitor(): Visitor {
         type: IRInst.SEQ,
         left: test,
         right: {
+          type: IRInst.SEQ,
+          left: {
           type: IRInst.COND,
           test: { type: IRInst.BLOCK },
-          true: consequent,
-          false: alternate,
+            true: { type: IRInst.BLOCK },
+            false: { type: IRInst.BLOCK },
+          },
+          right: {
+            type: IRInst.SEQ,
+            left: consequent,
+            right: alternate,
+          },
         },
       };
     },
@@ -206,7 +214,7 @@ function createVisitor(): Visitor {
       return { type: IRInst.EMPTY };
     },
     ThisExpression(): IRNode {
-      return { type: IRInst.EMPTY };
+      return { type: IRInst.LITERAL, id: 'this' };
     },
     ArrayExpression(node: acorn.ArrayExpression): IRNode {
       const elements = node.elements;
@@ -234,6 +242,21 @@ function createVisitor(): Visitor {
       return compile(node.argument);
     },
     BinaryExpression(node: acorn.BinaryExpression): SeqNode {
+      if (
+        node.operator === '/' ||
+        node.operator === '%' ||
+        node.operator === 'in'
+      ) {
+        return {
+          type: IRInst.SEQ,
+          left: compile(node.left),
+          right: {
+            type: IRInst.SEQ,
+            left: { type: IRInst.LITERAL, id: node.operator },
+            right: compile(node.right),
+          },
+        };
+      }
       return {
         type: IRInst.SEQ,
         left: compile(node.left),
@@ -268,32 +291,26 @@ function createVisitor(): Visitor {
     LogicalExpression(node: acorn.LogicalExpression): IRNode {
       const left = compile(node.left);
       const right = compile(node.right);
-      if (node.operator === '&&') {
         return {
           type: IRInst.SEQ,
-          left,
+        left: left,
           right: {
-            type: IRInst.COND,
-            test: { type: IRInst.BLOCK },
-            true: right,
-            false: { type: IRInst.EMPTY },
-          },
-        };
-      } else if (node.operator === '||') {
-        return {
           type: IRInst.SEQ,
-          left,
-          right: {
+          left: {
             type: IRInst.COND,
             test: { type: IRInst.BLOCK },
-            true: { type: IRInst.EMPTY },
-            false: right,
+            true: { type: IRInst.BLOCK },
+            false: { type: IRInst.BLOCK },
+          },
+          right: {
+            type: IRInst.SEQ,
+            left: right,
+            right: { type: IRInst.EMPTY },
+          },
           },
         };
-      } else {
-        throw UnsupportedStatementError('LogicalExpression : ??');
-      }
     },
+
     //TODO: MemberExpression can have some missing cases
     MemberExpression(node: acorn.MemberExpression) {
       const Objnode = compile(node.object);
@@ -307,6 +324,15 @@ function createVisitor(): Visitor {
         return { type: IRInst.SEQ, left: Objnode, right: prop_node };
       }
 
+      if (node.computed && node.property.type !== 'Identifier') {
+        const prop_node = compile(node.property);
+        return {
+          type: IRInst.SEQ,
+          left: Objnode,
+          right: prop_node,
+        };
+      }
+
       return { type: IRInst.EMPTY };
     },
     ConditionalExpression(node: acorn.ConditionalExpression) {
@@ -318,10 +344,18 @@ function createVisitor(): Visitor {
         type: IRInst.SEQ,
         left: test,
         right: {
+          type: IRInst.SEQ,
+          left: {
           type: IRInst.COND,
           test: { type: IRInst.BLOCK },
-          true: consequent,
-          false: alternate,
+            true: { type: IRInst.BLOCK },
+            false: { type: IRInst.BLOCK },
+          },
+          right: {
+            type: IRInst.SEQ,
+            left: consequent,
+            right: alternate,
+          },
         },
       };
     },
@@ -379,6 +413,13 @@ function createVisitor(): Visitor {
         };
       }
       return result;
+    },
+    FunctionExpression(node: acorn.FunctionExpression): IRNode {
+      return {
+        type: IRInst.SEQ,
+        left: { type: IRInst.LITERAL, id: 'function' },
+        right: compile(node.body),
+      };
     },
     ArrowFunctionExpression(): IRNode {
       throw UnsupportedStatementError('ArrowFunctionExpression');

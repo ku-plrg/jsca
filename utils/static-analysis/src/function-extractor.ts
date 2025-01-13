@@ -3,13 +3,16 @@ import * as walk from 'acorn-walk';
 import { simple } from 'acorn-walk';
 import { Function } from './utils/types';
 
+const MAX_FUNCTION_SIZE = 0;
+
 function stripFunctions(node: acorn.Node): acorn.Node {
   if (!node) return node;
 
   // Replace function declarations/expressions with empty statements
   if (
     node.type === 'FunctionDeclaration' ||
-    node.type === 'FunctionExpression'
+    (node.type === 'FunctionExpression' &&
+      JSON.stringify((node as any).body).toString().length > MAX_FUNCTION_SIZE)
   ) {
     return {
       type: 'EmptyStatement',
@@ -103,10 +106,12 @@ function extractFunctions(code: string): Function[] {
 
   walk.simple(ast, {
     FunctionDeclaration(node: acorn.Function) {
-      recordFunction(node);
+      if (JSON.stringify(node.body).toString().length > MAX_FUNCTION_SIZE)
+        recordFunction(node);
     },
     FunctionExpression(node: acorn.Function) {
-      recordFunction(node);
+      if (JSON.stringify(node.body).toString().length > MAX_FUNCTION_SIZE)
+        recordFunction(node);
     },
   });
 

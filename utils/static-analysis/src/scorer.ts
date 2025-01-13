@@ -153,7 +153,7 @@ function FunctionScorer<T extends AbsFunction>(
             fn.id,
             fn.f2Name,
             l2
-          )}`
+          )}|\n|`
       )
       .join('\n')}\n`;
 

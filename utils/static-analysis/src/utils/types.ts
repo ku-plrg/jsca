@@ -83,6 +83,7 @@ export enum IRInst {
   SEQ,
   UPDATE_PROP,
   PROP,
+  LITERAL,
   COND,
   FORIN,
   LOOP,
@@ -119,6 +120,10 @@ export interface PropNode extends IRNodeBase {
   object: BlockNode;
 }
 
+export interface LiteralNode extends IRNodeBase {
+  type: IRInst.LITERAL;
+  id: string;
+}
 export interface CondNode extends IRNodeBase {
   type: IRInst.COND;
   test: BlockNode;
@@ -152,6 +157,7 @@ export type IRNode =
   | BlockNode
   | SeqNode
   | UpdatePropNode
+  | LiteralNode
   | PropNode
   | CondNode
   | ForInNode

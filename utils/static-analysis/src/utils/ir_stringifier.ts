@@ -23,6 +23,8 @@ function stringifyIRNode(node: IRNode): string {
 
     case IRInst.BLOCK:
       return `_`;
+    case IRInst.LITERAL:
+      return node.id;
 
     case IRInst.SEQ:
       const flattened = flattenSequence(node);
