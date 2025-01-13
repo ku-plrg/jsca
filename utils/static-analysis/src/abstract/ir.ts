@@ -71,8 +71,8 @@ function createVisitor(): Visitor {
         right: {
           type: IRInst.SEQ,
           left: {
-          type: IRInst.COND,
-          test: { type: IRInst.BLOCK },
+            type: IRInst.COND,
+            test: { type: IRInst.BLOCK },
             true: { type: IRInst.BLOCK },
             false: { type: IRInst.BLOCK },
           },
@@ -172,12 +172,20 @@ function createVisitor(): Visitor {
         },
       };
     },
-    ForInStatement(node: acorn.ForInStatement) {
+    ForInStatement(node: acorn.ForInStatement): IRNode {
       return {
-        type: IRInst.FORIN,
+        type: IRInst.SEQ,
         left: compile(node.left),
-        right: compile(node.right),
-        body: compile(node.body),
+        right: {
+          type: IRInst.SEQ,
+          left: compile(node.right),
+          right: {
+            type: IRInst.FORIN,
+            left: { type: IRInst.BLOCK },
+            right: { type: IRInst.BLOCK },
+            body: compile(node.body),
+          },
+        },
       };
     },
     //TODO: ForOfStatement
@@ -291,10 +299,10 @@ function createVisitor(): Visitor {
     LogicalExpression(node: acorn.LogicalExpression): IRNode {
       const left = compile(node.left);
       const right = compile(node.right);
-        return {
-          type: IRInst.SEQ,
+      return {
+        type: IRInst.SEQ,
         left: left,
-          right: {
+        right: {
           type: IRInst.SEQ,
           left: {
             type: IRInst.COND,
@@ -307,8 +315,8 @@ function createVisitor(): Visitor {
             left: right,
             right: { type: IRInst.EMPTY },
           },
-          },
-        };
+        },
+      };
     },
 
     //TODO: MemberExpression can have some missing cases
@@ -346,8 +354,8 @@ function createVisitor(): Visitor {
         right: {
           type: IRInst.SEQ,
           left: {
-          type: IRInst.COND,
-          test: { type: IRInst.BLOCK },
+            type: IRInst.COND,
+            test: { type: IRInst.BLOCK },
             true: { type: IRInst.BLOCK },
             false: { type: IRInst.BLOCK },
           },
@@ -377,8 +385,8 @@ function createVisitor(): Visitor {
 
       return {
         type: IRInst.SEQ,
-        left: result,
-        right: callee,
+        left: callee,
+        right: result,
       };
     },
     //TODO: NewExpression
