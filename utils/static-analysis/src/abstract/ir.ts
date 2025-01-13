@@ -66,13 +66,12 @@ function createVisitor(): Visitor {
       const consequent = compile(node.consequent);
       const alternate = node.alternate ? compile(node.alternate) : emptyNode;
 
-      const strConsequent = stringifyIRNode(consequent);
-      const strAlternate = stringifyIRNode(alternate);
+      const strConsequent = stringifyIRNode(consequent).split('\n')[0].length;
+      const strAlternate = stringifyIRNode(alternate).split('\n')[0].length;
       const [left, right] =
         strConsequent > strAlternate
           ? [consequent, alternate]
           : [alternate, consequent];
-
       return {
         type: IRInst.SEQ,
         left: test,
@@ -86,8 +85,8 @@ function createVisitor(): Visitor {
           },
           right: {
             type: IRInst.SEQ,
-            left,
-            right,
+            left: consequent,
+            right: alternate,
           },
         },
       };
@@ -134,10 +133,20 @@ function createVisitor(): Visitor {
     WhileStatement(node: acorn.WhileStatement) {
       return {
         type: IRInst.LOOP,
-        init: emptyNode,
-        test: compile(node.test),
-        update: emptyNode,
-        body: compile(node.body),
+        body: {
+          type: IRInst.SEQ,
+          left: compile(node.test),
+          right: {
+            type: IRInst.SEQ,
+            left: {
+              type: IRInst.COND,
+              test: { type: IRInst.BLOCK },
+              true: { type: IRInst.BLOCK },
+              false: { type: IRInst.BLOCK },
+            },
+            right: compile(node.body),
+          },
+        },
       };
     },
     DoWhileStatement(node: acorn.DoWhileStatement) {
@@ -173,10 +182,24 @@ function createVisitor(): Visitor {
         left: init,
         right: {
           type: IRInst.LOOP,
-          init: emptyNode,
-          test,
-          update,
-          body,
+          body: {
+            type: IRInst.SEQ,
+            left: test,
+            right: {
+              type: IRInst.SEQ,
+              left: {
+                type: IRInst.COND,
+                test: { type: IRInst.BLOCK },
+                true: { type: IRInst.BLOCK },
+                false: { type: IRInst.BLOCK },
+              },
+              right: {
+                type: IRInst.SEQ,
+                left: body,
+                right: update,
+              },
+            },
+          },
         },
       };
     },
@@ -188,9 +211,7 @@ function createVisitor(): Visitor {
           type: IRInst.SEQ,
           left: compile(node.right),
           right: {
-            type: IRInst.FORIN,
-            left: { type: IRInst.BLOCK },
-            right: { type: IRInst.BLOCK },
+            type: IRInst.LOOP,
             body: compile(node.body),
           },
         },
@@ -356,7 +377,7 @@ function createVisitor(): Visitor {
       const consequent = compile(node.consequent);
       const alternate = compile(node.alternate);
 
-      const strConsequent = stringifyIRNode(consequent);
+      const strConsequent = stringifyIRNode(consequent).split('\n')[0];
       const strAlternate = stringifyIRNode(alternate);
       const [left, right] =
         strConsequent > strAlternate
@@ -376,8 +397,8 @@ function createVisitor(): Visitor {
           },
           right: {
             type: IRInst.SEQ,
-            left,
-            right,
+            left: consequent,
+            right: alternate,
           },
         },
       };

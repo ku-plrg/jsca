@@ -140,9 +140,6 @@ export interface ForInNode extends IRNodeBase {
 
 export interface LoopNode extends IRNodeBase {
   type: IRInst.LOOP;
-  init: EmptyNode;
-  test: IRNode;
-  update: IRNode;
   body: IRNode;
 }
 

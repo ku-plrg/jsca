@@ -56,17 +56,7 @@ function stringifyIRNode(node: IRNode): string {
       ].join('\n');
 
     case IRInst.LOOP:
-      return (
-        'for(' +
-        stringifyIRNode(node.init) +
-        ';' +
-        stringifyIRNode(node.test) +
-        ';' +
-        stringifyIRNode(node.update) +
-        ') {\n' +
-        stringifyIRNode(node.body) +
-        '}'
-      );
+      return 'while() {\n' + stringifyIRNode(node.body) + '}';
     case IRInst.DO_WHILE:
       return (
         'do {\n' +
