@@ -15,6 +15,19 @@ type Visitor = {
 
 const emptyNode: EmptyNode = { type: IRInst.EMPTY };
 
+function nodesToSeqNode(exprs: acorn.Node[]): IRNode {
+  let result: IRNode = exprs[0] !== undefined ? compile(exprs[0]) : emptyNode;
+  for (let i = 1; i < exprs.length; i++) {
+    const eachResult: SeqNode = {
+      type: IRInst.SEQ,
+      left: result,
+      right: compile(exprs[i]),
+    };
+    result = eachResult;
+  }
+  return result;
+}
+
 function createVisitor(): Visitor {
   return {
     // Statements
@@ -183,16 +196,7 @@ function createVisitor(): Visitor {
     ForStatement(node: acorn.ForStatement) {
       let init: IRNode = emptyNode;
       if (node.init && node.init.type === 'SequenceExpression') {
-        let result: IRNode = compile(node.init.expressions[0]);
-        for (let i = 1; i < node.init.expressions.length; i++) {
-          const eachResult: SeqNode = {
-            type: IRInst.SEQ,
-            left: result,
-            right: compile(node.init.expressions[i]),
-          };
-          result = eachResult;
-        }
-        init = result;
+        init = nodesToSeqNode(node.init.expressions);
       } else if (node.init) {
         init = compile(node.init);
       }
@@ -241,9 +245,30 @@ function createVisitor(): Visitor {
         },
       };
     },
-    //TODO: ForOfStatement
-    ForofStatement(): IRNode {
-      throw UnsupportedStatementError('ForOfStatement');
+    ForOfStatement(node: acorn.ForOfStatement): IRNode {
+      let seq: IRNode = emptyNode;
+      let right: IRNode = emptyNode;
+      if (node.right.type === 'SequenceExpression') {
+        seq = nodesToSeqNode(node.right.expressions.slice(0, -1));
+        right = compile(
+          node.right.expressions[node.right.expressions.length - 1]
+        );
+      } else {
+        right = compile(node.right);
+      }
+
+      return {
+        type: IRInst.SEQ,
+        left: compile(node.left),
+        right: {
+          type: IRInst.SEQ,
+          left: right,
+          right: {
+            type: IRInst.LOOP,
+            body: compile(node.body),
+          },
+        },
+      };
     },
     FunctionDeclaration(): IRNode {
       throw UnsupportedStatementError('FunctionDeclaration');
@@ -520,6 +545,27 @@ function createVisitor(): Visitor {
     },
     TaggedTemplateExpression(): IRNode {
       throw UnsupportedStatementError('TaggedTemplateExpression');
+    },
+    Super(): IRNode {
+      return { type: IRInst.LITERAL, id: 'super' };
+    },
+    ObjectPattern(node: acorn.ObjectPattern): IRNode {
+      const seq: IRNode = nodesToSeqNode(
+        node.properties.map((prop) => {
+          if (prop.type === 'Property') return prop.value;
+          return prop.argument;
+        })
+      );
+      return seq;
+    },
+    ArrayPattern(node: acorn.ArrayPattern): IRNode {
+      const seq: IRNode = nodesToSeqNode(
+        node.elements.filter((e) => e !== null)
+      );
+      return seq;
+    },
+    SpreadElement(node: acorn.SpreadElement): IRNode {
+      return compile(node.argument);
     },
   } as Visitor;
 }
