@@ -1,27 +1,9 @@
-const puppeteer = require('puppeteer');
-const fs = require('fs');
-const path = require('path');
-const { URL } = require('url');
-const {
-  logError,
-  truncateFileName,
-  processChunks,
-  chunkArray,
-} = require('./utils');
-const axios = require('axios');
-
-const TARGET_URLS = [
-  /* put urls here */
-  'https://www.istockphoto.com',
-];
-
-const CHUNK_SIZE = 2;
-
-processChunks(
-  chunkArray(TARGET_URLS, CHUNK_SIZE),
-  downloadScripts,
-  (targetUrl) => downloadScripts(targetUrl, false)
-);
+import axios from 'axios';
+import fs from 'fs';
+import path from 'path';
+import puppeteer from 'puppeteer';
+import { URL } from 'url';
+import { logError, truncateFileName } from './utils';
 
 async function downloadFileFallback(url, filePath) {
   const browser = await puppeteer.launch({ headless: false });

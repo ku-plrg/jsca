@@ -1,7 +1,10 @@
-const fs = require('fs');
-const path = require('path');
-const puppeteer = require('puppeteer');
-const axios = require('axios');
+import axios from 'axios';
+import fs from 'fs';
+import path, { dirname } from 'path';
+import puppeteer from 'puppeteer';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const logFilePath = path.join(__dirname, 'error-log.txt');
 
@@ -153,7 +156,7 @@ async function downloadScripts(
   const inlineScripts = await getInlineScripts(page);
   await browser.close();
 
-  const domainFolder = path.join(rootFolder, reachableUrl.host);
+  const domainFolder = path.join(__dirname, rootFolder, reachableUrl.host);
   guardFolderSync(domainFolder);
 
   inlineScripts.forEach((inlineScript, idx) => {
@@ -187,8 +190,4 @@ async function downloadScripts(
     );
 }
 
-module.exports = {
-  chunkArray,
-  processChunks,
-  downloadScripts,
-};
+export { chunkArray, downloadScripts, processChunks };

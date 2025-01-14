@@ -139,14 +139,11 @@ build
 dist
 utils/static-analysis/target/*.js
 
-# utils/license-crawler
-utils/license-crawler/data
-utils/license-crawler/results
-utils/license-crawler/error-log.txt
-
-# utils/website-crawler
-utils/website-crawler/data
-utils/website-crawler/error-log.txt
+# utils/crawlers
+utils/crawlers/license/data
+utils/crawlers/website/data
+utils/crawlers/*/results
+utils/crawlers/*/error-log.txt
 
 # utils/dynamic-analysis
 utils/dynamic-analysis/log.txt

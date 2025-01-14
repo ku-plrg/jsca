@@ -1,5 +1,8 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 function getFilesRecursively(dir, fileList = []) {
   const files = fs.readdirSync(dir);
@@ -45,7 +48,7 @@ function analyzeFile(targetDirectory) {
     ),
   ];
 
-  const resultFolder = 'results';
+  const resultFolder = path.join(__dirname, 'results');
   fs.mkdirSync(resultFolder, { recursive: true });
 
   fs.writeFileSync(
@@ -54,6 +57,4 @@ function analyzeFile(targetDirectory) {
   );
 }
 
-module.exports = {
-  analyzeFile,
-};
+export { analyzeFile };

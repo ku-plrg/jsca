@@ -1,0 +1,20 @@
+{
+  "name": "crawlers",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "update-library-info": "node cdn/src/library-info/index.js",
+    "analyze-browser": "node cdn/src/analyze-browser/index.js",
+    "extract-license": "node license/index.js",
+    "crawl-website": "node website/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "axios": "1.7.7",
+    "cli-progress": "3.12.0",
+    "puppeteer": "23.9.0"
+  }
+}

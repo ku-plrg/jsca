@@ -1,4 +1,4 @@
-const { downloadScripts, processChunks, chunkArray } = require('./utils');
+import { chunkArray, downloadScripts, processChunks } from './utils.js';
 
 const TARGET_URLS = [
   /* put urls here */

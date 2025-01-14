@@ -17,3 +17,13 @@ npm run update-library-info
 ```
 npm run analyze-browser
 ```
+
+### get js files used in particular domain
+```
+npm run crawl-website
+```
+
+### get license.txt info from js file
+```
+npm run extract-license
+```
