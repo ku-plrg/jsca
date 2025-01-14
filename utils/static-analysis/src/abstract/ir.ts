@@ -66,6 +66,30 @@ function createVisitor(): Visitor {
       const consequent = compile(node.consequent);
       const alternate = node.alternate ? compile(node.alternate) : emptyNode;
 
+      if (
+        (node.test.type === 'BinaryExpression' &&
+          node.test.operator === '!==') ||
+        (node.test.type === 'UnaryExpression' && node.test.operator === '!')
+      ) {
+        return {
+          type: IRInst.SEQ,
+          left: test,
+          right: {
+            type: IRInst.SEQ,
+            left: {
+              type: IRInst.COND,
+              test: { type: IRInst.BLOCK },
+              true: { type: IRInst.BLOCK },
+              false: { type: IRInst.BLOCK },
+            },
+            right: {
+              type: IRInst.SEQ,
+              left: alternate,
+              right: consequent,
+            },
+          },
+        };
+      }
       const strConsequent = stringifyIRNode(consequent).split('\n')[0].length;
       const strAlternate = stringifyIRNode(alternate).split('\n')[0].length;
       const [left, right] =
@@ -279,11 +303,7 @@ function createVisitor(): Visitor {
       return compile(node.argument);
     },
     BinaryExpression(node: acorn.BinaryExpression): SeqNode {
-      if (
-        node.operator === '/' ||
-        node.operator === '%' ||
-        node.operator === 'in'
-      ) {
+      if (node.operator === 'in') {
         return {
           type: IRInst.SEQ,
           left: compile(node.left),
@@ -370,12 +390,36 @@ function createVisitor(): Visitor {
         };
       }
 
-      return { type: IRInst.EMPTY };
+      return Objnode;
     },
     ConditionalExpression(node: acorn.ConditionalExpression) {
       const test = compile(node.test);
       const consequent = compile(node.consequent);
       const alternate = compile(node.alternate);
+      if (
+        (node.test.type === 'BinaryExpression' &&
+          node.test.operator === '!==') ||
+        (node.test.type === 'UnaryExpression' && node.test.operator === '!')
+      ) {
+        return {
+          type: IRInst.SEQ,
+          left: test,
+          right: {
+            type: IRInst.SEQ,
+            left: {
+              type: IRInst.COND,
+              test: { type: IRInst.BLOCK },
+              true: { type: IRInst.BLOCK },
+              false: { type: IRInst.BLOCK },
+            },
+            right: {
+              type: IRInst.SEQ,
+              left: alternate,
+              right: consequent,
+            },
+          },
+        };
+      }
 
       const strConsequent = stringifyIRNode(consequent).split('\n')[0];
       const strAlternate = stringifyIRNode(alternate);
@@ -433,7 +477,7 @@ function createVisitor(): Visitor {
         return callee;
       }
       let result = callee;
-      for (let i = 1; i < args.length; i++) {
+      for (let i = 0; i < args.length; i++) {
         result = {
           type: IRInst.SEQ,
           left: result,
