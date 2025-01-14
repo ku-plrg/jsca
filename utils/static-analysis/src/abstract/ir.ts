@@ -300,7 +300,7 @@ function createVisitor(): Visitor {
       return { type: IRInst.EMPTY };
     },
     ThisExpression(): IRNode {
-      return { type: IRInst.LITERAL, id: 'this' };
+      return { type: IRInst.EMPTY };
     },
     ArrayExpression(node: acorn.ArrayExpression): IRNode {
       const elements = node.elements;
@@ -345,6 +345,7 @@ function createVisitor(): Visitor {
         right: compile(node.right),
       };
     },
+    //TODO: when prop update last seq must be prop?
     AssignmentExpression(node: acorn.AssignmentExpression): IRNode {
       const left = compile(node.left);
       const right = compile(node.right);
@@ -355,11 +356,15 @@ function createVisitor(): Visitor {
         if (left.right.type === IRInst.PROP) {
           return {
             type: IRInst.SEQ,
-            left: right,
+            left: left.left,
             right: {
-              type: IRInst.UPDATE_PROP,
-              left: left.right,
-              right: { type: IRInst.BLOCK },
+              type: IRInst.SEQ,
+              left: right,
+              right: {
+                type: IRInst.UPDATE_PROP,
+                left: left.right,
+                right: { type: IRInst.BLOCK },
+              },
             },
           };
         }
@@ -421,6 +426,12 @@ function createVisitor(): Visitor {
       const test = compile(node.test);
       const consequent = compile(node.consequent);
       const alternate = compile(node.alternate);
+      if (
+        node.consequent.type === 'Literal' &&
+        node.consequent.value === 'undefined'
+      ) {
+        return { type: IRInst.EMPTY };
+      }
       if (
         (node.test.type === 'BinaryExpression' &&
           node.test.operator === '!==') ||
