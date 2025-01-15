@@ -36,6 +36,27 @@ export interface IR extends AbsFunctionBase {
 
 export type AbsFunction = Propstree | Props | CFG | IR;
 
+export interface CFGNode {
+  id: number;
+  type:
+    | 'start'
+    | 'loop'
+    | 'condition'
+    | 'prop'
+    | 'update_prop'
+    | 'exit'
+    | 'end';
+  node: Node | null;
+  prev: number[];
+}
+
+export interface CFGState {
+  nodes: Map<number, CFGNode>;
+  currentId: number;
+  loopStack: Array<{ start: number; exit: number }>;
+  endId: number;
+}
+
 export interface PropstreeNodeBase {
   type: 'normal' | 'if' | 'logical' | 'conditional';
   props: string[];

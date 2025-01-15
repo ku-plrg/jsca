@@ -2,27 +2,9 @@ import * as acorn from 'acorn';
 import { exec } from 'child_process';
 import { writeFile } from 'fs/promises';
 import { promisify } from 'util';
-
-interface CFGNode {
-  id: number;
-  type:
-    | 'start'
-    | 'loop'
-    | 'condition'
-    | 'prop'
-    | 'update_prop'
-    | 'exit'
-    | 'end';
-  node: acorn.Node | null;
-  prev: number[];
-}
-
-interface CFGState {
-  nodes: Map<number, CFGNode>;
-  currentId: number;
-  loopStack: Array<{ start: number; exit: number }>;
-  endId: number;
-}
+import { CFGState, CFGNode } from '../utils/types';
+import { cfgToIR } from '../utils/cfg_to_ir';
+import { stringifyIRNode } from '../utils/ir_stringifier';
 
 type Visitor = {
   [key: string]: <T extends acorn.Node>(node: T) => number;
@@ -632,53 +614,28 @@ async function generatePNG(
 async function main() {
   const code = `
     function example() {
-  Symbol('JSCA_123_162');
-  var options, name, src, copy, copyIsArray, clone, target = arguments[0] || {}, i = 1, length = arguments.length, deep = false;
-  if (typeof target === 'boolean') {
-    deep = target;
-    target = arguments[i] || {};
-    i++;
-  }
-  if (typeof target !== 'object' && !isFunction(target)) {
-    return target = {};
-  }
-  if (i === length) {
-    target = this;
-    i--;
-  }
-  for (; i < length; i++) {
-    if ((options = arguments[i]) != null) {
-      for (name in options) {
-        copy = options[name];
-        if (name === '__proto__' || target === copy) {
-          continue;
-        }
-        if (deep && copy && (jQuery.isPlainObject(copy) || (copyIsArray = Array.isArray(copy)))) {
-          src = target[name];
-          if (copyIsArray && !Array.isArray(src)) {
-            return clone = [];
-          } else if (!copyIsArray && !jQuery.isPlainObject(src)) {
-            clone = {};
-          } else {
-            return clone = src;
-          }
-          copyIsArray = false;
-          target[name] = jQuery.extend(deep, clone, copy);
-        } else if (copy !== undefined) {
-          target[name] = copy;
-        }
-      }
-    }
-  }
-  return target;
+  Symbol('JSCA_212_229');
+  var t,
+    n = '',
+    a = 0,
+    o = e.nodeType;
+  if (!o) for (; (t = e[a++]); ) n += Te.text(t);
+  return 1 === o || 11 === o
+    ? e.textContent
+    : 9 === o
+    ? e.documentElement.textContent
+    : 3 === o || 4 === o
+    ? e.nodeValue
+    : n;
 }
+
   `;
 
   try {
     const ast = acorn.parse(code, { ecmaVersion: 2020 });
     const functionBody = (ast.body[0] as acorn.FunctionDeclaration).body;
     const graph = generateCFG(functionBody);
-
+    console.log(stringifyIRNode(cfgToIR(graph)));
     const dotContent = await cfgToDot(graph);
 
     await writeFile('cfg.dot', dotContent, 'utf8');
