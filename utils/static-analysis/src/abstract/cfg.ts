@@ -2,7 +2,7 @@ import * as acorn from 'acorn';
 import { exec } from 'child_process';
 import { writeFile } from 'fs/promises';
 import { promisify } from 'util';
-import { CFGState, CFGNode } from '../utils/types';
+import { CFGState, CFGNode, Function, IR } from '../utils/types';
 import { cfgToIR } from '../utils/cfg_to_ir';
 import { stringifyIRNode } from '../utils/ir_stringifier';
 
@@ -523,6 +523,12 @@ function generateCFG(ast: acorn.Node): CFGState {
   return state;
 }
 
+function generateIR(ast: acorn.Node) {
+  const CFG = generateCFG(ast);
+  const ir = cfgToIR(CFG);
+  return ir;
+}
+
 async function cfgToDot(graph: CFGState): Promise<string> {
   const nodes = graph.nodes;
   let dotString = 'digraph CFG {\n';
@@ -648,3 +654,17 @@ async function main() {
 if (require.main === module) {
   main().catch(console.error);
 }
+
+function cfg(functions: Function[]): IR[] {
+  return functions.map((func) => {
+    const ast = func.body;
+    const graph = generateCFG(ast);
+    return {
+      id: func.id,
+      name: func.name,
+      type: 'ir',
+      ir: cfgToIR(graph),
+    };
+  });
+}
+export default cfg;

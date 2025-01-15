@@ -8,8 +8,8 @@ import logFunctionCode from './utils/function-logger';
 import measureTime from './utils/timer';
 import { Function, Library } from './utils/types';
 
-type AbstractionType = 'IR' | 'PropsTree' | 'Props';
-const TARGET_ABSTRACTIONS: AbstractionType[] = ['IR']; // ['IR', 'Props', 'PropsTree'];
+type AbstractionType = 'IR' | 'PropsTree' | 'Props' | 'CFG';
+const TARGET_ABSTRACTIONS: AbstractionType[] = ['CFG']; // ['IR', 'Props', 'PropsTree'];
 
 const TARGET_CODES: [string, string][] = [
   ['jquery_3.7.1.js', 'jquery_3.7.1_babel-minify.js'],
@@ -26,8 +26,8 @@ const TARGET_CODES : [string, string][]= [
 */
 
 function callScorer(f1: string, f2: string, abstractionType: AbstractionType) {
-  const filePath1 = join(__dirname, '../target', f1);
-  const filePath2 = join(__dirname, '../target', f2);
+  const filePath1 = join(__dirname, '../target/initial', f1);
+  const filePath2 = join(__dirname, '../target/initial', f2);
 
   const code: string = readFileSync(filePath1, 'utf-8');
   const code2: string = readFileSync(filePath2, 'utf-8');
@@ -54,6 +54,8 @@ function callScorer(f1: string, f2: string, abstractionType: AbstractionType) {
   };
 
   switch (abstractionType) {
+    case 'CFG':
+      return scorer(lib1, lib2, abstraction.cfg, comparator.ir, 'CFG');
     case 'IR':
       return scorer(lib1, lib2, abstraction.ir, comparator.ir, 'IR');
     case 'Props':
