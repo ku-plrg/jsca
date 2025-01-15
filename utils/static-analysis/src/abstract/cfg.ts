@@ -19,7 +19,8 @@ type Visitor = {
 function createNode(
   state: CFGState,
   type: CFGNode['type'],
-  node: acorn.Node | null
+  node: acorn.Node | null,
+  prevIds: number[] = []
 ): number {
   const id = state.currentId;
   state.currentId++;
@@ -27,7 +28,7 @@ function createNode(
     id,
     type,
     node,
-    prev: [],
+    prev: prevIds,
   });
   return id;
 }
@@ -35,297 +36,275 @@ function createNode(
 function addEdge(state: CFGState, from: number, to: number): void {
   const toNode = state.nodes.get(to);
   if (toNode && !toNode.prev.includes(from)) {
+    console.log('toNode Id', toNode.id);
     toNode.prev.push(from);
   }
 }
 
-
-function processBlockStatement(
+function mergePrev(
   state: CFGState,
-  node: any,
-  nextId: number,
-  exitId: number
-): number {
-  let currentId = nextId;
-
-  for (let i = node.body.length - 1; i >= 0; i--) {
-    currentId = processNode(state, node.body[i], currentId, exitId);
-  }
-
-  return currentId;
+  prevIds: number[],
+  exitIds: number[],
+  currentId: number
+) {
+  prevIds
+    .filter((id) => !exitIds.includes(id))
+    .forEach((prevId) => {
+      addEdge(state, prevId, currentId);
+    });
 }
 
-function processIfStatement(
+function processNode(
   state: CFGState,
-  node: acorn.IfStatement,
-  nextId: number,
-  exitId: number
+  node: acorn.Node,
+  prevId: number,
+  exitIds: number[]
 ): number {
-  const ifId = createNode(state, 'condition', null);
-  const testId = processNode(state, node.test, nextId, exitId);
-  const consequentEnd = processNode(state, node.consequent, nextId, exitId);
-  addEdge(state, ifId, consequentEnd);
-
-  if (node.alternate) {
-    const alternateEnd = processNode(state, node.alternate, nextId, exitId);
-    addEdge(state, ifId, alternateEnd);
-  } else {
-    addEdge(state, ifId, nextId);
-  }
-
-  return ifId;
-}
-
-function processWhileStatement(
-  state: CFGState,
-  node: any,
-  nextId: number,
-  exitId: number
-): number {
-  const whileId = createNode(
-    state,
-    'WhileStatement',
-    `while (${getNodeCode(node.test)})`
-  );
-
-  const bodyEnd = processNode(state, node.body, whileId, exitId);
-  addEdge(state, whileId, bodyEnd);
-  addEdge(state, whileId, nextId);
-
-  return whileId;
-}
-
-function processForStatement(
-  state: CFGState,
-  node: any,
-  nextId: number,
-  exitId: number
-): number {
-  const initId = node.init
-    ? processNode(state, node.init, nextId, exitId)
-    : nextId;
-  const forId = createNode(
-    state,
-    'ForStatement',
-    `for (${node.init ? getNodeCode(node.init) : ''}; ${getNodeCode(
-      node.test
-    )}; ${getNodeCode(node.update)})`
-  );
-
-  const bodyEnd = processNode(state, node.body, forId, exitId);
-  addEdge(state, forId, bodyEnd);
-  addEdge(state, forId, nextId);
-
-  return initId;
-}
-
-function processForInStatement(
-  state: CFGState,
-  node: any,
-  nextId: number,
-  exitId: number
-): number {
-  const initId = node.left
-    ? processNode(state, node.left, nextId, exitId)
-    : nextId;
-  const forId = createNode(
-    state,
-    'ForInStatement',
-    `for (${node.left ? getNodeCode(node.left) : ''} in ${getNodeCode(
-      node.right
-    )})`
-  );
-
-  const bodyEnd = processNode(state, node.body, forId, exitId);
-  addEdge(state, forId, bodyEnd);
-  addEdge(state, bodyEnd, forId);
-  addEdge(state, forId, nextId);
-
-  return initId;
-}
-
-function processReturnStatement(
-  state: CFGState,
-  node: any,
-  nextId: number,
-  exitId: number
-): number {
-  const returnId = createNode(
-    state,
-    'ReturnStatement',
-    `return ${getNodeCode(node.argument)}`
-  );
-  addEdge(state, returnId, exitId);
-  return returnId;
-}
-
-function processLogicalExpression(
-  state: CFGState,
-  node: any,
-  nextId: number,
-  exitId: number
-): number {
-  const logicalId = createNode(
-    state,
-    'LogicalExpression',
-    `${getNodeCode(node.left)} ${node.operator} ${getNodeCode(node.right)}`
-  );
-  addEdge(state, logicalId, nextId);
-  return logicalId;
-}
-
-// function processVariableDeclaration(
-//   state: CFGState,
-//   node: any,
-//   nextId: number,
-//   exitId: number
-// ): number {
-//   const variableId = createNode(
-//     state,
-//     'VariableDeclaration',
-//     `${getNodeCode(node.kind)} ${getNodeCode(node.declarations)}`
-//   );
-//   addEdge(state, variableId, nextId);
-//   return variableId;
-// }
-
-function mergePrev(state: CFGState, prevIds: number[], exitIds: number[]): number {
-  prevIds.filter(id=>!exitIds.includes(id)).forEach((prevId) => {
-    addEdge(state, prevId,state.currentId);
-  });
-
-  return state.currentId;
-}
-
-function processNode(state:CFGState, node: acorn.Node, prevIds: number[], exitIds: number[]): number {
-
-     // merge
-  const mergedPrevId= prevIds.length>1? mergePrev(state, prevIds, exitIds): prevIds[0];
-  const visitor = createVisitor([mergedPrevId], exitIds, state);
+  // merge
+  const visitor = createVisitor(prevId, exitIds, state);
   const handler = visitor[node.type];
   try {
     if (!handler) {
       console.error(`Unsupported node type: ${node.type}`);
-      return mergedPrevId;
+      return prevId;
     }
-
     return handler(node);
   } catch (e) {
-    return mergedPrevId;
+    return prevId;
   }
 }
 
-function createVisitor(prevIds: number[], exitIds: number[],state:CFGState): Visitor {
+function UnsupportedStatementError(statement: string) {
+  const error = new Error(`Unsupported statement type: ${statement}`);
+  error.name = 'UnsupportedStatementError';
+  return error;
+}
+
+function createVisitor(
+  prevId: number,
+  exitIds: number[],
+  state: CFGState
+): Visitor {
   return {
-    ExpressionStatement(node): number {
-      return processNode(state, node, prevIds, exitIds);
-    },
-    BlockStatement(node) {
-     return processBlockStatement(state, node as any, nextId, exitId);},
-    EmptyStatement(node){
-      return prevIds[0]
-    },
-    DebuggerStatement(node){
-     return prevIds[0];},
-    WithStatement(node:acorn.Node){
-      return prevIds[0];},
-    ReturnStatement(node:acorn.ReturnStatement){
-      return processReturnStatement(state, node , nextId, exitId);
-    },
-    LabeledStatement(){
-      return prevIds[0];},
-    BreakStatement(){
-      return prevIds[0];},
-    ContinueStatement(){
-      return prevIds[0];},
-    IfStatement(node:acorn.IfStatement){
-    return  processIfStatement(state, node as any, nextId, exitId);},
-    SwitchStatement(node:acorn.Node){
-      return prevIds[0];},
-    ThrowStatement(node:acorn.Node){
-      return prevIds[0];},
-    TryStatement(node:acorn.Node){
-      return prevIds[0];},
-    WhileStatement:
-      processWhileStatement(state, node as any, nextId, exitId);
-    DoWhileStatement(node:acorn.Node){
-      return prevIds[0];},
-    ForStatement:
-      processForStatement(state, node as any, nextId, exitId);
-    ForInStatement:
-      processForInStatement(state, node as any, nextId, exitId);
-    ForOfStatement(node:acorn.Node){
-      return prevIds[0];},
-    Declaration(node:acorn.Node){
-      return prevIds[0];},
-    FunctionDeclaration(node:acorn.Node){
-      return prevIds[0];},
-    VariableDeclaration(node:acorn.Node){
-      return prevIds[0];},
-    ClassDeclaration(node:acorn.Node){
-      return prevIds[0];},
-    Identifier(node:acorn.Node){
-      return prevIds[0];},
-    Literal(node:acorn.Node){
-      return prevIds[0];},
-    ThisExpression(node:acorn.Node){
-      return prevIds[0];},
-    ArrayExpression(node:acorn.Node){
-      return prevIds[0];},
-    ObjectExpression(node:acorn.Node){
-      return prevIds[0];},
-    FunctionExpression(node:acorn.Node){
-      return prevIds[0];},
-    UnaryExpression(node:acorn.Node){
-      return prevIds[0];},
-    UpdateExpression(node:acorn.Node){
-      return prevIds[0];},
-    BinaryExpression(node:acorn.Node){
-      return prevIds[0];},
-    AssignmentExpression(node:acorn.Node){
-      return prevIds[0];},
-    LogicalExpression(node:acorn.Node){
-      return prevIds[0];},
-    MemberExpression(node:acorn.Node){
-      return prevIds[0];},
-    ConditionalExpression(node:acorn.Node){
-      return prevIds[0];},
-    CallExpression(node:acorn.Node){
-      return prevIds[0];},
-    NewExpression(node:acorn.Node){
-      return prevIds[0];},
-    SequenceExpression:
-      const sequenceNode = node as acorn.SequenceExpression;
-      const leftId = processNode(
+    ExpressionStatement(node) {
+      return processNode(
         state,
-        sequenceNode.expressions[0],
-        prevIds,
+        (node as unknown as acorn.ExpressionStatement).expression,
+        prevId,
         exitIds
       );
-      processNode(state, sequenceNode.expressions[1], [leftId], exitIds);
-    ArrowFunctionExpression:
-    YieldExpression:
-    TemplateLiteral:
-    TaggedTemplateExpression:
-    ClassExpression:
-    MetaProperty:
-    AwaitExpression:
-    ChainExpression:
-    ImportExpression:
-    ParenthesizedExpression:
-    ObjectPattern:
-    ArrayPattern:
-    RestElement:
-    AssignmentPattern:
-    // default:
-    //   const id = createNode(state, node.type, getNodeCode(node));
-    //   addEdge(state, id, nextId);
-    //   return id;
-  }
+    },
+    BlockStatement(node) {
+      const blockNode = node as unknown as acorn.BlockStatement;
+      const statements = blockNode.body;
+      if (statements.length === 0) {
+        return prevId;
+      }
+      let result: number = processNode(state, statements[0], prevId, exitIds);
+      for (let i = 1; i < statements.length; i++) {
+        result = processNode(state, statements[i], result, exitIds);
+      }
+      return result;
+    },
+    EmptyStatement(node) {
+      return prevId;
+    },
+    DebuggerStatement(node) {
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    WithStatement(node: acorn.Node) {
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    ReturnStatement(node) {
+      const returnNode = node as unknown as acorn.ReturnStatement;
+      const argumentNodeId = returnNode.argument
+        ? processNode(state, returnNode.argument, prevId, exitIds)
+        : prevId;
+      addEdge(state, argumentNodeId, exitIds[0]);
+
+      return exitIds[0];
+    },
+    LabeledStatement() {
+      // todo
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    BreakStatement() {
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    ContinueStatement() {
+      // todo
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    IfStatement(node) {
+      const ifNode = node as unknown as acorn.IfStatement;
+
+      const testNodeId = processNode(state, ifNode.test, prevId, exitIds);
+      const ifNodeId = createNode(state, 'condition', null, [testNodeId]);
+
+      const consequentNodeId = processNode(
+        state,
+        ifNode.consequent,
+        ifNodeId,
+        exitIds
+      );
+      const alternateNodeId =
+        ifNode.alternate &&
+        processNode(state, ifNode.alternate, ifNodeId, exitIds);
+
+      const ifExitNodeId = createNode(state, 'exit', null);
+      mergePrev(
+        state,
+        alternateNodeId
+          ? [consequentNodeId, alternateNodeId]
+          : [consequentNodeId],
+        exitIds,
+        ifExitNodeId
+      );
+
+      return ifExitNodeId;
+    },
+    SwitchStatement(node: acorn.Node) {
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    ThrowStatement(node: acorn.Node) {
+      // todo
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    TryStatement(node: acorn.Node) {
+      // todo
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    WhileStatement(node) {
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    DoWhileStatement(node) {
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    ForStatement(node) {
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    ForInStatement(node) {
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    ForOfStatement(node) {
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    FunctionDeclaration(node) {
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    VariableDeclaration(node) {
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    ClassDeclaration(node) {
+      // todo
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    Identifier(node) {
+      return prevId;
+    },
+    Literal(node) {
+      return prevId;
+    },
+    ThisExpression(node) {
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    ArrayExpression(node) {
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    ObjectExpression(node) {
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    FunctionExpression(node) {
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    UnaryExpression(node) {
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    UpdateExpression(node) {
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    BinaryExpression(node) {
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    AssignmentExpression(node) {
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    LogicalExpression(node) {
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    MemberExpression(node) {
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    ConditionalExpression(node) {
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    CallExpression(node) {
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    NewExpression(node) {
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    SequenceExpression(node) {
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    ArrowFunctionExpression(node: acorn.Node) {
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    YieldExpression(node: acorn.Node) {
+      // todo
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    TemplateLiteral(node: acorn.Node) {
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    TaggedTemplateExpression(node: acorn.Node) {
+      // todo
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    ClassExpression(node: acorn.Node) {
+      // todo
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    MetaProperty(node: acorn.Node) {
+      // todo
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    AwaitExpression(node: acorn.Node) {
+      // todo
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    ChainExpression(node: acorn.Node) {
+      // todo
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    ImportExpression(node: acorn.Node) {
+      // todo
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    ParenthesizedExpression(node: acorn.Node) {
+      // todo
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    ObjectPattern(node: acorn.Node) {
+      // todo
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    ArrayPattern(node: acorn.Node) {
+      // todo
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    RestElement(node: acorn.Node) {
+      // todo
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+    AssignmentPattern(node: acorn.Node) {
+      // todo
+      throw UnsupportedStatementError('FunctionDeclaration');
+    },
+  };
 }
 
-
-function generateCFG(ast: Node): Map<number, CFGNode> {
+function generateCFG(ast: acorn.Node): CFGState {
   const state: CFGState = {
     nodes: new Map(),
     currentId: 0,
@@ -333,51 +312,19 @@ function generateCFG(ast: Node): Map<number, CFGNode> {
   const startId = createNode(state, 'start', null);
   const exitId = createNode(state, 'exit', null);
 
-  processNode(state, ast,[startId] , [exitId]);
-  return state.nodes;
-}
+  processNode(state, ast, startId, [exitId]);
 
-function generateDOT(nodes: Map<number, CFGNode>): string {
-  let dot = 'digraph CFG {\n';
-
-  // Add nodes
-  nodes.forEach((node) => {
-    dot += `  ${node.id} [label="${node.type}\\n${node.code}"]\n`;
-  });
-
-  // Add edges
-  nodes.forEach((node) => {
-    node.next.forEach((nextId) => {
-      dot += `  ${node.id} -> ${nextId}\n`;
-    });
-  });
-
-  dot += '}';
-  return dot;
-}
-function saveDotToPng(dot: string, filename: string): void {
-  const fs = require('fs');
-  const path = require('path');
-  const { execSync } = require('child_process');
-
-  const dotPath = path.join(__dirname, 'dot.dot');
-  fs.writeFileSync(dotPath, dot, 'utf-8');
-  execSync(`dot -Tpng ${dotPath} -o ${filename}.png`);
+  return state;
 }
 
 const code = `
 function example() {
-  doc = doc || document;
-  var i, val, script = doc.createElement('script');
-  if ((script.text = code),node) {
-    for (i in preservedScriptAttributes) {
-      val = node[i] || node.getAttribute && node.getAttribute(i);
-      if (val) {
-        script.setAttribute(i, val);
-      }
-    }
-  }
-  doc.head.appendChild(script).parentNode.removeChild(script);
+  if(true) {
+  return 'a';
+  } else {
+   return 'b';
+  };
+  return 'c';
 }
 `;
 
@@ -386,5 +333,4 @@ const ast = acorn.parse(code, {
 });
 const ast2 = (ast.body[0] as acorn.FunctionDeclaration).body;
 const graph = generateCFG(ast2);
-const dot = generateDOT(graph);
-saveDotToPng(dot, 'cfg');
+console.log(JSON.stringify(Object.fromEntries(graph.nodes), null, 2));
