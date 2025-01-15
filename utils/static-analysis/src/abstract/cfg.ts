@@ -1,11 +1,10 @@
-import { Node } from 'acorn';
-import * as escodegen from 'escodegen';
+import * as acorn from 'acorn';
 
 interface CFGNode {
   id: number;
-  type: string;
-  code: string;
-  next: number[];
+  type: 'start' | 'loop' | 'condition' | 'prop' | 'update_prop' | 'exit';
+  node: acorn.Node | null;
+  prev: number[];
 }
 
 interface CFGState {
@@ -13,28 +12,33 @@ interface CFGState {
   currentId: number;
 }
 
-function createNode(state: CFGState, type: string, code: string): number {
-  const id = state.currentId++;
+type Visitor = {
+  [key: string]: <T extends acorn.Node>(node: T) => number;
+};
+
+function createNode(
+  state: CFGState,
+  type: CFGNode['type'],
+  node: acorn.Node | null
+): number {
+  const id = state.currentId;
+  state.currentId++;
   state.nodes.set(id, {
     id,
     type,
-    code,
-    next: [],
+    node,
+    prev: [],
   });
   return id;
 }
 
 function addEdge(state: CFGState, from: number, to: number): void {
-  const node = state.nodes.get(from);
-  if (node && !node.next.includes(to)) {
-    node.next.push(to);
+  const toNode = state.nodes.get(to);
+  if (toNode && !toNode.prev.includes(from)) {
+    toNode.prev.push(from);
   }
 }
 
-function getNodeCode(node: Node): string {
-  if (node.type === undefined) return '';
-  return escodegen.generate(node);
-}
 
 function processBlockStatement(
   state: CFGState,
@@ -53,16 +57,12 @@ function processBlockStatement(
 
 function processIfStatement(
   state: CFGState,
-  node: any,
+  node: acorn.IfStatement,
   nextId: number,
   exitId: number
 ): number {
-  const ifId = createNode(
-    state,
-    'IfStatement',
-    `if (${getNodeCode(node.test)})`
-  );
-
+  const ifId = createNode(state, 'condition', null);
+  const testId = processNode(state, node.test, nextId, exitId);
   const consequentEnd = processNode(state, node.consequent, nextId, exitId);
   addEdge(state, ifId, consequentEnd);
 
@@ -189,90 +189,151 @@ function processLogicalExpression(
 //   return variableId;
 // }
 
-function processNode(
-  state: CFGState,
-  node: Node,
-  nextId: number,
-  exitId: number
-): number {
-  switch (node.type) {
-    case 'ExpressionStatement':
-      return processNode(state, (node as any).expression, nextId, exitId);
-    case 'BlockStatement':
-      return processBlockStatement(state, node as any, nextId, exitId);
-    case 'EmptyStatement':
-      return nextId;
-    case 'DebuggerStatement':
-      return nextId;
-    case 'WithStatement':
-    case 'ReturnStatement':
-      return processReturnStatement(state, node as any, nextId, exitId);
-    case 'LabeledStatement':
-    case 'BreakStatement':
-    case 'ContinueStatement':
-    case 'IfStatement':
-      return processIfStatement(state, node as any, nextId, exitId);
-    case 'SwitchStatement':
-    case 'ThrowStatement':
-    case 'TryStatement':
-    case 'WhileStatement':
-      return processWhileStatement(state, node as any, nextId, exitId);
-    case 'DoWhileStatement':
-    case 'ForStatement':
-      return processForStatement(state, node as any, nextId, exitId);
-    case 'ForInStatement':
-      return processForInStatement(state, node as any, nextId, exitId);
-    case 'ForOfStatement':
-    case 'Declaration':
-    case 'FunctionDeclaration':
-    case 'VariableDeclaration':
-    case 'ClassDeclaration':
-    case 'Identifier':
-    case 'Literal':
-    case 'ThisExpression':
-    case 'ArrayExpression':
-    case 'ObjectExpression':
-    case 'FunctionExpression':
-    case 'UnaryExpression':
-    case 'UpdateExpression':
-    case 'BinaryExpression':
-    case 'AssignmentExpression':
-    case 'LogicalExpression':
-    case 'MemberExpression':
-    case 'ConditionalExpression':
-    case 'CallExpression':
-    case 'NewExpression':
-    case 'SequenceExpression':
-    case 'ArrowFunctionExpression':
-    case 'YieldExpression':
-    case 'TemplateLiteral':
-    case 'TaggedTemplateExpression':
-    case 'ClassExpression':
-    case 'MetaProperty':
-    case 'AwaitExpression':
-    case 'ChainExpression':
-    case 'ImportExpression':
-    case 'ParenthesizedExpression':
-    case 'ObjectPattern':
-    case 'ArrayPattern':
-    case 'RestElement':
-    case 'AssignmentPattern':
-    default:
-      const id = createNode(state, node.type, getNodeCode(node));
-      addEdge(state, id, nextId);
-      return id;
+function mergePrev(state: CFGState, prevIds: number[], exitIds: number[]): number {
+  prevIds.filter(id=>!exitIds.includes(id)).forEach((prevId) => {
+    addEdge(state, prevId,state.currentId);
+  });
+
+  return state.currentId;
+}
+
+function processNode(state:CFGState, node: acorn.Node, prevIds: number[], exitIds: number[]): number {
+
+     // merge
+  const mergedPrevId= prevIds.length>1? mergePrev(state, prevIds, exitIds): prevIds[0];
+  const visitor = createVisitor([mergedPrevId], exitIds, state);
+  const handler = visitor[node.type];
+  try {
+    if (!handler) {
+      console.error(`Unsupported node type: ${node.type}`);
+      return mergedPrevId;
+    }
+
+    return handler(node);
+  } catch (e) {
+    return mergedPrevId;
   }
 }
+
+function createVisitor(prevIds: number[], exitIds: number[],state:CFGState): Visitor {
+  return {
+    ExpressionStatement(node): number {
+      return processNode(state, node, prevIds, exitIds);
+    },
+    BlockStatement(node) {
+     return processBlockStatement(state, node as any, nextId, exitId);},
+    EmptyStatement(node){
+      return prevIds[0]
+    },
+    DebuggerStatement(node){
+     return prevIds[0];},
+    WithStatement(node:acorn.Node){
+      return prevIds[0];},
+    ReturnStatement(node:acorn.ReturnStatement){
+      return processReturnStatement(state, node , nextId, exitId);
+    },
+    LabeledStatement(){
+      return prevIds[0];},
+    BreakStatement(){
+      return prevIds[0];},
+    ContinueStatement(){
+      return prevIds[0];},
+    IfStatement(node:acorn.IfStatement){
+    return  processIfStatement(state, node as any, nextId, exitId);},
+    SwitchStatement(node:acorn.Node){
+      return prevIds[0];},
+    ThrowStatement(node:acorn.Node){
+      return prevIds[0];},
+    TryStatement(node:acorn.Node){
+      return prevIds[0];},
+    WhileStatement:
+      processWhileStatement(state, node as any, nextId, exitId);
+    DoWhileStatement(node:acorn.Node){
+      return prevIds[0];},
+    ForStatement:
+      processForStatement(state, node as any, nextId, exitId);
+    ForInStatement:
+      processForInStatement(state, node as any, nextId, exitId);
+    ForOfStatement(node:acorn.Node){
+      return prevIds[0];},
+    Declaration(node:acorn.Node){
+      return prevIds[0];},
+    FunctionDeclaration(node:acorn.Node){
+      return prevIds[0];},
+    VariableDeclaration(node:acorn.Node){
+      return prevIds[0];},
+    ClassDeclaration(node:acorn.Node){
+      return prevIds[0];},
+    Identifier(node:acorn.Node){
+      return prevIds[0];},
+    Literal(node:acorn.Node){
+      return prevIds[0];},
+    ThisExpression(node:acorn.Node){
+      return prevIds[0];},
+    ArrayExpression(node:acorn.Node){
+      return prevIds[0];},
+    ObjectExpression(node:acorn.Node){
+      return prevIds[0];},
+    FunctionExpression(node:acorn.Node){
+      return prevIds[0];},
+    UnaryExpression(node:acorn.Node){
+      return prevIds[0];},
+    UpdateExpression(node:acorn.Node){
+      return prevIds[0];},
+    BinaryExpression(node:acorn.Node){
+      return prevIds[0];},
+    AssignmentExpression(node:acorn.Node){
+      return prevIds[0];},
+    LogicalExpression(node:acorn.Node){
+      return prevIds[0];},
+    MemberExpression(node:acorn.Node){
+      return prevIds[0];},
+    ConditionalExpression(node:acorn.Node){
+      return prevIds[0];},
+    CallExpression(node:acorn.Node){
+      return prevIds[0];},
+    NewExpression(node:acorn.Node){
+      return prevIds[0];},
+    SequenceExpression:
+      const sequenceNode = node as acorn.SequenceExpression;
+      const leftId = processNode(
+        state,
+        sequenceNode.expressions[0],
+        prevIds,
+        exitIds
+      );
+      processNode(state, sequenceNode.expressions[1], [leftId], exitIds);
+    ArrowFunctionExpression:
+    YieldExpression:
+    TemplateLiteral:
+    TaggedTemplateExpression:
+    ClassExpression:
+    MetaProperty:
+    AwaitExpression:
+    ChainExpression:
+    ImportExpression:
+    ParenthesizedExpression:
+    ObjectPattern:
+    ArrayPattern:
+    RestElement:
+    AssignmentPattern:
+    // default:
+    //   const id = createNode(state, node.type, getNodeCode(node));
+    //   addEdge(state, id, nextId);
+    //   return id;
+  }
+}
+
 
 function generateCFG(ast: Node): Map<number, CFGNode> {
   const state: CFGState = {
     nodes: new Map(),
     currentId: 0,
   };
+  const startId = createNode(state, 'start', null);
+  const exitId = createNode(state, 'exit', null);
 
-  const exitId = createNode(state, 'Exit', 'exit');
-
-  processNode(state, ast, exitId, exitId);
+  processNode(state, ast,[startId] , [exitId]);
   return state.nodes;
 }
 
@@ -303,7 +364,6 @@ function saveDotToPng(dot: string, filename: string): void {
   fs.writeFileSync(dotPath, dot, 'utf-8');
   execSync(`dot -Tpng ${dotPath} -o ${filename}.png`);
 }
-import * as acorn from 'acorn';
 
 const code = `
 function example() {
