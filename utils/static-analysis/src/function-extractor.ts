@@ -94,6 +94,7 @@ function extractFunctions(code: string): Function[] {
   function recordFunction(node: acorn.Function): void {
     const functionName = getUniqueFunctionName(node);
     const body = stripFunctions(node.body);
+    if (JSON.stringify(body).toString().length < MAX_FUNCTION_SIZE) return;
     const id = getId(body);
     if (id)
       functions.push({
