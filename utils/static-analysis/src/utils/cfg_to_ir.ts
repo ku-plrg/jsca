@@ -120,7 +120,7 @@ function processCondition(
     const node = cfg.nodes.get(s);
     return node && node.type !== 'end';
   });
-  if (!trueBranch || !falseBranch) {
+  if (!trueBranch && !falseBranch) {
     return createEmptyNode();
   }
 
