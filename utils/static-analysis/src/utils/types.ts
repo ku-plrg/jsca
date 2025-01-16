@@ -46,7 +46,7 @@ export interface CFGNode {
     | 'update_prop'
     | 'exit'
     | 'end';
-  node: acorn.Node | null;
+  node: acorn.AnyNode | null;
   prev: number[];
 }
 

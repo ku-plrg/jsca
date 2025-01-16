@@ -15,7 +15,7 @@ type Visitor = {
 function createNode(
   state: CFGState,
   type: CFGNode['type'],
-  node: acorn.Node | null,
+  node: acorn.AnyNode | null,
   prevIds: number[] = []
 ): number {
   const id = state.currentId;
@@ -305,11 +305,7 @@ function createVisitor(prevId: number, state: CFGState): Visitor {
       let currentId = prevId;
       decl.forEach(
         (decl) =>
-          (currentId = processNode(
-            state,
-            decl.init as acorn.Expression,
-            currentId
-          ))
+          decl.init && (currentId = processNode(state, decl.init, currentId))
       );
       return currentId;
     },
@@ -328,10 +324,14 @@ function createVisitor(prevId: number, state: CFGState): Visitor {
     },
     ArrayExpression(node) {
       let currentId = prevId;
-      node.elements.forEach(
-        (elem) =>
-          (currentId = processNode(state, elem as acorn.Expression, currentId))
-      );
+      node.elements.forEach((elem) => {
+        if (elem === null) {
+        } else if (elem?.type === 'SpreadElement') {
+          currentId = processNode(state, elem.argument, currentId);
+        } else {
+          currentId = processNode(state, elem, currentId);
+        }
+      });
       return currentId;
     },
     ObjectExpression(node) {
@@ -568,7 +568,8 @@ async function cfgToDot(graph: CFGState): Promise<string> {
         label = 'Condition';
         color = '#87CEEB'; // Light blue
         if (node.node?.type === 'Literal') {
-          label += `\\n${(node.node as acorn.Literal).value}`;
+          node.node;
+          label += `\\n${node.node.value}`;
         }
         break;
       case 'loop':
@@ -576,18 +577,22 @@ async function cfgToDot(graph: CFGState): Promise<string> {
         color = '#DDA0DD'; // Plum
         break;
       case 'prop':
-        label = `Property\\n${(node.node as acorn.Identifier)?.name || ''}`;
+        label = `Property\\n${
+          node.node?.type === 'Identifier' ? node.node.name : ''
+        }`;
         break;
       case 'update_prop':
-        label = `Update\\n${(node.node as acorn.Identifier)?.name || ''}`;
+        label = `Update\\n${
+          node.node?.type === 'Identifier' ? node.node.name : ''
+        }`;
         break;
       default:
         if (node.node?.type) {
           label = node.node.type;
           if (node.node.type === 'ReturnStatement') {
-            const returnNode = node.node as acorn.ReturnStatement;
+            const returnNode = node.node;
             if (returnNode.argument?.type === 'Literal') {
-              label += `\\n${(returnNode.argument as acorn.Literal).value}`;
+              label += `\\n${returnNode.argument.value}`;
             }
           }
         } else {
@@ -645,7 +650,6 @@ function example() {
         break;
   return e;
 }
-
   `;
 
   try {
