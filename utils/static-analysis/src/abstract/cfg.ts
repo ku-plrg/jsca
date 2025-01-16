@@ -2,9 +2,9 @@ import * as acorn from 'acorn';
 import { exec } from 'child_process';
 import { writeFile } from 'fs/promises';
 import { promisify } from 'util';
-import { CFGState, CFGNode, Function, IR } from '../utils/types';
 import { cfgToIR } from '../utils/cfg_to_ir';
 import { stringifyIRNode } from '../utils/ir_stringifier';
+import { CFGNode, CFGState, Function, IR } from '../utils/types';
 
 type Visitor = {
   [key: string]: <T extends acorn.Node>(node: T) => number;
@@ -94,9 +94,11 @@ function createVisitor(prevId: number, state: CFGState): Visitor {
       return prevId;
     },
     DebuggerStatement() {
+      // todo
       throw UnsupportedStatementError('FunctionDeclaration');
     },
     WithStatement() {
+      // todo
       throw UnsupportedStatementError('FunctionDeclaration');
     },
     ReturnStatement(node: acorn.Node) {
@@ -120,7 +122,6 @@ function createVisitor(prevId: number, state: CFGState): Visitor {
       addEdge(state, prevId, exit);
       return prevId;
     },
-
     ContinueStatement() {
       if (state.loopStack.length === 0) {
         throw new Error('Continue outside loop');
@@ -154,8 +155,53 @@ function createVisitor(prevId: number, state: CFGState): Visitor {
 
       return ifExitNodeId;
     },
-    SwitchStatement() {
-      throw UnsupportedStatementError('FunctionDeclaration');
+    SwitchStatement(node: acorn.Node) {
+      const switchNode = node as acorn.SwitchStatement;
+      const discriminantNodeId = processNode(
+        state,
+        switchNode.discriminant,
+        prevId
+      );
+      const switchStartNodeId = createNode(state, 'condition', null, [
+        discriminantNodeId,
+      ]);
+      const switchExitNodeId = createNode(state, 'exit', null);
+
+      state.loopStack.push({
+        // loop가 아니긴 함..
+        start: switchStartNodeId,
+        exit: switchExitNodeId,
+      });
+
+      const prevIds: number[] = [];
+      switchNode.cases.forEach((caseNode) => {
+        // default case -> caseNode === null
+        const testNodeId = caseNode.test
+          ? processNode(state, caseNode.test, switchStartNodeId)
+          : switchStartNodeId;
+        const caseTestNodeId = createNode(state, 'condition', null, [
+          testNodeId,
+        ]);
+        // todo : 엄밀하게 하려면 caseBodyNodeId와 연결해야 함. 그런데 caseBodyNodeId가 없을 때도 있다..
+        prevIds.forEach((id) => addEdge(state, id, caseTestNodeId));
+        let caseBodyNodeId = caseTestNodeId;
+        caseNode.consequent.forEach((statement) => {
+          caseBodyNodeId = processNode(state, statement, caseBodyNodeId);
+        });
+        const closedNodeIds = state.nodes.get(switchExitNodeId)?.prev ?? [];
+        if (
+          !closedNodeIds.includes(caseBodyNodeId) &&
+          state.endId !== caseBodyNodeId
+        ) {
+          prevIds.push(caseBodyNodeId);
+        } else {
+          prevIds.length = 0;
+        }
+      });
+
+      state.loopStack.pop();
+
+      return switchExitNodeId;
     },
     ThrowStatement() {
       // todo
@@ -229,7 +275,6 @@ function createVisitor(prevId: number, state: CFGState): Visitor {
 
       return loopExitId;
     },
-    // TODO: not sure
     ForInStatement(node: acorn.Node) {
       const ForInNode = node as acorn.ForInStatement;
       const leftNodeId = processNode(state, ForInNode.left, prevId);
@@ -243,7 +288,7 @@ function createVisitor(prevId: number, state: CFGState): Visitor {
       const bodyNodeId = processNode(state, ForInNode.body, loopStartId);
       addEdge(state, loopStartId, loopExitId);
       addEdge(state, bodyNodeId, loopStartId);
-
+      state.loopStack.pop();
       return loopExitId;
     },
     ForOfStatement(node: acorn.Node) {
@@ -259,7 +304,7 @@ function createVisitor(prevId: number, state: CFGState): Visitor {
       const bodyNodeId = processNode(state, ForOfNode.body, loopStartId);
       addEdge(state, loopStartId, loopExitId); // not sure
       addEdge(state, bodyNodeId, loopStartId);
-
+      state.loopStack.pop();
       return loopExitId;
     },
     FunctionDeclaration(node) {
@@ -299,10 +344,19 @@ function createVisitor(prevId: number, state: CFGState): Visitor {
         (elem) =>
           (currentId = processNode(state, elem as acorn.Expression, currentId))
       );
-      return prevId;
+      return currentId;
     },
-    ObjectExpression(node) {
-      return prevId;
+    ObjectExpression(node: acorn.Node) {
+      const objectNode = node as acorn.ObjectExpression;
+      let currentId = prevId;
+      objectNode.properties.forEach((prop) => {
+        if (prop.type === 'SpreadElement') {
+          currentId = processNode(state, prop.argument, currentId);
+        } else {
+          currentId = processNode(state, prop.value, currentId);
+        }
+      });
+      return currentId;
     },
     FunctionExpression(node: acorn.Node) {
       const FuncNode = node as acorn.FunctionExpression;
@@ -619,7 +673,7 @@ async function generatePNG(
 // Example usage
 async function main() {
   const code = `
-    function example() {
+function example() {
   Symbol('JSCA_212_229');
   var t,
     n = '',
