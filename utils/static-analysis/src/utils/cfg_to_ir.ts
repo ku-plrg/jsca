@@ -1,4 +1,4 @@
-import { CFGState, CFGNode } from './types';
+import { CFGState, ControlFlowPair } from './types';
 import { IRInst, IRNode } from './types';
 
 interface ConversionState {
@@ -11,6 +11,8 @@ function createEmptyNode(): IRNode {
 }
 
 function createSeqNode(left: IRNode, right: IRNode): IRNode {
+  if (left.type === IRInst.EMPTY) return right;
+  if (right.type === IRInst.EMPTY) return left;
   return {
     type: IRInst.SEQ,
     left,
@@ -49,6 +51,12 @@ function processNode(
   if (!node) {
     return createEmptyNode();
   }
+  const isExitNode = Array.from(cfg.controlFlowPairs.values()).some(
+    (pair) => pair.exit === nodeId
+  );
+  if (isExitNode) {
+    return createEmptyNode();
+  }
 
   // Get successor nodes
   const successors = getSuccessors(cfg, nodeId);
@@ -62,14 +70,20 @@ function processNode(
       irNode = createEmptyNode();
       break;
 
-    case 'condition':
-      irNode = processCondition(cfg, node, successors, state);
+    case 'condition': {
+      const pair = cfg.controlFlowPairs.find((pair) => pair.entry === nodeId);
+      irNode = processCondition(cfg, successors, state, pair);
       break;
+    }
 
-    case 'loop':
-      irNode = processLoop(cfg, node, successors, state);
+    case 'loop': {
+      const pair = cfg.controlFlowPairs.find((pair) => pair.entry === nodeId);
+      if (!pair) {
+        throw new Error('Control flow pair not found');
+      }
+      irNode = processLoop(cfg, successors, state, pair);
       break;
-
+    }
     case 'prop':
       irNode = createSeqNode(
         {
@@ -97,24 +111,16 @@ function processNode(
       break;
 
     default:
-      irNode = createEmptyNode();
+      irNode = processSuccessors(cfg, successors, state);
   }
-
-  if (successors.length > 0 && irNode.type === IRInst.EMPTY) {
-    const successorNode = processSuccessors(cfg, successors, state);
-    if (successorNode.type !== IRInst.EMPTY) {
-      irNode = successorNode;
-    }
-  }
-
   return irNode;
 }
 
 function processCondition(
   cfg: CFGState,
-  node: CFGNode,
   successors: number[],
-  state: ConversionState
+  state: ConversionState,
+  pair: ControlFlowPair | undefined
 ): IRNode {
   const [trueBranch, falseBranch] = successors.filter((s) => {
     const node = cfg.nodes.get(s);
@@ -128,38 +134,54 @@ function processCondition(
   const falsenode = processNode(cfg, falseBranch, state);
   const [trueIR, falseIR] =
     truenode > falsenode ? [truenode, falsenode] : [falsenode, truenode];
-  return {
+  const condIR = {
     type: IRInst.COND,
     test: { type: IRInst.BLOCK },
     true: trueIR,
     false: falseIR,
   };
+  if (pair !== undefined) {
+    const exitNode = cfg.nodes.get(pair.exit);
+    if (!exitNode) return createEmptyNode();
+
+    const afterExitSuccessors = getSuccessors(cfg, pair.exit);
+    const afterExitIR = processSuccessors(cfg, afterExitSuccessors, state);
+    return createSeqNode(condIR as IRNode, afterExitIR);
+  }
+  return condIR as IRNode;
 }
 //TODO : is order of bodyIR correct?
 function processLoop(
   cfg: CFGState,
-  node: CFGNode,
   successors: number[],
-  state: ConversionState
+  state: ConversionState,
+  pair: ControlFlowPair
 ): IRNode {
-  const bodySuccessor = successors.filter((s) => {
-    const node = cfg.nodes.get(s);
-    return node && node.type !== 'exit';
-  });
-
-  if (!bodySuccessor) {
+  const bodySuccessors = successors.filter((s) => s !== pair.exit);
+  if (bodySuccessors.length === 0) {
     return createEmptyNode();
   }
 
-  const bodyIR = bodySuccessor.map((body) => processNode(cfg, body, state));
-  const bodySeq = bodyIR.reduce(
+  const bodyIRs = bodySuccessors.map((s) => processNode(cfg, s, state));
+  const bodySeq = bodyIRs.reduce(
     (acc, ir) => createSeqNode(acc, ir),
     createEmptyNode()
   );
-  return {
+
+  const loopIR = {
     type: IRInst.LOOP,
     body: bodySeq,
   };
+
+  // Get the successors after the exit node
+  const exitNode = cfg.nodes.get(pair.exit);
+  if (!exitNode) return loopIR as IRNode;
+
+  const afterExitSuccessors = getSuccessors(cfg, pair.exit);
+  const afterExitIR = processSuccessors(cfg, afterExitSuccessors, state);
+
+  // Combine loop IR with the code after exit
+  return createSeqNode(loopIR as IRNode, afterExitIR);
 }
 
 function processSuccessors(
@@ -171,12 +193,10 @@ function processSuccessors(
     return createEmptyNode();
   }
 
-  let result = processNode(cfg, successors[0], state);
-  for (let i = 1; i < successors.length; i++) {
-    const nextIR = processNode(cfg, successors[i], state);
-    if (nextIR.type !== IRInst.EMPTY) {
-      result = createSeqNode(result, nextIR);
-    }
+  let result = createEmptyNode();
+  for (const successor of successors) {
+    const nextIR = processNode(cfg, successor, state);
+    result = createSeqNode(result, nextIR);
   }
 
   return result;

@@ -55,6 +55,12 @@ export interface CFGState {
   currentId: number;
   loopStack: Array<{ start: number; exit: number }>;
   endId: number;
+  controlFlowPairs: ControlFlowPair[];
+}
+
+export interface ControlFlowPair {
+  entry: number;
+  exit: number;
 }
 
 export interface PropstreeNodeBase {

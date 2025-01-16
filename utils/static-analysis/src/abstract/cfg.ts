@@ -37,11 +37,14 @@ function addEdge(state: CFGState, from: number, to: number): void {
 }
 
 function mergePrev(state: CFGState, prevIds: number[], currentId: number) {
-  prevIds
-    .filter((id) => id !== state.endId)
-    .forEach((prevId) => {
+  let filteredPrevIds = prevIds.filter((id) => id !== state.endId);
+  if (filteredPrevIds.length === 2) {
+    filteredPrevIds.forEach((prevId) => {
       addEdge(state, prevId, currentId);
     });
+    return true;
+  }
+  return false;
 }
 
 function processNode(
@@ -134,26 +137,32 @@ function createVisitor(prevId: number, state: CFGState): Visitor {
       const ifNode = node as acorn.IfStatement;
 
       const testNodeId = processNode(state, ifNode.test, prevId);
-      const ifNodeId = createNode(state, 'condition', null, [testNodeId]);
+      const CondNodeId = createNode(state, 'condition', null, [testNodeId]);
 
-      const consequentNodeId = processNode(state, ifNode.consequent, ifNodeId);
+      const consequentNodeId = processNode(
+        state,
+        ifNode.consequent,
+        CondNodeId
+      );
       const alternateNodeId =
-        ifNode.alternate && processNode(state, ifNode.alternate, ifNodeId);
+        ifNode.alternate && processNode(state, ifNode.alternate, CondNodeId);
 
-      const ifExitNodeId = createNode(state, 'exit', null);
-      const prevIds = [consequentNodeId];
-      if (alternateNodeId) {
-        prevIds.push(alternateNodeId);
-        mergePrev(state, prevIds, ifExitNodeId);
-      } else {
-        [consequentNodeId, ifNodeId]
-          .filter((id) => id !== state.endId)
-          .forEach((id) => {
-            addEdge(state, id, ifExitNodeId);
+      const CondExitNodeId = createNode(state, 'exit', null);
+      if (consequentNodeId !== state.endId) {
+        if ((alternateNodeId ?? CondNodeId) !== state.endId) {
+          state.controlFlowPairs.push({
+            entry: CondNodeId,
+            exit: CondExitNodeId,
           });
+          addEdge(state, alternateNodeId ?? CondNodeId, CondExitNodeId);
+          addEdge(state, consequentNodeId, CondExitNodeId);
+          return CondExitNodeId;
+        } else {
+          return consequentNodeId;
+        }
+      } else {
+        return alternateNodeId ?? CondNodeId;
       }
-
-      return ifExitNodeId;
     },
     SwitchStatement(node: acorn.Node) {
       const switchNode = node as acorn.SwitchStatement;
@@ -214,12 +223,22 @@ function createVisitor(prevId: number, state: CFGState): Visitor {
     WhileStatement(node: acorn.Node) {
       const whileNode = node as acorn.WhileStatement;
       const loopStartId = createNode(state, 'loop', null, [prevId]);
-      const loopExitId = createNode(state, 'exit', null);
       const testNodeId = processNode(state, whileNode.test, loopStartId);
       const condNodeId = createNode(state, 'condition', null, [testNodeId]);
-      addEdge(state, condNodeId, loopExitId);
+      const CondExitNodeId = createNode(state, 'exit', null);
+      const loopExitId = createNode(state, 'exit', null);
+      addEdge(state, condNodeId, CondExitNodeId);
+      addEdge(state, CondExitNodeId, loopExitId);
+      state.controlFlowPairs.push({
+        entry: condNodeId,
+        exit: CondExitNodeId,
+      });
       state.loopStack.push({
         start: loopStartId,
+        exit: loopExitId,
+      });
+      state.controlFlowPairs.push({
+        entry: loopStartId,
         exit: loopExitId,
       });
 
@@ -236,6 +255,10 @@ function createVisitor(prevId: number, state: CFGState): Visitor {
       const loopExitId = createNode(state, 'exit', null);
       state.loopStack.push({
         start: loopStartId,
+        exit: loopExitId,
+      });
+      state.controlFlowPairs.push({
+        entry: loopStartId,
         exit: loopExitId,
       });
 
@@ -268,6 +291,11 @@ function createVisitor(prevId: number, state: CFGState): Visitor {
         start: loopStartId,
         exit: loopExitId,
       });
+
+      state.controlFlowPairs.push({
+        entry: loopStartId,
+        exit: loopExitId,
+      });
       const bodyNodeId = processNode(state, forNode.body, condNodeId);
       const updateNodeId = forNode.update
         ? processNode(state, forNode.update, bodyNodeId)
@@ -287,6 +315,10 @@ function createVisitor(prevId: number, state: CFGState): Visitor {
         start: loopStartId,
         exit: loopExitId,
       });
+      state.controlFlowPairs.push({
+        entry: loopStartId,
+        exit: loopExitId,
+      });
       const bodyNodeId = processNode(state, ForInNode.body, loopStartId);
       addEdge(state, loopStartId, loopExitId);
       addEdge(state, bodyNodeId, loopStartId);
@@ -301,6 +333,10 @@ function createVisitor(prevId: number, state: CFGState): Visitor {
       const loopExitId = createNode(state, 'exit', null);
       state.loopStack.push({
         start: loopStartId,
+        exit: loopExitId,
+      });
+      state.controlFlowPairs.push({
+        entry: loopStartId,
         exit: loopExitId,
       });
       const bodyNodeId = processNode(state, ForOfNode.body, loopStartId);
@@ -397,11 +433,15 @@ function createVisitor(prevId: number, state: CFGState): Visitor {
 
       const rightNodeId = processNode(state, LogicalNode.right, CondNodeId);
 
-      const condExitNodeId = createNode(state, 'exit', null);
-      addEdge(state, CondNodeId, condExitNodeId);
-      addEdge(state, rightNodeId, condExitNodeId);
+      const CondExitNodeId = createNode(state, 'exit', null);
+      state.controlFlowPairs.push({
+        entry: CondNodeId,
+        exit: CondExitNodeId,
+      });
+      addEdge(state, CondNodeId, CondExitNodeId);
+      addEdge(state, rightNodeId, CondExitNodeId);
 
-      return condExitNodeId;
+      return CondExitNodeId;
     },
     MemberExpression(node: acorn.Node) {
       const MemberNode = node as acorn.MemberExpression;
@@ -439,11 +479,22 @@ function createVisitor(prevId: number, state: CFGState): Visitor {
         CondNodeId
       );
 
-      const condExitNodeId = createNode(state, 'exit', null);
-      addEdge(state, consequentNodeId, condExitNodeId);
-      addEdge(state, alternateNodeId, condExitNodeId);
-
-      return condExitNodeId;
+      const CondExitNodeId = createNode(state, 'exit', null);
+      if (consequentNodeId !== state.endId) {
+        if ((alternateNodeId ?? CondNodeId) !== state.endId) {
+          state.controlFlowPairs.push({
+            entry: CondNodeId,
+            exit: CondExitNodeId,
+          });
+          addEdge(state, alternateNodeId ?? CondNodeId, CondExitNodeId);
+          addEdge(state, consequentNodeId, CondExitNodeId);
+          return CondExitNodeId;
+        } else {
+          return consequentNodeId;
+        }
+      } else {
+        return alternateNodeId ?? CondNodeId;
+      }
     },
     CallExpression(node: acorn.Node) {
       const CallNode = node as acorn.CallExpression;
@@ -569,24 +620,26 @@ function generateCFG(ast: acorn.Node): CFGState {
     currentId: 0,
     endId: 1,
     loopStack: [],
+    controlFlowPairs: [],
   };
   const startId = createNode(state, 'start', null);
   createNode(state, 'end', null);
 
   processNode(state, ast, startId);
-  removeExitNodes(state);
 
   return state;
 }
 
-function generateIR(ast: acorn.Node) {
-  const CFG = generateCFG(ast);
-  const ir = cfgToIR(CFG);
-  return ir;
-}
-
 async function cfgToDot(graph: CFGState): Promise<string> {
   const nodes = graph.nodes;
+  const pairMap = new Map<number, number>(); // node id -> pair number
+
+  // Build pair mapping
+  graph.controlFlowPairs.forEach((pair, index) => {
+    pairMap.set(pair.entry, index + 1);
+    pairMap.set(pair.exit, index + 1);
+  });
+
   let dotString = 'digraph CFG {\n';
   dotString += '  rankdir=TB;\n';
   dotString += '  node [shape=box, style=filled, fontname="Arial"];\n\n';
@@ -594,30 +647,39 @@ async function cfgToDot(graph: CFGState): Promise<string> {
   // Add nodes
   for (const [id, node] of nodes.entries()) {
     let label = '';
-    let color = 'white'; // Default color
+    let color = 'white';
+    const pairNum = pairMap.get(id);
+    const pairSuffix = pairNum ? `\\nPair ${pairNum}` : '';
 
     switch (node.type) {
       case 'start':
-        label = 'Start';
-        color = '#90EE90'; // Light green
+        label = 'Start' + pairSuffix;
+        color = '#90EE90';
         break;
       case 'end':
-        label = 'End';
-        color = '#A9A9A9'; // dark grey
+        label = 'End' + pairSuffix;
+        color = '#A9A9A9';
+        break;
+      case 'exit':
+        label = 'Exit' + pairSuffix;
+        color = '#FFFF00';
         break;
       case 'condition':
-        label = 'Condition';
-        color = '#87CEEB'; // Light blue
+        label = 'Condition' + pairSuffix;
+        color = '#87CEEB';
         if (node.node?.type === 'Literal') {
           label += `\\n${(node.node as acorn.Literal).value}`;
         }
         break;
       case 'loop':
-        label = 'Loop';
-        color = '#DDA0DD'; // Plum
+        label = 'Loop' + pairSuffix;
+        color = '#DDA0DD';
         break;
       case 'prop':
-        label = `Property\\n${(node.node as acorn.Identifier)?.name || ''}`;
+        label = `Property${pairSuffix}\\n${
+          (node.node as acorn.Identifier)?.name || ''
+        }`;
+        color = pairNum ? `#FFB6C1` : 'white'; // Light pink for paired nodes
         break;
       case 'update_prop':
         label = `Update\\n${(node.node as acorn.Identifier)?.name || ''}`;
@@ -677,13 +739,10 @@ async function main() {
   const code = `
 function example() {
   Symbol('JSCA_194_211');
-  var n, a = 0;
-  if (r(e))
-    for (n = e.length; a < n && !1 !== t.call(e[a], a, e[a]); a++);
-  else
-    for (a in e)
-      if (!1 === t.call(e[a], a, e[a]))
-        break;
+  var n,
+    a = 0;
+  if (r(e)) for (n = e.length; a < n.s && !1 !== t.call(e[a], a, e[a]); a++);
+  else for (a in e) if (!1 === t.call(e[a], a, e[a])) break;
   return e;
 }
 
@@ -694,11 +753,12 @@ function example() {
     const functionBody = (ast.body[0] as acorn.FunctionDeclaration).body;
     const graph = generateCFG(functionBody);
     console.log(stringifyIRNode(cfgToIR(graph)));
+    // removeExitNodes(graph);
     const dotContent = await cfgToDot(graph);
 
     await writeFile('cfg.dot', dotContent, 'utf8');
 
-    await generatePNG(dotContent, 'cfg.png');
+    await generatePNG(dotContent, 'cfg2.png');
   } catch (error) {
     console.error('Error in main:', error);
   }
