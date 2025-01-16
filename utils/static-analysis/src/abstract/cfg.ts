@@ -216,13 +216,14 @@ function createVisitor(prevId: number, state: CFGState): Visitor {
       const loopStartId = createNode(state, 'loop', null, [prevId]);
       const loopExitId = createNode(state, 'exit', null);
       const testNodeId = processNode(state, whileNode.test, loopStartId);
-      addEdge(state, testNodeId, loopExitId);
+      const condNodeId = createNode(state, 'condition', null, [testNodeId]);
+      addEdge(state, condNodeId, loopExitId);
       state.loopStack.push({
         start: loopStartId,
         exit: loopExitId,
       });
 
-      const bodyNodeId = processNode(state, whileNode.body, testNodeId);
+      const bodyNodeId = processNode(state, whileNode.body, condNodeId);
       addEdge(state, bodyNodeId, loopStartId);
 
       state.loopStack.pop();
@@ -259,14 +260,15 @@ function createVisitor(prevId: number, state: CFGState): Visitor {
       const testNodeId = forNode.test
         ? processNode(state, forNode.test, loopStartId)
         : loopStartId;
+      const condNodeId = createNode(state, 'condition', null, [testNodeId]);
       const loopExitId = createNode(state, 'exit', null);
-      addEdge(state, testNodeId, loopExitId);
+      addEdge(state, condNodeId, loopExitId);
 
       state.loopStack.push({
         start: loopStartId,
         exit: loopExitId,
       });
-      const bodyNodeId = processNode(state, forNode.body, testNodeId);
+      const bodyNodeId = processNode(state, forNode.body, condNodeId);
       const updateNodeId = forNode.update
         ? processNode(state, forNode.update, bodyNodeId)
         : bodyNodeId;
@@ -674,19 +676,15 @@ async function generatePNG(
 async function main() {
   const code = `
 function example() {
-  Symbol('JSCA_212_229');
-  var t,
-    n = '',
-    a = 0,
-    o = e.nodeType;
-  if (!o) for (; (t = e[a++]); ) n += Te.text(t);
-  return 1 === o || 11 === o
-    ? e.textContent
-    : 9 === o
-    ? e.documentElement.textContent
-    : 3 === o || 4 === o
-    ? e.nodeValue
-    : n;
+  Symbol('JSCA_194_211');
+  var n, a = 0;
+  if (r(e))
+    for (n = e.length; a < n && !1 !== t.call(e[a], a, e[a]); a++);
+  else
+    for (a in e)
+      if (!1 === t.call(e[a], a, e[a]))
+        break;
+  return e;
 }
 
   `;
