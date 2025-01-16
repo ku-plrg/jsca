@@ -1,10 +1,10 @@
-import { Node, Pattern } from 'acorn';
+import * as acorn from 'acorn';
 
 export interface Function {
   id: string;
   name: string;
-  params: Pattern[];
-  body: Node;
+  params: acorn.Pattern[];
+  body: acorn.AnyNode;
 }
 
 export interface Library {
@@ -46,7 +46,7 @@ export interface CFGNode {
     | 'update_prop'
     | 'exit'
     | 'end';
-  node: Node | null;
+  node: acorn.Node | null;
   prev: number[];
 }
 

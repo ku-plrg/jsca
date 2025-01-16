@@ -5,7 +5,7 @@ import { Function } from './utils/types';
 
 const MAX_FUNCTION_SIZE = 0;
 
-function stripFunctions(node: acorn.Node): acorn.Node {
+function stripFunctions(node: acorn.AnyNode): acorn.AnyNode {
   if (!node) return node;
 
   // Replace function declarations/expressions with empty statements
