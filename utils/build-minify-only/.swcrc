@@ -2,12 +2,7 @@
     "minify": true,
     "jsc": {
       "minify": {
-        "compress": {
-          "pure_getters":false,
-          "unused": false,
-          "reduce_vars": false,
-          "directives": false
-        },
+        "compress": true,
         "mangle": true
       }
     }

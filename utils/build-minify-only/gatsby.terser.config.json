@@ -1,0 +1,15 @@
+{
+  "ie8": false,
+  "mangle": {
+    "safari10": true
+  },
+  "parse": {
+    "ecma": 5
+  },
+  "compress": {
+    "ecma": 5
+  },
+  "output": {
+    "ecma": 5
+  }
+}

@@ -1,0 +1,6 @@
+{
+    "compress": {
+        "unused": true
+    },
+    "mangle": true
+}

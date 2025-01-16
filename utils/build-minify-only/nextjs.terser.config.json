@@ -1,0 +1,10 @@
+{
+  "compress": {
+    "dead_code": true,
+    "passes": 0
+  },
+  "format": {
+    "preamble": ""
+  },
+  "mangle": true
+}

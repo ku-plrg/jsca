@@ -1,0 +1,13 @@
+{
+  "compress": {
+    "passes": 1,
+    "pure_getters": true
+  },
+  "ecma": 2015,
+  "mangle": false,
+  "keep_fnames": true,
+  "format": {
+    "ascii_only": true,
+    "wrap_func_args": false
+  }
+}
