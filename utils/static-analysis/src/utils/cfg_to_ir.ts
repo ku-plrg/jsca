@@ -116,8 +116,10 @@ function processCondition(
   successors: number[],
   state: ConversionState
 ): IRNode {
-  const [trueBranch, falseBranch] = successors;
-
+  const [trueBranch, falseBranch] = successors.filter((s) => {
+    const node = cfg.nodes.get(s);
+    return node && node.type !== 'end';
+  });
   if (!trueBranch || !falseBranch) {
     return createEmptyNode();
   }
