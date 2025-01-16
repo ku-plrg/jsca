@@ -4,7 +4,7 @@ import { writeFile } from 'fs/promises';
 import { promisify } from 'util';
 import { cfgToIR } from '../utils/cfg_to_ir';
 import { stringifyIRNode } from '../utils/ir_stringifier';
-import { CFGNode, CFGState, Function, IR, IRNode } from '../utils/types';
+import { CFGNode, CFGState, Function, IR } from '../utils/types';
 
 type Visitor = {
   [K in acorn.AnyNode['type']]?: (
@@ -673,12 +673,12 @@ if (require.main === module) {
 function cfg(functions: Function[]): IR[] {
   return functions.map((func) => {
     const ast = func.body;
-    const ir: IRNode = generateIR(ast);
+    const graph = generateCFG(ast);
     return {
       id: func.id,
       name: func.name,
       type: 'ir',
-      ir,
+      ir: cfgToIR(graph),
     };
   });
 }
