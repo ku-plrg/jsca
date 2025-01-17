@@ -44,7 +44,8 @@ export interface CFGNode {
     | 'condition'
     | 'prop'
     | 'update_prop'
-    | 'exit'
+    | 'loop_exit'
+    | 'seq_exit'
     | 'end';
   node: Node | null;
   prev: number[];
