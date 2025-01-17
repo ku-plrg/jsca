@@ -37,27 +37,30 @@ function addEdge(state: CFGState, from: number, to: number): void {
 }
 
 function mergePrev(state: CFGState, prevIds: number[], exitId: number): void {
-  let filteredPrevIds = prevIds.filter((id) => state.endId !== id);
+  let filteredPrevIds = prevIds
+    .filter((id) => state.endId !== id)
+    .filter((id) => !state.seqExitIds.includes(id));
   filteredPrevIds.forEach((id) => addEdge(state, id, exitId));
 }
 
 function processNode(
   state: CFGState,
   node: acorn.Node,
-  prevId: number[]
+  prevIds: number[]
 ): number[] {
-  // merge
-  const visitor = createVisitor(prevId, state);
-  const handler = visitor[node.type];
-  try {
-    if (!handler) {
-      console.error(`Unsupported node type: ${node.type}`);
-      return prevId;
+  let visitor: Visitor[] = [];
+  let handler: (node: acorn.Node) => number[];
+  prevIds.forEach((id) => visitor.push(createVisitor(id, state)));
+  let nextIds: number[] = [];
+  for (let i = 0; i < visitor.length; i++) {
+    handler = visitor[i][node.type];
+    if (handler) {
+      nextIds.push(...handler(node));
+    } else {
+      return prevIds;
     }
-    return handler(node);
-  } catch (e) {
-    return prevId;
   }
+  return nextIds;
 }
 
 function UnsupportedStatementError(statement: string) {
@@ -66,62 +69,83 @@ function UnsupportedStatementError(statement: string) {
   return error;
 }
 
-function createVisitor(prevIds: number[], state: CFGState): Visitor {
+function createVisitor(prevId: number, state: CFGState): Visitor {
   return {
     ExpressionStatement(node: acorn.Node) {
       return processNode(
         state,
         (node as acorn.ExpressionStatement).expression,
-        prevIds
+        [prevId]
       );
     },
     BlockStatement(node: acorn.Node) {
       const blockNode = node as acorn.BlockStatement;
       const statements = blockNode.body;
       if (statements.length === 0) {
-        return prevIds;
+        return [prevId];
       }
 
-      let result = processNode(state, statements[0], prevIds);
-      let seqExitId = createNode(state, 'seq_exit', null);
-      mergePrev(state, result, seqExitId);
-      for (let i = 1; i < statements.length; i++) {
-        result = processNode(state, statements[i], [seqExitId]);
-        seqExitId = createNode(state, 'seq_exit', null);
-        mergePrev(state, result, seqExitId);
-      }
-      return result;
+      const result = statements.reduce<{
+        result: number[];
+        prevSeqExitId: number;
+      }>(
+        ({ result, prevSeqExitId }, statement) => {
+          let seqExitId = createNode(state, 'seq_exit', null);
+          state.seqExitIds.push(seqExitId);
+          state.currentseqExitId = seqExitId;
+          const newResult = processNode(state, statement, [prevSeqExitId]);
+          console.log(newResult, seqExitId, statements[0].type);
+          if (newResult.length === 1 && newResult[0] === prevId) {
+            seqExitId = prevId;
+          } else {
+            mergePrev(state, newResult, seqExitId);
+          }
+          return { result: newResult, prevSeqExitId: seqExitId };
+        },
+        { result: [prevId], prevSeqExitId: prevId }
+      );
+
+      // let seqExitId = createNode(state, 'seq_exit', null);
+      // state.currentseqExitId = seqExitId;
+      // let result = processNode(state, statements[0], [prevId]);
+      // console.log(result, seqExitId, statements[0].type);
+      // if (result.length === 1 && result[0] === prevId) {
+      //   seqExitId = prevId;
+      // } else {
+      //   mergePrev(state, result, seqExitId);
+      // }
+      // for (let i = 1; i < statements.length; i++) {
+      //   prevId = seqExitId;
+      //   seqExitId = createNode(state, 'seq_exit', null);
+      //   state.currentseqExitId = seqExitId;
+      //   result = processNode(state, statements[i], [prevId]);
+      //   console.log(result, seqExitId, statements[i].type);
+      //   if (result.length === 1 && result[0] === seqExitId) {
+      //     //seqExitId = prevId;
+      //   } else {
+      //     mergePrev(state, result, seqExitId);
+      //   }
+      // }
+      return result.result;
     },
     EmptyStatement() {
-      return prevIds;
-    },
-    DebuggerStatement() {
-      // todo
-      throw UnsupportedStatementError('FunctionDeclaration');
-    },
-    WithStatement() {
-      // todo
-      throw UnsupportedStatementError('FunctionDeclaration');
+      return [prevId];
     },
     ReturnStatement(node: acorn.Node) {
       const returnNode = node as acorn.ReturnStatement;
       const argumentNodeId = returnNode.argument
-        ? processNode(state, returnNode.argument, prevIds)
-        : prevIds;
+        ? processNode(state, returnNode.argument, [prevId])
+        : [prevId];
       argumentNodeId.forEach((id) => addEdge(state, id, state.endId));
 
       return [state.endId];
-    },
-    LabeledStatement() {
-      // todo
-      throw UnsupportedStatementError('FunctionDeclaration');
     },
     BreakStatement() {
       if (state.loopStack.length === 0) {
         throw new Error('Break outside loop');
       }
       const { exit } = state.loopStack[state.loopStack.length - 1];
-      prevIds.forEach((id) => addEdge(state, id, exit));
+      [prevId].forEach((id) => addEdge(state, id, exit));
       return [exit];
     },
     ContinueStatement() {
@@ -129,92 +153,37 @@ function createVisitor(prevIds: number[], state: CFGState): Visitor {
         throw new Error('Continue outside loop');
       }
       const { start } = state.loopStack[state.loopStack.length - 1];
-      prevIds.forEach((id) => addEdge(state, id, start));
+      [prevId].forEach((id) => addEdge(state, id, start));
       return [start];
     },
     IfStatement(node: acorn.Node) {
       const ifNode = node as acorn.IfStatement;
 
-      const testNodeId = processNode(state, ifNode.test, prevIds);
-      const CondNodeId = createNode(state, 'condition', null, [testNodeId]);
+      const testNodeId = processNode(state, ifNode.test, [prevId]);
+      const CondNodeId = createNode(state, 'condition', null, testNodeId);
 
-      const consequentNodeId = processNode(
-        state,
-        ifNode.consequent,
-        CondNodeId
-      );
+      const consequentNodeId = processNode(state, ifNode.consequent, [
+        CondNodeId,
+      ]);
       const alternateNodeId =
-        ifNode.alternate && processNode(state, ifNode.alternate, CondNodeId);
-      const prev = [consequentNodeId];
+        ifNode.alternate && processNode(state, ifNode.alternate, [CondNodeId]);
+      const prev = [...consequentNodeId];
       if (alternateNodeId) {
-        prev.push(alternateNodeId);
+        prev.push(...alternateNodeId);
       } else {
-        prev.push(CondNodeId);
+        prev.push(state.currentseqExitId);
       }
-      return mergePrev(state, prev, CondNodeId);
+      return prev;
     },
     SwitchStatement(node: acorn.Node) {
-      const switchNode = node as acorn.SwitchStatement;
-      const discriminantNodeId = processNode(
-        state,
-        switchNode.discriminant,
-        prevIds
-      );
-      const switchStartNodeId = createNode(state, 'condition', null, [
-        discriminantNodeId,
-      ]);
-      const switchExitNodeId = createNode(state, 'cond_exit', null);
-
-      state.loopStack.push({
-        // loop가 아니긴 함..
-        start: switchStartNodeId,
-        exit: switchExitNodeId,
-      });
-
-      const prevIds: number[] = [];
-      switchNode.cases.forEach((caseNode) => {
-        // default case -> caseNode === null
-        const testNodeId = caseNode.test
-          ? processNode(state, caseNode.test, switchStartNodeId)
-          : switchStartNodeId;
-        const caseTestNodeId = createNode(state, 'condition', null, [
-          testNodeId,
-        ]);
-        // todo : 엄밀하게 하려면 caseBodyNodeId와 연결해야 함. 그런데 caseBodyNodeId가 없을 때도 있다..
-        prevIds.forEach((id) => addEdge(state, id, caseTestNodeId));
-        let caseBodyNodeId = caseTestNodeId;
-        caseNode.consequent.forEach((statement) => {
-          caseBodyNodeId = processNode(state, statement, caseBodyNodeId);
-        });
-        const closedNodeIds = state.nodes.get(switchExitNodeId)?.prev ?? [];
-        if (
-          !closedNodeIds.includes(caseBodyNodeId) &&
-          state.endId !== caseBodyNodeId
-        ) {
-          prevIds.push(caseBodyNodeId);
-        } else {
-          prevIds.length = 0;
-        }
-      });
-
-      state.loopStack.pop();
-
-      return switchExitNodeId;
-    },
-    ThrowStatement() {
-      // todo
-      throw UnsupportedStatementError('FunctionDeclaration');
-    },
-    TryStatement() {
-      // todo
       throw UnsupportedStatementError('FunctionDeclaration');
     },
     WhileStatement(node: acorn.Node) {
       const whileNode = node as acorn.WhileStatement;
-      const loopStartId = createNode(state, 'loop', null, [prevIds]);
-      const testNodeId = processNode(state, whileNode.test, loopStartId);
-      const condNodeId = createNode(state, 'condition', null, [testNodeId]);
-      const loopExitId = createNode(state, 'loop_exit', null);
+      const loopStartId = createNode(state, 'loop', null, [prevId]);
+      const testNodeId = processNode(state, whileNode.test, [loopStartId]);
+      const condNodeId = createNode(state, 'condition', null, testNodeId);
+      const loopExitId = state.currentseqExitId;
       state.loopStack.push({
         start: loopStartId,
         exit: loopExitId,
@@ -224,17 +193,17 @@ function createVisitor(prevIds: number[], state: CFGState): Visitor {
         exit: loopExitId,
       });
 
-      const bodyNodeId = processNode(state, whileNode.body, condNodeId);
-      addEdge(state, bodyNodeId, loopStartId);
+      const bodyNodeId = processNode(state, whileNode.body, [condNodeId]);
+      bodyNodeId.forEach((id) => addEdge(state, id, loopStartId));
 
       state.loopStack.pop();
 
-      return loopExitId;
+      return [loopExitId];
     },
     DoWhileStatement(node: acorn.Node) {
       const doWhileNode = node as acorn.DoWhileStatement;
-      const loopStartId = createNode(state, 'loop', null, [prevIds]);
-      const loopExitId = createNode(state, 'loop_exit', null);
+      const loopStartId = createNode(state, 'loop', null, [prevId]);
+      const loopExitId = state.currentseqExitId;
       state.loopStack.push({
         start: loopStartId,
         exit: loopExitId,
@@ -244,54 +213,55 @@ function createVisitor(prevIds: number[], state: CFGState): Visitor {
         exit: loopExitId,
       });
 
-      const bodyNodeId = processNode(state, doWhileNode.body, loopStartId);
-      const testNodeId = processNode(state, doWhileNode.test, bodyNodeId);
-      addEdge(state, testNodeId, loopStartId);
-      addEdge(state, testNodeId, loopExitId);
-
+      const bodyNodeId = processNode(state, doWhileNode.body, [loopStartId]);
+      const testNodeIds = processNode(state, doWhileNode.test, bodyNodeId);
+      testNodeIds.forEach((testNodeId) => {
+        addEdge(state, testNodeId, loopStartId);
+        addEdge(state, testNodeId, loopExitId);
+      });
       state.loopStack.pop();
 
-      return loopExitId;
+      return [loopExitId];
     },
     ForStatement(node) {
       const forNode = node as unknown as acorn.ForStatement;
-      let currentId = prevIds;
+      let currentId = [prevId];
       if (forNode.init) {
         currentId = processNode(state, forNode.init, currentId);
       }
-
-      const loopStartId = createNode(state, 'loop', null, [currentId]);
-      const testNodeId = forNode.test
-        ? processNode(state, forNode.test, loopStartId)
-        : loopStartId;
-      const condNodeId = createNode(state, 'condition', null, [testNodeId]);
-      const loopExitId = createNode(state, 'loop_exit', null);
-      addEdge(state, condNodeId, loopExitId);
-
+      const loopStartId = createNode(state, 'loop', null, currentId);
+      const loopExitId = state.currentseqExitId;
       state.loopStack.push({
         start: loopStartId,
         exit: loopExitId,
       });
-
       state.controlFlowPairs.push({
         entry: loopStartId,
         exit: loopExitId,
       });
-      const bodyNodeId = processNode(state, forNode.body, condNodeId);
+      let testNodeId = [loopStartId];
+      if (forNode.test) {
+        testNodeId = processNode(state, forNode.test, [loopStartId]);
+        const condNodeId = createNode(state, 'condition', null, testNodeId);
+        addEdge(state, condNodeId, loopExitId);
+        testNodeId = [condNodeId];
+      }
+
+      const bodyNodeId = processNode(state, forNode.body, testNodeId);
       const updateNodeId = forNode.update
         ? processNode(state, forNode.update, bodyNodeId)
         : bodyNodeId;
-      addEdge(state, updateNodeId, loopStartId);
+      updateNodeId.forEach((id) => addEdge(state, id, loopStartId));
       state.loopStack.pop();
 
-      return loopExitId;
+      return [loopExitId];
     },
     ForInStatement(node: acorn.Node) {
       const ForInNode = node as acorn.ForInStatement;
-      const leftNodeId = processNode(state, ForInNode.left, prevIds);
+      const leftNodeId = processNode(state, ForInNode.left, [prevId]);
       const rightNodeId = processNode(state, ForInNode.right, leftNodeId);
-      const loopStartId = createNode(state, 'loop', null, [rightNodeId]);
-      const loopExitId = createNode(state, 'loop_exit', null);
+      const loopStartId = createNode(state, 'loop', null, rightNodeId);
+      const loopExitId = state.currentseqExitId;
       state.loopStack.push({
         start: loopStartId,
         exit: loopExitId,
@@ -300,18 +270,17 @@ function createVisitor(prevIds: number[], state: CFGState): Visitor {
         entry: loopStartId,
         exit: loopExitId,
       });
-      const bodyNodeId = processNode(state, ForInNode.body, loopStartId);
-      addEdge(state, loopStartId, loopExitId);
-      addEdge(state, bodyNodeId, loopStartId);
+      const bodyNodeId = processNode(state, ForInNode.body, [loopStartId]);
+      bodyNodeId.forEach((id) => addEdge(state, id, loopStartId));
       state.loopStack.pop();
-      return loopExitId;
+      return [loopExitId];
     },
     ForOfStatement(node: acorn.Node) {
       const ForOfNode = node as acorn.ForOfStatement;
-      const leftNodeId = processNode(state, ForOfNode.left, prevIds);
+      const leftNodeId = processNode(state, ForOfNode.left, [prevId]);
       const rightNodeId = processNode(state, ForOfNode.right, leftNodeId);
-      const loopStartId = createNode(state, 'loop', null, [rightNodeId]);
-      const loopExitId = createNode(state, 'loop_exit', null);
+      const loopStartId = createNode(state, 'loop', null, rightNodeId);
+      const loopExitId = state.currentseqExitId;
       state.loopStack.push({
         start: loopStartId,
         exit: loopExitId,
@@ -320,11 +289,14 @@ function createVisitor(prevIds: number[], state: CFGState): Visitor {
         entry: loopStartId,
         exit: loopExitId,
       });
-      const bodyNodeId = processNode(state, ForOfNode.body, loopStartId);
+      const bodyNodeIds = processNode(state, ForOfNode.body, [loopStartId]);
       addEdge(state, loopStartId, loopExitId); // not sure
-      addEdge(state, bodyNodeId, loopStartId);
+      bodyNodeIds.forEach((bodyNodeId) =>
+        addEdge(state, bodyNodeId, loopStartId)
+      );
+
       state.loopStack.pop();
-      return loopExitId;
+      return [loopExitId];
     },
     FunctionDeclaration(node) {
       throw UnsupportedStatementError('FunctionDeclaration');
@@ -332,7 +304,7 @@ function createVisitor(prevIds: number[], state: CFGState): Visitor {
     VariableDeclaration(node: acorn.Node) {
       const VarDeclNode = node as acorn.VariableDeclaration;
       const decl = VarDeclNode.declarations.filter((decl) => decl.init);
-      let currentId = prevIds;
+      let currentId = [prevId];
       decl.forEach(
         (decl) =>
           (currentId = processNode(
@@ -348,17 +320,17 @@ function createVisitor(prevIds: number[], state: CFGState): Visitor {
       throw UnsupportedStatementError('FunctionDeclaration');
     },
     Identifier(node) {
-      return prevIds;
+      return [prevId];
     },
     Literal(node) {
-      return prevIds;
+      return [prevId];
     },
     ThisExpression(node) {
-      return prevIds;
+      return [prevId];
     },
     ArrayExpression(node: acorn.Node) {
       const ArrayNode = node as acorn.ArrayExpression;
-      let currentId = prevIds;
+      let currentId = [prevId];
       ArrayNode.elements.forEach(
         (elem) =>
           (currentId = processNode(state, elem as acorn.Expression, currentId))
@@ -367,7 +339,7 @@ function createVisitor(prevIds: number[], state: CFGState): Visitor {
     },
     ObjectExpression(node: acorn.Node) {
       const objectNode = node as acorn.ObjectExpression;
-      let currentId = prevIds;
+      let currentId = [prevId];
       objectNode.properties.forEach((prop) => {
         if (prop.type === 'SpreadElement') {
           currentId = processNode(state, prop.argument, currentId);
@@ -379,54 +351,80 @@ function createVisitor(prevIds: number[], state: CFGState): Visitor {
     },
     FunctionExpression(node: acorn.Node) {
       const FuncNode = node as acorn.FunctionExpression;
-      const funcId = processNode(state, FuncNode.body, prevIds);
+      const funcId = processNode(state, FuncNode.body, [prevId]);
       return funcId;
     },
     UnaryExpression(node: acorn.Node) {
       const UnaryNode = node as acorn.UnaryExpression;
-      return processNode(state, UnaryNode.argument, prevIds);
+      return processNode(state, UnaryNode.argument, [prevId]);
     },
     UpdateExpression(node: acorn.Node) {
       const UpdateNode = node as acorn.UpdateExpression;
-      return processNode(state, UpdateNode.argument, prevIds);
+      return processNode(state, UpdateNode.argument, [prevId]);
     },
     BinaryExpression(node: acorn.Node) {
       const BinaryNode = node as acorn.BinaryExpression;
-      const leftNodeId = processNode(state, BinaryNode.left, prevIds);
+      const leftNodeId = processNode(state, BinaryNode.left, [prevId]);
       const rightNodeId = processNode(state, BinaryNode.right, leftNodeId);
       return rightNodeId;
     },
     AssignmentExpression(node: acorn.Node) {
       const AssignmentNode = node as acorn.AssignmentExpression;
-      const leftNodeId = processNode(state, AssignmentNode.left, prevIds);
-      const rightNodeId = processNode(state, AssignmentNode.right, leftNodeId);
-      const left = state.nodes.get(leftNodeId);
-      if (left?.type === 'prop') {
-        return createNode(state, 'update_prop', left.node, [rightNodeId]);
+      const leftNodeIds = processNode(state, AssignmentNode.left, [prevId]);
+      const rightNodeIds = processNode(
+        state,
+        AssignmentNode.right,
+        leftNodeIds
+      );
+      const assignmentNodeIds = [];
+      for (const leftNodeId of leftNodeIds) {
+        const left = state.nodes.get(leftNodeId);
+        if (left?.type === 'prop') {
+          assignmentNodeIds.push(
+            createNode(state, 'update_prop', left.node, rightNodeIds)
+          );
+        }
       }
-      return rightNodeId;
+      return assignmentNodeIds;
     },
     LogicalExpression(node: acorn.Node) {
       const LogicalNode = node as acorn.LogicalExpression;
-      const testNodeId = processNode(state, LogicalNode.left, prevIds);
-      const CondNodeId = createNode(state, 'condition', null, [testNodeId]);
+      const sequenceExitId = createNode(state, 'seq_exit', null);
+      state.seqExitIds.push(sequenceExitId);
+      const prevseqExitId = state.currentseqExitId;
+      state.currentseqExitId = sequenceExitId;
+      const testNodeId = processNode(state, LogicalNode.left, [prevId]);
+      const CondNodeId = createNode(state, 'condition', null, testNodeId);
 
-      const consequentNodeId = processNode(
-        state,
-        LogicalNode.right,
-        CondNodeId
-      );
-      const prev = [consequentNodeId, CondNodeId];
-      return mergePrev(state, prev, CondNodeId);
+      const consequentNodeId = processNode(state, LogicalNode.right, [
+        CondNodeId,
+      ]);
+      const alternateNodeId = [state.currentseqExitId];
+      mergePrev(state, [CondNodeId], sequenceExitId);
+      state.currentseqExitId = prevseqExitId;
+      addEdge(state, sequenceExitId, state.currentseqExitId);
+      return [...consequentNodeId];
     },
     MemberExpression(node: acorn.Node) {
       const MemberNode = node as acorn.MemberExpression;
-      const objectNodeId = processNode(state, MemberNode.object, prevIds);
+      console.log(
+        'MemberExpression',
+        MemberNode.property,
+        'seqExit',
+        state.currentseqExitId,
+        'curId',
+        state.currentId
+      );
+
+      const objectNodeId = processNode(state, MemberNode.object, [prevId]);
       if (!MemberNode.computed && MemberNode.property.type === 'Identifier') {
-        const propertyNodeId = createNode(state, 'prop', MemberNode.property, [
-          objectNodeId,
-        ]);
-        return propertyNodeId;
+        const propertyNodeId = createNode(
+          state,
+          'prop',
+          MemberNode.property,
+          objectNodeId
+        );
+        return [propertyNodeId];
       }
       if (MemberNode.computed && MemberNode.property.type !== 'Identifier') {
         const propertyNodeId = processNode(
@@ -441,29 +439,27 @@ function createVisitor(prevIds: number[], state: CFGState): Visitor {
     ConditionalExpression(node: acorn.Node) {
       const CondNode = node as acorn.ConditionalExpression;
 
-      const testNodeId = processNode(state, CondNode.test, prevIds);
-      const CondNodeId = createNode(state, 'condition', null, [testNodeId]);
+      const testNodeId = processNode(state, CondNode.test, [prevId]);
+      const CondNodeId = createNode(state, 'condition', null, testNodeId);
 
-      const consequentNodeId = processNode(
-        state,
-        CondNode.consequent,
-        CondNodeId
-      );
+      const consequentNodeId = processNode(state, CondNode.consequent, [
+        CondNodeId,
+      ]);
       const alternateNodeId =
         CondNode.alternate &&
-        processNode(state, CondNode.alternate, CondNodeId);
-      const prev = [consequentNodeId];
+        processNode(state, CondNode.alternate, [CondNodeId]);
+      const prev = [...consequentNodeId];
       if (alternateNodeId) {
-        prev.push(alternateNodeId);
+        prev.push(...alternateNodeId);
       } else {
         prev.push(CondNodeId);
       }
-      return mergePrev(state, prev, CondNodeId);
+      return prev;
     },
 
     CallExpression(node: acorn.Node) {
       const CallNode = node as acorn.CallExpression;
-      let currentId = processNode(state, CallNode.callee, prevIds);
+      let currentId = processNode(state, CallNode.callee, [prevId]);
       CallNode.arguments.forEach((argument) => {
         currentId = processNode(state, argument, currentId);
       });
@@ -471,7 +467,7 @@ function createVisitor(prevIds: number[], state: CFGState): Visitor {
     },
     NewExpression(node: acorn.Node) {
       const NewNode = node as acorn.NewExpression;
-      let currentId = processNode(state, NewNode.callee, prevIds);
+      let currentId = processNode(state, NewNode.callee, [prevId]);
       NewNode.arguments.forEach((argument) => {
         currentId = processNode(state, argument, currentId);
       });
@@ -479,7 +475,7 @@ function createVisitor(prevIds: number[], state: CFGState): Visitor {
     },
     SequenceExpression(node: acorn.Node) {
       const SequenceNode = node as acorn.SequenceExpression;
-      let currentId = prevIds;
+      let currentId = [prevId];
       SequenceNode.expressions.forEach((expression) => {
         currentId = processNode(state, expression, currentId);
       });
@@ -519,34 +515,12 @@ function createVisitor(prevIds: number[], state: CFGState): Visitor {
       // todo
       throw UnsupportedStatementError('FunctionDeclaration');
     },
-    ParenthesizedExpression(node: acorn.Node) {
-      // todo
-      throw UnsupportedStatementError('FunctionDeclaration');
-    },
-    ObjectPattern(node: acorn.Node) {
-      // todo
-      throw UnsupportedStatementError('FunctionDeclaration');
-    },
-    ArrayPattern(node: acorn.Node) {
-      // todo
-      throw UnsupportedStatementError('FunctionDeclaration');
-    },
-    RestElement(node: acorn.Node) {
-      // todo
-      throw UnsupportedStatementError('FunctionDeclaration');
-    },
-    AssignmentPattern(node: acorn.Node) {
-      // todo
-      throw UnsupportedStatementError('FunctionDeclaration');
-    },
   };
 }
 
 function removeExitNodes(graph: CFGState): void {
   // First, identify all exit nodes
-  const exitNodes = Array.from(graph.nodes.entries())
-    .filter(([_, node]) => node.type === 'cond_exit')
-    .map(([id, _]) => id);
+  const exitNodes = Array.from(graph.nodes.entries()).map(([id, _]) => id);
 
   // For each exit node
   exitNodes.forEach((exitId) => {
@@ -584,13 +558,15 @@ function generateCFG(ast: acorn.Node): CFGState {
     nodes: new Map(),
     currentId: 0,
     endId: 1,
+    currentseqExitId: 0,
+    seqExitIds: [],
     loopStack: [],
     controlFlowPairs: [],
   };
   const startId = createNode(state, 'start', null);
   createNode(state, 'end', null);
 
-  processNode(state, ast, startId);
+  processNode(state, ast, [startId]);
 
   return state;
 }
@@ -625,25 +601,29 @@ async function cfgToDot(graph: CFGState): Promise<string> {
         label = 'End' + pairSuffix;
         color = '#A9A9A9';
         break;
-      case 'loop_exit':
-        label = 'Exit' + pairSuffix;
-        color = '#FFFF00';
-        break;
       case 'condition':
-        label = 'Condition' + pairSuffix;
+        label = 'Condition' + pairSuffix + '(' + id + ')';
         color = '#87CEEB';
         if (node.node?.type === 'Literal') {
           label += `\\n${(node.node as acorn.Literal).value}`;
         }
         break;
+      case 'seq_exit':
+        label = 'Seq Exit' + pairSuffix + '(' + id + ')';
+        color = '#FFD700';
+        break;
       case 'loop':
-        label = 'Loop' + pairSuffix;
+        label = 'Loop' + pairSuffix + '(' + id + ')';
         color = '#DDA0DD';
         break;
       case 'prop':
-        label = `Property${pairSuffix}\\n${
-          (node.node as acorn.Identifier)?.name || ''
-        }`;
+        label =
+          `Property${pairSuffix}\\n${
+            (node.node as acorn.Identifier)?.name || ''
+          }` +
+          '(' +
+          id +
+          ')';
         color = pairNum ? `#FFB6C1` : 'white'; // Light pink for paired nodes
         break;
       case 'update_prop':
@@ -702,21 +682,20 @@ async function generatePNG(
 // Example usage
 async function main() {
   const code2 = `
-function example() {
-  Symbol('JSCA_194_211');
-  // babel-minify (2)
-  for (_.a; _.b && _.c; _.d);
+function example(){
+ if(_.a&&_.b&&_.c){
+  _.d
+}
+else _.e
 }
   `;
   const code3 = `
 function example() {
-  Symbol('JSCA_194_211');
-  // original (3)
-    for (_.a; _.b; _.d) {
-      if (_.c) {
-        break;
-      }
-    }
+if(_.a||_.b||_.c){
+  _.d
+}
+else _.e
+
 }
   `;
   const code4 = `
@@ -726,6 +705,7 @@ function example() {
   for (_.a; ; _.d) {
     if(_.b && _.c) break;
   }
+    return _.e;
 }
   `;
 

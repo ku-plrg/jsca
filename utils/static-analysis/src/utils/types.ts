@@ -44,7 +44,6 @@ export interface CFGNode {
     | 'condition'
     | 'prop'
     | 'update_prop'
-    | 'loop_exit'
     | 'seq_exit'
     | 'end';
   node: Node | null;
@@ -56,6 +55,8 @@ export interface CFGState {
   currentId: number;
   loopStack: Array<{ start: number; exit: number }>;
   endId: number;
+  currentseqExitId: number;
+  seqExitIds: number[];
   controlFlowPairs: ControlFlowPair[];
 }
 
