@@ -330,8 +330,10 @@ function createVisitor(prevId: number, state: CFGState): Visitor {
       // todo
       throw UnsupportedStatementError('FunctionDeclaration');
     },
-    Identifier(node) {
-      return prevId;
+    Identifier(node: acorn.Node) {
+      const identifierNode = node as acorn.Identifier;
+      const id = createNode(state, 'block', identifierNode, [prevId]);
+      return id;
     },
     Literal(node) {
       return prevId;
@@ -585,8 +587,34 @@ function generateIR(ast: acorn.Node) {
   return ir;
 }
 
-async function cfgToDot(graph: CFGState): Promise<string> {
+function removeBlockNodes(graph: CFGState): CFGState {
+  // so dirty and time-consuming ..
   const nodes = graph.nodes;
+  for (const [id, node] of nodes.entries()) {
+    if (node.type === 'block') {
+      const prevIds = node.prev;
+      const nextIds = Array.from(nodes.entries())
+        .filter(([_, n]) => n.prev.includes(id))
+        .map(([_, n]) => n.id);
+      for (const p of prevIds) {
+        for (const n of nextIds) {
+          addEdge(graph, p, n);
+        }
+      }
+      nodes.delete(id);
+    } else {
+      const prevIds = node.prev.filter((id) => {
+        const n = nodes.get(id);
+        return n && n.type !== 'block';
+      });
+      nodes.set(id, { ...node, prev: prevIds });
+    }
+  }
+  return { ...graph, nodes };
+}
+
+async function cfgToDot(graph: CFGState): Promise<string> {
+  const nodes = removeBlockNodes(graph).nodes;
   let dotString = 'digraph CFG {\n';
   dotString += '  rankdir=TB;\n';
   dotString += '  node [shape=box, style=filled, fontname="Arial"];\n\n';
