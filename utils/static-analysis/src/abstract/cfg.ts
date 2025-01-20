@@ -106,6 +106,28 @@ function stmtVisitor(previds: number[], state: CFGState): StatementVisitor {
       mergePrev(state, prevIds, state.endId);
       return [state.endId];
     },
+    EmptyStatement() {
+      return previds;
+    },
+    WhileStatement(node) {
+      const loopStart = createNode(state, { type: 'loop' });
+      mergePrev(state, previds, loopStart);
+      const testSubgraph = processExprVisitor(state, node.test);
+      addEdge(state, loopStart, testSubgraph.start);
+
+      const bodyIds = processStmtVisitor(testSubgraph.then, state, node.body);
+      mergePrev(
+        state,
+        bodyIds /* 여기 break로 끝난건 넣으면 안됨 */,
+        // 그렇게 구현해도 되고, processStmtVisitor에서 break는 prevIds로 안 넘기게 해도 된다..
+        loopStart
+      );
+
+      return [...testSubgraph.else /* break로 끝난 친구들 */];
+    },
+    BreakStatement(node) {
+      throw new Error('Engineering hero taxor03 will implement this');
+    },
   };
 }
 
@@ -397,12 +419,17 @@ async function generatePNG(
 async function main() {
   const code = `
 function example() {
-  if (_.f ? (_.g&&_.h) : (_.i||_.k)) {
-    return _.e;
-  }
-  return ((_.a ? _.b : _.c) || _.d);
+  // if (_.f ? (_.g&&_.h) : (_.i||_.k)) {
+  //   return _.e;
+  // }
+  // return ((_.a ? _.b : _.c) || _.d);
   // ((_.a ? _.b : _.c), _.d) ? (_.e&&_.f) : (_.g||_.h);
   // return (_.i,_.j);
+  _.a;
+  while(_.b && _.c) {
+    _.d;
+  }
+  return _.e;
 }
   `;
 
