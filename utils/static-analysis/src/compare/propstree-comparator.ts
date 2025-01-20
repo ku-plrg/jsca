@@ -51,8 +51,6 @@ function propstreeComparator(func1: Propstree, func2: Propstree): boolean {
     const props2 = sortArray(t2.props);
     if (props1.length !== props2.length) return false;
     return props1.every((prop, i) => prop === props2[i]);
-
-    return true;
   };
 
   const getChild = (node: PropstreeNodebranch) => {

@@ -27,7 +27,7 @@ const options: Options = {
   literals: false,
 };
 
-function makePropstree(func: acorn.Node): PropstreeNode {
+function makePropstree(func: acorn.AnyNode): PropstreeNode {
   const rootTree: PropstreeNode = {
     type: 'normal',
     props: [],
@@ -193,16 +193,16 @@ function makePropstree(func: acorn.Node): PropstreeNode {
     },
   };
 
-  function myWalker(node: acorn.Node, state: State, visitors: any) {
+  function myWalker(node: acorn.AnyNode, state: State, visitors: any) {
     state.ancestors.push(node);
     const visitor = visitors[node.type];
     if (visitor) {
-      visitor(node, state, (child: acorn.Node) =>
+      visitor(node, state, (child: acorn.AnyNode) =>
         myWalker(child, state, visitors)
       );
     } else {
       //TODO: precise walk.base type
-      (walk.base as any)[node.type](node, state, (child: acorn.Node) =>
+      (walk.base as any)[node.type](node, state, (child: acorn.AnyNode) =>
         myWalker(child, state, visitors)
       );
     }

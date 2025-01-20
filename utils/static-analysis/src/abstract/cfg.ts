@@ -4,43 +4,31 @@ import { writeFile } from 'fs/promises';
 import { promisify } from 'util';
 import { cfgToIR } from '../utils/cfg_to_ir';
 import { stringifyIRNode } from '../utils/ir_stringifier';
-import { Function, IR } from '../utils/types';
-import { CFGNode, CFGState, Subgraph } from '../utils/types/cfg';
+import { CFGNode, CFGState, Function, IR, Subgraph } from '../utils/types';
 
 type StatementVisitor = {
-  [key: string]: <T extends acorn.Statement>(node: T) => number[];
+  [K in acorn.AnyNode['type']]?: (
+    node: Extract<acorn.Statement, { type: K }>
+  ) => number[];
 };
+
 type ExprVisitor = {
-  [key: string]: <T extends acorn.Expression>(node: T) => Subgraph;
+  [K in acorn.AnyNode['type']]?: (
+    node: Extract<acorn.Expression, { type: K }>
+  ) => Subgraph;
 };
+
 function createNode(
   state: CFGState,
-  info:
-    | {
-        type: 'loop';
-        rest?: { body: number };
-      }
-    | {
-        type: 'condition';
-        rest?: { then: number; else: number };
-      }
-    | {
-        type: 'prop';
-        rest?: { prop: string };
-      }
-    | {
-        type: 'start' | 'end';
-        rest?: {};
-      }
+  node: Omit<CFGNode, 'id' | 'next'>
 ): number {
   const id = state.currentId;
   state.currentId++;
   const nextIds: number[] = [];
   state.nodes.set(id, {
     id,
-    type: info.type,
     next: nextIds,
-    ...(info.rest ?? {}),
+    ...node,
   });
   return id;
 }
@@ -61,39 +49,38 @@ function mergePrev(state: CFGState, prevIds: number[], currentId: number) {
   });
 }
 
-function UnsupportedStatementError(statement: string) {
-  const error = new Error(`Unsupported statement type: ${statement}`);
-  error.name = 'UnsupportedStatementError';
+function UnsupportedError(type: string) {
+  const error = new Error(`Unsupported type: ${type}`);
+  error.name = 'UnsupportedError';
   return error;
 }
 
 function stmtVisitor(previds: number[], state: CFGState): StatementVisitor {
   return {
     ExpressionStatement(node) {
-      const exprNode = node as unknown as acorn.ExpressionStatement;
-      const subgraph = exprVisitor(state).Expression(exprNode.expression);
+      const subgraph = processExprVisitor(state, node.expression);
       mergePrev(state, previds, subgraph.start);
       return [...subgraph.then, ...subgraph.else];
     },
     BlockStatement(node) {
-      const blockNode = node as unknown as acorn.BlockStatement;
       let prevIds = previds;
-      blockNode.body.forEach((stmt) => {
-        prevIds = stmtVisitor(previds, state)[stmt.type](stmt);
+      node.body.forEach((stmt) => {
+        prevIds = processStmtVisitor(previds, state, stmt);
       });
       return prevIds;
     },
     IfStatement(node) {
-      const ifNode = node as unknown as acorn.IfStatement;
-      const testSubgraph = exprVisitor(state).Expression(ifNode.test);
+      const testSubgraph = processExprVisitor(state, node.test);
       mergePrev(state, previds, testSubgraph.start);
-      const consequentNodeId = stmtVisitor(testSubgraph.then, state).Block(
-        ifNode.consequent
+      const consequentNodeId = processStmtVisitor(
+        testSubgraph.then,
+        state,
+        node.consequent
       );
       const nextIds = [...consequentNodeId];
-      if (ifNode.alternate) {
+      if (node.alternate) {
         nextIds.push(
-          ...stmtVisitor(testSubgraph.else, state).Block(ifNode.alternate)
+          ...processStmtVisitor(testSubgraph.else, state, node.alternate)
         );
       } else {
         nextIds.push(...testSubgraph.else);
@@ -102,17 +89,41 @@ function stmtVisitor(previds: number[], state: CFGState): StatementVisitor {
     },
   };
 }
+
+function processStmtVisitor(
+  previds: number[],
+  state: CFGState,
+  node: acorn.Statement
+) {
+  try {
+    const visitor = stmtVisitor(previds, state)[node.type] as (
+      _node: Extract<acorn.Statement, { type: typeof node.type }>
+    ) => number[];
+    return visitor(node);
+  } catch (e) {
+    throw UnsupportedError(node.type);
+  }
+}
+
+function processExprVisitor(state: CFGState, node: acorn.Expression) {
+  try {
+    const visitor = exprVisitor(state)[node.type] as (
+      _node: Extract<acorn.Expression, { type: typeof node.type }>
+    ) => Subgraph;
+    return visitor(node);
+  } catch (e) {
+    throw UnsupportedError(node.type);
+  }
+}
+
 function exprVisitor(state: CFGState): ExprVisitor {
   return {
     LogicalExpression(node) {
-      const logicalNode = node as unknown as acorn.LogicalExpression;
-      const testSubgraph = exprVisitor(state).Expression(logicalNode.left);
-      const consequentSubgraph = exprVisitor(state).Expression(
-        logicalNode.right
-      );
+      const testSubgraph = processExprVisitor(state, node.left);
+      const consequentSubgraph = processExprVisitor(state, node.right);
       const start = createNode(state, { type: 'condition' });
-      if (logicalNode.operator === '&&') {
-        addEdge(state, ...testSubgraph.then, start);
+      if (node.operator === '&&') {
+        // addEdge(state, ...testSubgraph.then, start);
         return {
           start,
           then: [...consequentSubgraph.then],
@@ -164,11 +175,8 @@ function exprVisitor(state: CFGState): ExprVisitor {
 //     graph.nodes.delete(exitId);
 //   });
 // }
-function processNode(stae: CFGState, node: acorn.Node, prevIds: number[]) {
-  stmtVisitor(prevIds, stae)[node.type](node as acorn.Statement);
-}
 
-function generateCFG(ast: acorn.Node): CFGState {
+function generateCFG(ast: acorn.AnyNode): CFGState {
   const state: CFGState = {
     nodes: new Map(),
     currentId: 0,
@@ -179,7 +187,7 @@ function generateCFG(ast: acorn.Node): CFGState {
   const startId = createNode(state, { type: 'start' });
   createNode(state, { type: 'end' });
 
-  processNode(state, ast, [startId]);
+  processStmtVisitor([startId], state, ast as acorn.Statement);
 
   return state;
 }
@@ -299,11 +307,11 @@ function example() {
     const functionBody = (ast.body[0] as acorn.FunctionDeclaration).body;
     const graph = generateCFG(functionBody);
     console.log(stringifyIRNode(cfgToIR(graph)));
-    const dotContent = await cfgToDot(graph);
+    //const dotContent = await cfgToDot(graph);
 
-    await writeFile('cfg.dot', dotContent, 'utf8');
+    //await writeFile('cfg.dot', dotContent, 'utf8');
 
-    await generatePNG(dotContent, 'cfg.png');
+    //await generatePNG(dotContent, 'cfg.png');
   } catch (error) {
     console.error('Error in main:', error);
   }

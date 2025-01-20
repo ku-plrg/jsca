@@ -1,15 +1,23 @@
 import * as acorn from 'acorn';
 import { stringifyIRNode } from '../utils/ir_stringifier';
-import { Function, IR } from '../utils/types';
-import { EmptyNode, IRInst, IRNode, SeqNode } from '../utils/types/ir';
+import {
+  EmptyNode,
+  Function,
+  IR,
+  IRInst,
+  IRNode,
+  SeqNode,
+} from '../utils/types';
 
 type Visitor = {
-  [key: string]: <T extends acorn.Node>(node: T) => IRNode;
+  [K in acorn.AnyNode['type']]?: (
+    node: Extract<acorn.AnyNode, { type: K }>
+  ) => IRNode;
 };
 
 const emptyNode: EmptyNode = { type: IRInst.EMPTY };
 
-function nodesToSeqNode(exprs: acorn.Node[]): IRNode {
+function nodesToSeqNode(exprs: acorn.AnyNode[]): IRNode {
   let result: IRNode = exprs[0] !== undefined ? compile(exprs[0]) : emptyNode;
   for (let i = 1; i < exprs.length; i++) {
     const eachResult: SeqNode = {
@@ -397,7 +405,7 @@ function createVisitor(): Visitor {
       const Objnode = compile(node.object);
 
       if (!node.computed && node.property.type === 'Identifier') {
-        const prop_node = {
+        const prop_node: IRNode = {
           type: IRInst.PROP,
           id: node.property.name,
           object: { type: IRInst.BLOCK },
@@ -572,7 +580,7 @@ function createVisitor(): Visitor {
     SpreadElement(node: acorn.SpreadElement): IRNode {
       return compile(node.argument);
     },
-  } as Visitor;
+  };
 }
 function UnsupportedStatementError(statement: string) {
   const error = new Error(`Unsupported statement type: ${statement}`);
@@ -580,10 +588,12 @@ function UnsupportedStatementError(statement: string) {
   return error;
 }
 
-export function compile(node: acorn.Node): IRNode {
+export function compile(node: acorn.AnyNode): IRNode {
   const visitor = createVisitor();
   try {
-    const handler = visitor[node.type];
+    const handler = visitor[node.type] as
+      | ((_node: Extract<acorn.AnyNode, { type: typeof node.type }>) => IRNode)
+      | undefined;
 
     if (!handler) {
       console.error(`Unsupported node type: ${node.type}`);

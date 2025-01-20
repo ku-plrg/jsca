@@ -1,13 +1,12 @@
-import { Node, Pattern } from 'acorn';
-import * as CFGType from './cfg';
+import * as acorn from 'acorn';
 import * as IRType from './ir';
 import * as PropsTreeType from './propstree';
 
 export interface Function {
   id: string;
   name: string;
-  params: Pattern[];
-  body: Node;
+  params: acorn.Pattern[];
+  body: acorn.AnyNode;
 }
 
 export interface Library {
@@ -42,4 +41,6 @@ export interface CFG extends AbsFunctionBase {
 
 export type AbsFunction = Propstree | Props | CFG | IR;
 
-export { CFGType, IRType, PropsTreeType };
+export * from './cfg';
+export * from './ir';
+export * from './propstree';
