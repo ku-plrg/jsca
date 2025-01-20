@@ -115,18 +115,50 @@ function stmtVisitor(previds: number[], state: CFGState): StatementVisitor {
       const testSubgraph = processExprVisitor(state, node.test);
       addEdge(state, loopStart, testSubgraph.start);
 
+      state.loopStack.push({ break: [], continue: [] });
       const bodyIds = processStmtVisitor(testSubgraph.then, state, node.body);
-      mergePrev(
-        state,
-        bodyIds /* 여기 break로 끝난건 넣으면 안됨 */,
-        // 그렇게 구현해도 되고, processStmtVisitor에서 break는 prevIds로 안 넘기게 해도 된다..
-        loopStart
-      );
+      const lastLoopStack = state.loopStack.pop();
+      if (lastLoopStack) {
+        mergePrev(state, bodyIds, loopStart);
+        mergePrev(state, lastLoopStack.continue, loopStart);
+        return [...lastLoopStack.break, ...testSubgraph.else];
+      }
 
-      return [...testSubgraph.else /* break로 끝난 친구들 */];
+      return testSubgraph.else;
     },
     BreakStatement(node) {
-      throw new Error('Engineering hero taxor03 will implement this');
+      const lastLoopStack = state.loopStack.pop();
+      if (!lastLoopStack) return previds;
+      lastLoopStack.break.push(...previds);
+      state.loopStack.push(lastLoopStack);
+      return previds;
+    },
+    ContinueStatement(node) {
+      const lastLoopStack = state.loopStack.pop();
+      if (!lastLoopStack) return previds;
+      lastLoopStack.continue.push(...previds);
+      state.loopStack.push(lastLoopStack);
+      return previds;
+    },
+    ForInStatement(node) {
+      const loopStart = createNode(state, { type: 'loop' });
+      mergePrev(state, previds, loopStart);
+      const rightSubgraph = processExprVisitor(state, node.right);
+      addEdge(state, loopStart, rightSubgraph.start);
+
+      state.loopStack.push({ break: [], continue: [] });
+      const bodyIds = processStmtVisitor(
+        [...rightSubgraph.then, ...rightSubgraph.else],
+        state,
+        node.body
+      );
+      const lastLoopStack = state.loopStack.pop();
+      if (lastLoopStack) {
+        mergePrev(state, bodyIds, loopStart);
+        mergePrev(state, lastLoopStack.continue, loopStart);
+        return [loopStart, ...lastLoopStack.break];
+      }
+      return [loopStart];
     },
   };
 }
@@ -258,12 +290,8 @@ function exprVisitor(state: CFGState): ExprVisitor {
       return objectSubgraph;
     },
     Identifier(node) {
-      // const newNode: Omit<CFGNodeProp, 'id' | 'next'> = {
-      //   type: 'prop',
-      //   prop: node.name,
-      // };
-      // const id = createNode(state, newNode);
       const prevId = state.currentId;
+
       return { start: prevId, then: [prevId], else: [prevId] };
     },
   };
@@ -425,11 +453,25 @@ function example() {
   // return ((_.a ? _.b : _.c) || _.d);
   // ((_.a ? _.b : _.c), _.d) ? (_.e&&_.f) : (_.g||_.h);
   // return (_.i,_.j);
+  // _.a;
+  // while (_.b && _.c) {
+  //   _.d;
+  //  if(_.e) break;
+  //  _.f;
+  // }
+  // return _.g;
   _.a;
-  while(_.b && _.c) {
-    _.d;
+  for(b in _.b) {
+    if(_.c && _.d) break;
+    if(_.e) return;
+    if(_.f || _.g) continue;
+    _.h;
   }
-  return _.e;
+  _.i;
+  // while(_.a) {
+  //   if(_.b) break;
+  // }
+  // _.c;
 }
   `;
 

@@ -1,5 +1,3 @@
-import exp from 'constants';
-
 export interface CFGNodeBase {
   id: number;
   type: 'start' | 'loop' | 'condition' | 'prop' | 'end';
@@ -40,7 +38,7 @@ export type CFGNode =
 export interface CFGState {
   nodes: Map<number, CFGNode>;
   currentId: number;
-  loopStack: Array<{ start: number; exit: number }>;
+  loopStack: { break: number[]; continue: number[] }[];
   condList: Array<{ start: number; exit: number }>; //for cfg_to_ir
   endId: number;
 }
