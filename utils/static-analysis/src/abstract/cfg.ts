@@ -4,7 +4,8 @@ import { writeFile } from 'fs/promises';
 import { promisify } from 'util';
 import { cfgToIR } from '../utils/cfg_to_ir';
 import { stringifyIRNode } from '../utils/ir_stringifier';
-import { CFGNode, CFGState, Function, IR } from '../utils/types';
+import { Function, IR } from '../utils/types';
+import { CFGNode, CFGState } from '../utils/types/cfg';
 
 type Visitor = {
   [key: string]: <T extends acorn.Node>(node: T) => number;

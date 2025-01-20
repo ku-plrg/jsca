@@ -1,13 +1,7 @@
 import * as acorn from 'acorn';
 import { stringifyIRNode } from '../utils/ir_stringifier';
-import {
-  EmptyNode,
-  Function,
-  IR,
-  IRInst,
-  IRNode,
-  SeqNode,
-} from '../utils/types';
+import { Function, IR } from '../utils/types';
+import { EmptyNode, IRInst, IRNode, SeqNode } from '../utils/types/ir';
 
 type Visitor = {
   [key: string]: <T extends acorn.Node>(node: T) => IRNode;
