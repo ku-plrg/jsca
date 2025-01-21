@@ -160,6 +160,70 @@ function stmtVisitor(previds: number[], state: CFGState): StatementVisitor {
       }
       return [loopStart];
     },
+    ForOfStatement(node) {
+      const loopStart = createNode(state, { type: 'loop' });
+      mergePrev(state, previds, loopStart);
+      const rightSubgraph = processExprVisitor(state, node.right);
+      addEdge(state, loopStart, rightSubgraph.start);
+
+      state.loopStack.push({ break: [], continue: [] });
+      const bodyIds = processStmtVisitor(
+        [...rightSubgraph.then, ...rightSubgraph.else],
+        state,
+        node.body
+      );
+      const lastLoopStack = state.loopStack.pop();
+      if (lastLoopStack) {
+        mergePrev(state, bodyIds, loopStart);
+        mergePrev(state, lastLoopStack.continue, loopStart);
+        return [loopStart, ...lastLoopStack.break];
+      }
+      return [loopStart];
+    },
+    ForStatement(node) {
+      const loopStart = createNode(state, { type: 'loop' });
+      if (node.init && node.init.type !== 'VariableDeclaration') {
+        const initSubgraph = processExprVisitor(state, node.init);
+        mergePrev(state, previds, initSubgraph.start);
+        mergePrev(
+          state,
+          [...initSubgraph.else, ...initSubgraph.then],
+          loopStart
+        );
+      } else {
+        mergePrev(state, previds, loopStart);
+      }
+
+      const testToBreakIds = [];
+      const testToBodyIds = [];
+      if (node.test) {
+        const testSubgraph = processExprVisitor(state, node.test);
+        testToBreakIds.push(...testSubgraph.else);
+        testToBodyIds.push(...testSubgraph.then);
+        addEdge(state, loopStart, testSubgraph.start);
+      } else {
+        testToBreakIds.push(loopStart); // not sure..
+        testToBodyIds.push(loopStart);
+      }
+
+      state.loopStack.push({ break: [], continue: [] });
+      const bodyIds = processStmtVisitor(testToBodyIds, state, node.body);
+
+      const updateSubgraph =
+        node.update && processExprVisitor(state, node.update);
+      if (updateSubgraph) mergePrev(state, bodyIds, updateSubgraph.start);
+      const loopLastIds = updateSubgraph
+        ? [...updateSubgraph.else, ...updateSubgraph.then]
+        : bodyIds;
+
+      const lastLoopStack = state.loopStack.pop();
+      if (lastLoopStack) {
+        mergePrev(state, loopLastIds, loopStart);
+        mergePrev(state, lastLoopStack.continue, loopStart);
+        return [...lastLoopStack.break, ...testToBreakIds];
+      }
+      return testToBreakIds;
+    },
   };
 }
 
@@ -460,18 +524,23 @@ function example() {
   //  _.f;
   // }
   // return _.g;
-  _.a;
-  for(b in _.b) {
-    if(_.c && _.d) break;
-    if(_.e) return;
-    if(_.f || _.g) continue;
-    _.h;
-  }
-  _.i;
+  // _.a;
+  // for(b in _.b) {
+  //   if(_.c && _.d) break;
+  //   if(_.e) return;
+  //   if(_.f || _.g) continue;
+  //   _.h;
+  // }
+  // _.i;
   // while(_.a) {
   //   if(_.b) break;
   // }
   // _.c;
+  for(;;) {
+    if(_.c) continue;
+    _.d;
+  }
+  if(_.f) return _.g;
 }
   `;
 
