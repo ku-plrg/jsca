@@ -11,6 +11,7 @@ import {
   IRInst,
   Subgraph,
 } from '../utils/types';
+import { start } from 'repl';
 
 type Stmt = acorn.Statement;
 type Expr = acorn.Expression | acorn.Declaration;
@@ -19,8 +20,12 @@ type StatementVisitor = {
   [K in acorn.AnyNode['type']]?: (node: Extract<Stmt, { type: K }>) => number[];
 };
 
-type ExprVisitor = {
+type SubGraphVisitor = {
   [K in acorn.AnyNode['type']]?: (node: Extract<Expr, { type: K }>) => Subgraph;
+};
+
+type ExprVisitor = {
+  [K in acorn.AnyNode['type']]?: (node: Extract<Expr, { type: K }>) => number[];
 };
 
 function createNode(
@@ -66,9 +71,9 @@ function UnsupportedError(type: string) {
 function stmtVisitor(previds: number[], state: CFGState): StatementVisitor {
   return {
     ExpressionStatement(node) {
-      const subgraph = processExprVisitor(state, node.expression);
-      mergePrev(state, previds, subgraph.start);
-      return [...subgraph.then, ...subgraph.else];
+      const expr = processExprVisitor(previds, state, node.expression);
+      if (expr) return expr;
+      return previds;
     },
     BlockStatement(node) {
       let prevIds = previds;
@@ -77,8 +82,46 @@ function stmtVisitor(previds: number[], state: CFGState): StatementVisitor {
       });
       return prevIds;
     },
+    EmptyStatement() {
+      return previds;
+    },
+    DebuggerStatement() {
+      throw UnsupportedError('DebuggerStatement');
+    },
+    WithStatement() {
+      throw UnsupportedError('WithStatement');
+    },
+    ReturnStatement(node) {
+      let prevIds = [...previds];
+      if (node.argument) {
+        const argument = processExprVisitor(prevIds, state, node.argument);
+        if (argument) prevIds = argument;
+      }
+      mergePrev(state, prevIds, state.endId);
+      return [];
+    },
+    LabeledStatement(node) {
+      throw UnsupportedError('LabeledStatement');
+    },
+    BreakStatement(node) {
+      const lastLoopStack = state.loopStack.pop();
+      if (!lastLoopStack) return previds;
+      lastLoopStack.break.push(...previds);
+      state.loopStack.push(lastLoopStack);
+      return [];
+    },
+    ContinueStatement(node) {
+      const lastLoopStack = state.loopStack.pop();
+      if (!lastLoopStack) return previds;
+      lastLoopStack.continue.push(...previds);
+      state.loopStack.push(lastLoopStack);
+      return [];
+    },
     IfStatement(node) {
-      const testSubgraph = processExprVisitor(state, node.test);
+      const testSubgraph = addCondnode(
+        processSubGraphVisitor([state.currentId], state, node.test),
+        state
+      );
       mergePrev(state, previds, testSubgraph.start);
       const consequentNodeId = processStmtVisitor(
         testSubgraph.then,
@@ -95,100 +138,50 @@ function stmtVisitor(previds: number[], state: CFGState): StatementVisitor {
       }
       return nextIds;
     },
-    ReturnStatement(node) {
-      let prevIds = [...previds];
-      if (node.argument) {
-        const argumentSubgraph = processExprVisitor(state, node.argument);
-        mergePrev(state, prevIds, argumentSubgraph.start);
-        prevIds = [...argumentSubgraph.then, ...argumentSubgraph.else];
-      }
-      mergePrev(state, prevIds, state.endId);
-      return [state.endId];
-    },
-    EmptyStatement() {
-      return previds;
+    SwitchStatement(node) {
+      throw UnsupportedError('switchStatement');
     },
     WhileStatement(node) {
       const loopStart = createNode(state, { type: 'loop' });
       mergePrev(state, previds, loopStart);
-      const testSubgraph = processExprVisitor(state, node.test);
+      const testSubgraph = addCondnode(
+        processSubGraphVisitor([state.currentId], state, node.test),
+        state
+      );
+
       addEdge(state, loopStart, testSubgraph.start);
 
       state.loopStack.push({ break: [], continue: [] });
       const bodyIds = processStmtVisitor(testSubgraph.then, state, node.body);
       const lastLoopStack = state.loopStack.pop();
-      if (lastLoopStack) {
-        mergePrev(state, bodyIds, loopStart);
-        mergePrev(state, lastLoopStack.continue, loopStart);
-        return [...lastLoopStack.break, ...testSubgraph.else];
-      }
+      if (!lastLoopStack) throw new Error('Empty loop stack');
 
-      return testSubgraph.else;
+      mergePrev(state, bodyIds, loopStart);
+      mergePrev(state, lastLoopStack.continue, loopStart);
+      return [...lastLoopStack.break, ...testSubgraph.else];
     },
-    BreakStatement(node) {
-      const lastLoopStack = state.loopStack.pop();
-      if (!lastLoopStack) return previds;
-      lastLoopStack.break.push(...previds);
-      state.loopStack.push(lastLoopStack);
-      return [];
-    },
-    ContinueStatement(node) {
-      const lastLoopStack = state.loopStack.pop();
-      if (!lastLoopStack) return previds;
-      lastLoopStack.continue.push(...previds);
-      state.loopStack.push(lastLoopStack);
-      return [];
-    },
-    ForInStatement(node) {
+    DoWhileStatement(node) {
       const loopStart = createNode(state, { type: 'loop' });
       mergePrev(state, previds, loopStart);
-      const rightSubgraph = processExprVisitor(state, node.right);
-      addEdge(state, loopStart, rightSubgraph.start);
 
       state.loopStack.push({ break: [], continue: [] });
-      const bodyIds = processStmtVisitor(
-        [...rightSubgraph.then, ...rightSubgraph.else],
-        state,
-        node.body
-      );
+      const bodyIds = processStmtVisitor([loopStart], state, node.body);
       const lastLoopStack = state.loopStack.pop();
-      if (lastLoopStack) {
-        mergePrev(state, bodyIds, loopStart);
-        mergePrev(state, lastLoopStack.continue, loopStart);
-        return [loopStart, ...lastLoopStack.break];
-      }
-      return [loopStart];
-    },
-    ForOfStatement(node) {
-      const loopStart = createNode(state, { type: 'loop' });
-      mergePrev(state, previds, loopStart);
-      const rightSubgraph = processExprVisitor(state, node.right);
-      addEdge(state, loopStart, rightSubgraph.start);
-
-      state.loopStack.push({ break: [], continue: [] });
-      const bodyIds = processStmtVisitor(
-        [...rightSubgraph.then, ...rightSubgraph.else],
-        state,
-        node.body
+      if (!lastLoopStack) throw new Error('Empty loop stack');
+      const testSubgraph = addCondnode(
+        processSubGraphVisitor([state.currentId], state, node.test),
+        state
       );
-      const lastLoopStack = state.loopStack.pop();
-      if (lastLoopStack) {
-        mergePrev(state, bodyIds, loopStart);
-        mergePrev(state, lastLoopStack.continue, loopStart);
-        return [loopStart, ...lastLoopStack.break];
-      }
-      return [loopStart];
+      mergePrev(state, bodyIds, testSubgraph.start);
+      mergePrev(state, lastLoopStack.continue, loopStart);
+      mergePrev(state, testSubgraph.then, loopStart);
+      return [...lastLoopStack.break, ...testSubgraph.else];
     },
     ForStatement(node) {
       const loopStart = createNode(state, { type: 'loop' });
-      if (node.init && node.init.type !== 'VariableDeclaration') {
-        const initSubgraph = processExprVisitor(state, node.init);
-        mergePrev(state, previds, initSubgraph.start);
-        mergePrev(
-          state,
-          [...initSubgraph.else, ...initSubgraph.then],
-          loopStart
-        );
+      if (node.init) {
+        const init = processExprVisitor(previds, state, node.init);
+        mergePrev(state, init ?? previds, loopStart);
       } else {
         mergePrev(state, previds, loopStart);
       }
@@ -196,7 +189,10 @@ function stmtVisitor(previds: number[], state: CFGState): StatementVisitor {
       const testToBreakIds = [];
       const testToBodyIds = [];
       if (node.test) {
-        const testSubgraph = processExprVisitor(state, node.test);
+        const testSubgraph = addCondnode(
+          processSubGraphVisitor([state.currentId], state, node.test),
+          state
+        );
         testToBreakIds.push(...testSubgraph.else);
         testToBodyIds.push(...testSubgraph.then);
         addEdge(state, loopStart, testSubgraph.start);
@@ -208,23 +204,51 @@ function stmtVisitor(previds: number[], state: CFGState): StatementVisitor {
       const bodyIds = processStmtVisitor(testToBodyIds, state, node.body);
 
       const updateSubgraph =
-        node.update && processExprVisitor(state, node.update);
-      if (updateSubgraph) mergePrev(state, bodyIds, updateSubgraph.start);
-      const loopLastIds = updateSubgraph
-        ? [...updateSubgraph.else, ...updateSubgraph.then]
-        : bodyIds;
+        node.update && processExprVisitor(bodyIds, state, node.update);
+      const loopLastIds = updateSubgraph ?? bodyIds;
 
       const lastLoopStack = state.loopStack.pop();
-      if (lastLoopStack) {
-        mergePrev(state, loopLastIds, loopStart);
-        mergePrev(state, lastLoopStack.continue, loopStart);
-        return [...lastLoopStack.break, ...testToBreakIds];
+      if (!lastLoopStack) throw new Error('Empty loop stack');
+      mergePrev(state, loopLastIds, loopStart);
+      mergePrev(state, lastLoopStack.continue, loopStart);
+      return [...lastLoopStack.break, ...testToBreakIds];
+    },
+    ForInStatement(node) {
+      const loopStart = createNode(state, { type: 'loop' });
+      let left;
+      if (node.left.type === 'VariableDeclaration') {
+        left = processExprVisitor(previds, state, node.left);
       }
-      return testToBreakIds;
+      const right = processExprVisitor(left ?? previds, state, node.right);
+      if (right) mergePrev(state, right, loopStart);
+
+      state.loopStack.push({ break: [], continue: [] });
+      const bodyIds = processStmtVisitor([loopStart], state, node.body);
+      const lastLoopStack = state.loopStack.pop();
+      if (!lastLoopStack) throw new Error('Empty loop stack');
+      mergePrev(state, bodyIds, loopStart);
+      mergePrev(state, lastLoopStack.continue, loopStart);
+      return [...lastLoopStack.break, loopStart];
+    },
+    ForOfStatement(node) {
+      const loopStart = createNode(state, { type: 'loop' });
+      let left;
+      if (node.left.type === 'VariableDeclaration') {
+        left = processExprVisitor(previds, state, node.left);
+      }
+      const right = processExprVisitor(left ?? previds, state, node.right);
+      if (right) mergePrev(state, right, loopStart);
+
+      state.loopStack.push({ break: [], continue: [] });
+      const bodyIds = processStmtVisitor([loopStart], state, node.body);
+      const lastLoopStack = state.loopStack.pop();
+      if (!lastLoopStack) throw new Error('Empty loop stack');
+      mergePrev(state, bodyIds, loopStart);
+      mergePrev(state, lastLoopStack.continue, loopStart);
+      return [...lastLoopStack.break, loopStart];
     },
   };
 }
-
 function processStmtVisitor(previds: number[], state: CFGState, node: Stmt) {
   try {
     const visitor = stmtVisitor(previds, state)[node.type] as (
@@ -236,23 +260,230 @@ function processStmtVisitor(previds: number[], state: CFGState, node: Stmt) {
   }
 }
 
-function processExprVisitor(state: CFGState, node: Expr) {
+function processSubGraphVisitor(
+  prevIds: number[],
+  state: CFGState,
+  node: Expr
+) {
   try {
-    const visitor = exprVisitor(state)[node.type] as (
+    const visitor = subgraphVisitor(prevIds, state)[node.type] as (
       _node: Extract<Expr, { type: typeof node.type }>
     ) => Subgraph;
-    return visitor(node);
+    const result = visitor(node);
+    if (result.start === state.currentId) {
+      console.log(result);
+      return { start: state.currentId, then: prevIds, else: prevIds };
+    }
+    return result;
   } catch (e) {
     throw UnsupportedError(node.type);
   }
 }
 
-function exprVisitor(state: CFGState): ExprVisitor {
+function addCondnode(subgraph: Subgraph, state: CFGState) {
+  const condNode = createNode(state, { type: 'condition' });
+  const thenElseNodes = subgraph.then.filter((id) =>
+    subgraph.else.includes(id)
+  );
+  thenElseNodes.forEach((id) => addEdge(state, id, condNode));
+  subgraph.then = subgraph.then.filter((id) => !thenElseNodes.includes(id));
+  subgraph.else = subgraph.else.filter((id) => !thenElseNodes.includes(id));
+  subgraph.then.push(condNode);
+  subgraph.else.push(condNode);
+  return subgraph;
+}
+function processExprVisitor(prevIds: number[], state: CFGState, node: Expr) {
+  try {
+    const visitor = exprVisitor(prevIds, state)[node.type] as (
+      _node: Extract<Expr, { type: typeof node.type }>
+    ) => number[];
+    const result = visitor(node);
+    if (result.includes(state.currentId)) return undefined;
+    return result;
+  } catch (e) {
+    throw UnsupportedError(node.type);
+  }
+}
+
+function exprVisitor(previds: number[], state: CFGState): ExprVisitor {
   return {
+    Identifier(node) {
+      return previds;
+    },
+    Literal(node) {
+      return previds;
+    },
+    ThisExpression(node) {
+      return previds;
+    },
+    // ArrayExpression(node) {
+    //   const elements = node.elements.filter(
+    //     (elem) => elem !== null && elem.type !== 'SpreadElement'
+    //   );
+    //   if (elements.length === 0) return previds;
+
+    //   let elemID = processExprVisitor(previds,state, elements[0]);
+    //   for (let i = 1; i < elements.length; i++) {
+    //     elemID = processExprVisitor(elemID, state, elements[i]);
+    //   }
+    //   return elemID;
+    // },
+    // ObjectExpression(node) {
+    //   throw UnsupportedError('ObjectExpression');
+    // },
+    // FunctionExpression(node) {
+    //   throw UnsupportedError('FunctionExpression');
+    // },
+    // UnaryExpression(node) {
+    //   return processExprVisitor(previds, state, node.argument);
+    // },
+    // UpdateExpression(node) {
+    //   return processExprVisitor(previds, state, node.argument);
+    // },
+    // BinaryExpression(node) {
+    //   if (node.left.type === 'PrivateIdentifier')
+    //     throw UnsupportedError('PrivateIdentifier');
+
+    //   const left = processExprVisitor(previds, state, node.left);
+    //   const right = processExprVisitor(previds, state, node.right);
+    //   return [...left, ...right];
+    // },
     LogicalExpression(node) {
-      const testSubgraph = processExprVisitor(state, node.left);
-      const consequentSubgraph = processExprVisitor(state, node.right);
+      const left = processExprVisitor(previds, state, node.left);
+      const condId = createNode(state, { type: 'condition' });
+      mergePrev(state, left ?? previds, condId);
+      const right = processExprVisitor([condId], state, node.right);
+      return [...(right ?? [condId]), condId];
+    },
+    ConditionalExpression(node) {
+      const test = processExprVisitor(previds, state, node.test);
+      const condId = createNode(state, { type: 'condition' });
+      mergePrev(state, test ?? previds, condId);
+      const consequent = processExprVisitor([condId], state, node.consequent);
+      const alternate = processExprVisitor([condId], state, node.alternate);
+      return [...(consequent ?? [condId]), ...(alternate ?? [condId])];
+    },
+    MemberExpression(node) {
+      if (node.object.type === 'Super') throw UnsupportedError('Super');
+      const object = processExprVisitor(previds, state, node.object);
+      if (!node.computed && node.property.type === 'Identifier') {
+        const propertyNode: Omit<CFGNodeProp, 'id' | 'next'> = {
+          type: 'prop',
+          prop: node.property.name,
+        };
+        const propertyNodeId = createNode(state, propertyNode);
+        mergePrev(state, object ?? previds, propertyNodeId);
+        return [propertyNodeId];
+      }
+      if (
+        node.computed &&
+        node.property.type !== 'Identifier' &&
+        node.property.type !== 'PrivateIdentifier'
+      ) {
+        const property = processExprVisitor(
+          object ?? previds,
+          state,
+          node.property
+        );
+        return property ?? previds;
+      }
+      return object ?? previds;
+    },
+  };
+}
+
+function subgraphVisitor(previds: number[], state: CFGState): SubGraphVisitor {
+  return {
+    // VariableDeclaration(node) {
+    //   let startPrevId = previds;
+    //   const decls = node.declarations.filter((decl) => decl.init);
+    //   if (decls.length === 0) {
+    //     return { start: state.currentId, then: startPrevId, else: startPrevId };
+    //   }
+    //   let declSubgraph = decls[0].init
+    //     ? processSubGraphVisitor(,state, decls[0].init)
+    //     : {
+    //         start: state.currentId,
+    //         then: [state.currentId],
+    //         else: [state.currentId],
+    //       };
+    //   const startId = declSubgraph.start;
+
+    //   return { start: state.currentId, then: startPrevId, else: startPrevId };
+    // },
+    Identifier(node) {
+      const prevId = state.currentId; // ??
+      return { start: prevId, then: previds, else: previds };
+    },
+    // Literal(node) {
+    //   const prevId = state.currentId;
+    //   return { start: prevId, then: [prevId], else: [prevId] };
+    // },
+    // ThisExpression(node) {
+    //   const prevId = state.currentId;
+    //   return { start: prevId, then: [prevId], else: [prevId] };
+    // },
+    // ArrayExpression(node) {
+    //   const prevId = state.currentId;
+    //   const elements = node.elements.filter(
+    //     (elem) => elem !== null && elem.type !== 'SpreadElement'
+    //   );
+    //   if (elements.length === 0) {
+    //     return {
+    //       start: prevId,
+    //       then: [prevId],
+    //       else: [prevId],
+    //     };
+    //   }
+    //   let elemSubgraph = processSubGraphVisitor(state, elements[0]);
+    //   const startPrevId = elemSubgraph.start;
+    //   for (let i = 1; i < elements.length; i++) {
+    //     const subgraph = processSubGraphVisitor(state, elements[i]);
+    //     mergePrev(state, elemSubgraph.then, subgraph.start);
+    //   }
+    //   return {
+    //     start: startPrevId,
+    //     then: [startPrevId],
+    //     else: [startPrevId],
+    //   };
+    // },
+    // ObjectExpression(node) {
+    //   throw UnsupportedError('ObjectExpression');
+    // },
+    // FunctionExpression(node) {
+    //   throw UnsupportedError('FunctionExpression');
+    // },
+    // UnaryExpression(node) {
+    //   return processSubGraphVisitor(state, node.argument);
+    // },
+    // UpdateExpression(node) {
+    //   return processSubGraphVisitor(state, node.argument);
+    // },
+    // BinaryExpression(node) {
+    //   if (node.left.type === 'PrivateIdentifier')
+    //     throw UnsupportedError('PrivateIdentifier');
+
+    //   const leftSubgraph = processSubGraphVisitor(state, node.left);
+    //   const rightSubgraph = processSubGraphVisitor(state, node.right);
+    //   mergePrev(state, leftSubgraph.then, rightSubgraph.start);
+    //   return {
+    //     start: leftSubgraph.start,
+    //     then: [...rightSubgraph.then],
+    //     else: [...rightSubgraph.else],
+    //   };
+    // },
+    LogicalExpression(node) {
+      const testSubgraph = addCondnode(
+        processSubGraphVisitor(previds, state, node.left),
+        state
+      );
+
       if (node.operator === '&&') {
+        const consequentSubgraph = processSubGraphVisitor(
+          testSubgraph.then,
+          state,
+          node.right
+        );
         mergePrev(state, testSubgraph.then, consequentSubgraph.start);
         return {
           start: testSubgraph.start,
@@ -260,6 +491,11 @@ function exprVisitor(state: CFGState): ExprVisitor {
           else: [...testSubgraph.else, ...consequentSubgraph.else],
         };
       } else {
+        const consequentSubgraph = processSubGraphVisitor(
+          testSubgraph.else,
+          state,
+          node.right
+        );
         mergePrev(state, testSubgraph.else, consequentSubgraph.start);
         return {
           start: testSubgraph.start,
@@ -269,12 +505,23 @@ function exprVisitor(state: CFGState): ExprVisitor {
       }
     },
     ConditionalExpression(node) {
-      const testSubgraph = processExprVisitor(state, node.test);
+      const testSubgraph = addCondnode(
+        processSubGraphVisitor(previds, state, node.test),
+        state
+      );
 
-      const consequentSubgraph = processExprVisitor(state, node.consequent);
+      const consequentSubgraph = processSubGraphVisitor(
+        testSubgraph.then,
+        state,
+        node.consequent
+      );
       mergePrev(state, testSubgraph.then, consequentSubgraph.start);
 
-      const alternateSubgraph = processExprVisitor(state, node.alternate);
+      const alternateSubgraph = processSubGraphVisitor(
+        testSubgraph.else,
+        state,
+        node.alternate
+      );
       mergePrev(state, testSubgraph.else, alternateSubgraph.start);
 
       return {
@@ -284,14 +531,18 @@ function exprVisitor(state: CFGState): ExprVisitor {
       };
     },
     SequenceExpression(node) {
-      const startPrevId = state.currentId;
+      const startPrevId = previds[0]; // ??
       const lastSubgraph = node.expressions.reduce<Subgraph>(
         (prev, expr) => {
-          const subgraph = processExprVisitor(state, expr);
+          const subgraph = processSubGraphVisitor(
+            [...prev.then, ...prev.else],
+            state,
+            expr
+          );
           mergePrev(state, [...prev.then, ...prev.else], subgraph.start);
           return subgraph;
         },
-        { start: startPrevId, then: [], else: [] }
+        { start: startPrevId, then: previds, else: previds }
       );
       return {
         start: startPrevId,
@@ -302,23 +553,26 @@ function exprVisitor(state: CFGState): ExprVisitor {
     MemberExpression(node) {
       const objectSubgraph =
         node.object.type === 'Super'
-          ? {
-              start: state.currentId,
-              then: [state.currentId],
-              else: [state.currentId],
-            }
-          : processExprVisitor(state, node.object);
+          ? { start: state.currentId, then: previds, else: previds }
+          : processSubGraphVisitor(previds, state, node.object);
       if (!node.computed && node.property.type === 'Identifier') {
         const propertyNode: Omit<CFGNodeProp, 'id' | 'next'> = {
           type: 'prop',
           prop: node.property.name,
         };
         const propertyNodeId = createNode(state, propertyNode);
-        mergePrev(state, objectSubgraph.then, propertyNodeId);
+        mergePrev(
+          state,
+          [...objectSubgraph.then, ...objectSubgraph.else],
+          propertyNodeId
+        );
         return {
-          start: objectSubgraph.start,
+          start:
+            objectSubgraph.start === state.currentId
+              ? propertyNodeId
+              : objectSubgraph.start,
           then: [propertyNodeId],
-          else: objectSubgraph.else,
+          else: [propertyNodeId],
         };
       }
       if (
@@ -326,20 +580,23 @@ function exprVisitor(state: CFGState): ExprVisitor {
         node.property.type !== 'Identifier' &&
         node.property.type !== 'PrivateIdentifier'
       ) {
-        const propertySubgraph = processExprVisitor(state, node.property);
-        mergePrev(state, objectSubgraph.then, propertySubgraph.start);
+        const propertySubgraph = processSubGraphVisitor(
+          [...objectSubgraph.then, ...objectSubgraph.else],
+          state,
+          node.property
+        );
+        mergePrev(
+          state,
+          [...objectSubgraph.then, ...objectSubgraph.else],
+          propertySubgraph.start
+        );
         return {
           start: objectSubgraph.start,
           then: [...propertySubgraph.then],
-          else: [...propertySubgraph.else, ...objectSubgraph.else],
+          else: [...propertySubgraph.else],
         };
       }
       return objectSubgraph;
-    },
-    Identifier(node) {
-      const prevId = state.currentId;
-
-      return { start: prevId, then: [prevId], else: [prevId] };
     },
   };
 }
@@ -380,12 +637,16 @@ async function cfgToDot(graph: CFGState): Promise<string> {
         label = 'End';
         color = '#A9A9A9'; // dark grey
         break;
+      case 'condition':
+        label = 'Condition';
+        color = '#FFA07A'; // Light salmon
+        break;
       case 'loop':
         label = 'Loop';
         color = '#DDA0DD'; // Plum
         break;
       case 'prop':
-        label = `Property\\n${node.prop || ''}`;
+        label = `Property\\n${node.prop || ''}` + id;
         break;
       // case 'update_prop':
       //   label = `Update\\n${(node.node as acorn.Identifier)?.name || ''}`;
@@ -445,26 +706,26 @@ async function main() {
   const code2 = `
 function example() {
   // babel-minify (2)
-  for (_.a; _.b && _.c;_.d);
+  for (_.a; _.b && _.c; _.d);
   _.e;
 }
   `;
   const code3 = `
 function example() {
   // original (3)
-    for (_.a; _.b;_.d) {
+    for (_.a; _.b; _.d) {
       if (_.c) {
         break;
       }
     }
-    _.e;
+      _.e;
 }
   `;
   const code4 = `
 function example() {
   // custom code (4)
-  for (_.a; ;_.d) {
-    if(_.b || _.c) break;
+  for (_.a; ; _.d) {
+    if(_.b || _.c||x||x||x||x) break;
   }
     _.e;
 }
@@ -480,14 +741,15 @@ function example() {
       const ast = acorn.parse(code, { ecmaVersion: 2020 });
       const functionBody = (ast.body[0] as acorn.FunctionDeclaration).body;
       const graph = generateCFG(functionBody);
-      //console.log(stringifyIRNode(cfgToIR(graph)));
+      // console.log(stringifyIRNode(cfgToIR(graph)));
+      // removeExitNodes(graph);
       const dotContent = await cfgToDot(graph);
 
       await writeFile(`${filename}.dot`, dotContent, 'utf8');
 
       await generatePNG(dotContent, `${filename}.png`);
     } catch (error) {
-      console.error('Error in main:', error);
+      //console.error('Error in main:', error);
     }
   }
 }
@@ -508,4 +770,5 @@ function cfg(functions: Function[]): IR[] {
     };
   });
 }
+
 export default cfg;
