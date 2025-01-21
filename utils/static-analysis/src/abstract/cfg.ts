@@ -15,15 +15,15 @@ type Stmt = acorn.Statement;
 type Expr = acorn.Expression | acorn.Declaration;
 
 type StatementVisitor = {
-  [K in acorn.AnyNode['type']]?: (node: Extract<Stmt, { type: K }>) => number[];
+  [key: string]: <T extends acorn.Node>(node: T) => number[];
 };
 
 type SubGraphVisitor = {
-  [K in acorn.AnyNode['type']]?: (node: Extract<Expr, { type: K }>) => Subgraph;
+  [key: string]: <T extends acorn.Node>(node: T) => Subgraph;
 };
 
 type ExprVisitor = {
-  [K in acorn.AnyNode['type']]?: (node: Extract<Expr, { type: K }>) => number[];
+  [key: string]: <T extends acorn.Node>(node: T) => number[];
 };
 
 function createNode(
@@ -69,13 +69,16 @@ function UnsupportedError(type: string) {
 function stmtVisitor(previds: number[], state: CFGState): StatementVisitor {
   return {
     ExpressionStatement(node) {
-      const expr = processExprVisitor(previds, state, node.expression);
+      const exprNode = node as unknown as acorn.ExpressionStatement;
+      const expr = processExprVisitor(previds, state, exprNode.expression);
       if (expr) return expr;
       return previds;
     },
     BlockStatement(node) {
+      const blockNode = node as unknown as acorn.BlockStatement;
       let prevIds = previds;
-      node.body.forEach((stmt) => {
+      if (blockNode.body.length === 0) return prevIds;
+      blockNode.body.forEach((stmt) => {
         prevIds = processStmtVisitor(prevIds, state, stmt);
       });
       return prevIds;
@@ -90,15 +93,20 @@ function stmtVisitor(previds: number[], state: CFGState): StatementVisitor {
       throw UnsupportedError('WithStatement');
     },
     ReturnStatement(node) {
+      const returnNode = node as unknown as acorn.ReturnStatement;
       let prevIds = [...previds];
-      if (node.argument) {
-        const argument = processExprVisitor(prevIds, state, node.argument);
+      if (returnNode.argument) {
+        const argument = processExprVisitor(
+          prevIds,
+          state,
+          returnNode.argument
+        );
         if (argument) prevIds = argument;
       }
       mergePrev(state, prevIds, state.endId);
       return [];
     },
-    LabeledStatement(node) {
+    LabeledStatement() {
       throw UnsupportedError('LabeledStatement');
     },
     BreakStatement(node) {
@@ -116,20 +124,21 @@ function stmtVisitor(previds: number[], state: CFGState): StatementVisitor {
       return [];
     },
     IfStatement(node) {
+      const ifNode = node as unknown as acorn.IfStatement;
       const testSubgraph = addCondnode(
-        processSubGraphVisitor([state.currentId], state, node.test),
+        processSubGraphVisitor([state.currentId], state, ifNode.test),
         state
       );
       mergePrev(state, previds, testSubgraph.start);
       const consequentNodeId = processStmtVisitor(
         testSubgraph.then,
         state,
-        node.consequent
+        ifNode.consequent
       );
       const nextIds = [...consequentNodeId];
-      if (node.alternate) {
+      if (ifNode.alternate) {
         nextIds.push(
-          ...processStmtVisitor(testSubgraph.else, state, node.alternate)
+          ...processStmtVisitor(testSubgraph.else, state, ifNode.alternate)
         );
       } else {
         nextIds.push(...testSubgraph.else);
@@ -140,17 +149,22 @@ function stmtVisitor(previds: number[], state: CFGState): StatementVisitor {
       throw UnsupportedError('switchStatement');
     },
     WhileStatement(node) {
+      const whileNode = node as unknown as acorn.WhileStatement;
       const loopStart = createNode(state, { type: 'loop' });
       mergePrev(state, previds, loopStart);
       const testSubgraph = addCondnode(
-        processSubGraphVisitor([state.currentId], state, node.test),
+        processSubGraphVisitor([state.currentId], state, whileNode.test),
         state
       );
 
       addEdge(state, loopStart, testSubgraph.start);
 
       state.loopStack.push({ break: [], continue: [] });
-      const bodyIds = processStmtVisitor(testSubgraph.then, state, node.body);
+      const bodyIds = processStmtVisitor(
+        testSubgraph.then,
+        state,
+        whileNode.body
+      );
       const lastLoopStack = state.loopStack.pop();
       if (!lastLoopStack) throw new Error('Empty loop stack');
 
@@ -159,15 +173,16 @@ function stmtVisitor(previds: number[], state: CFGState): StatementVisitor {
       return [...lastLoopStack.break, ...testSubgraph.else];
     },
     DoWhileStatement(node) {
+      const doWhileNode = node as unknown as acorn.DoWhileStatement;
       const loopStart = createNode(state, { type: 'loop' });
       mergePrev(state, previds, loopStart);
 
       state.loopStack.push({ break: [], continue: [] });
-      const bodyIds = processStmtVisitor([loopStart], state, node.body);
+      const bodyIds = processStmtVisitor([loopStart], state, doWhileNode.body);
       const lastLoopStack = state.loopStack.pop();
       if (!lastLoopStack) throw new Error('Empty loop stack');
       const testSubgraph = addCondnode(
-        processSubGraphVisitor([state.currentId], state, node.test),
+        processSubGraphVisitor([state.currentId], state, doWhileNode.test),
         state
       );
       mergePrev(state, bodyIds, testSubgraph.start);
@@ -176,9 +191,11 @@ function stmtVisitor(previds: number[], state: CFGState): StatementVisitor {
       return [...lastLoopStack.break, ...testSubgraph.else];
     },
     ForStatement(node) {
+      const forNode = node as unknown as acorn.ForStatement;
+
       const loopStart = createNode(state, { type: 'loop' });
-      if (node.init) {
-        const init = processExprVisitor(previds, state, node.init);
+      if (forNode.init) {
+        const init = processExprVisitor(previds, state, forNode.init);
         mergePrev(state, init ?? previds, loopStart);
       } else {
         mergePrev(state, previds, loopStart);
@@ -186,9 +203,9 @@ function stmtVisitor(previds: number[], state: CFGState): StatementVisitor {
 
       const testToBreakIds = [];
       const testToBodyIds = [];
-      if (node.test) {
+      if (forNode.test) {
         const testSubgraph = addCondnode(
-          processSubGraphVisitor([state.currentId], state, node.test),
+          processSubGraphVisitor([state.currentId], state, forNode.test),
           state
         );
         testToBreakIds.push(...testSubgraph.else);
@@ -199,10 +216,10 @@ function stmtVisitor(previds: number[], state: CFGState): StatementVisitor {
       }
 
       state.loopStack.push({ break: [], continue: [] });
-      const bodyIds = processStmtVisitor(testToBodyIds, state, node.body);
+      const bodyIds = processStmtVisitor(testToBodyIds, state, forNode.body);
 
       const updateSubgraph =
-        node.update && processExprVisitor(bodyIds, state, node.update);
+        forNode.update && processExprVisitor(bodyIds, state, forNode.update);
       const loopLastIds = updateSubgraph ?? bodyIds;
 
       const lastLoopStack = state.loopStack.pop();
@@ -212,46 +229,52 @@ function stmtVisitor(previds: number[], state: CFGState): StatementVisitor {
       return [...lastLoopStack.break, ...testToBreakIds];
     },
     ForInStatement(node) {
+      const forInNode = node as unknown as acorn.ForInStatement;
       const loopStart = createNode(state, { type: 'loop' });
       let left;
-      if (node.left.type === 'VariableDeclaration') {
-        left = processExprVisitor(previds, state, node.left);
+      if (forInNode.left.type === 'VariableDeclaration') {
+        left = processExprVisitor(previds, state, forInNode.left);
       }
-      const right = processExprVisitor(left ?? previds, state, node.right);
+      const right = processExprVisitor(left ?? previds, state, forInNode.right);
       if (right) mergePrev(state, right, loopStart);
 
       state.loopStack.push({ break: [], continue: [] });
-      const bodyIds = processStmtVisitor([loopStart], state, node.body);
+      const bodyIds = processStmtVisitor([loopStart], state, forInNode.body);
       const lastLoopStack = state.loopStack.pop();
       if (!lastLoopStack) throw new Error('Empty loop stack');
       mergePrev(state, bodyIds, loopStart);
       mergePrev(state, lastLoopStack.continue, loopStart);
       return [...lastLoopStack.break, loopStart];
     },
-    ForOfStatement(node) {
-      const loopStart = createNode(state, { type: 'loop' });
-      let left;
-      if (node.left.type === 'VariableDeclaration') {
-        left = processExprVisitor(previds, state, node.left);
-      }
-      const right = processExprVisitor(left ?? previds, state, node.right);
-      if (right) mergePrev(state, right, loopStart);
+    // ForOfStatement(node: acorn.ForOfStatement) {
+    //   const loopStart = createNode(state, { type: 'loop' });
+    //   let left;
+    //   if (node.left.type === 'VariableDeclaration') {
+    //     left = processExprVisitor(previds, state, node.left);
+    //   }
+    //   const right = processExprVisitor(left ?? previds, state, node.right);
+    //   if (right) mergePrev(state, right, loopStart);
 
-      state.loopStack.push({ break: [], continue: [] });
-      const bodyIds = processStmtVisitor([loopStart], state, node.body);
-      const lastLoopStack = state.loopStack.pop();
-      if (!lastLoopStack) throw new Error('Empty loop stack');
-      mergePrev(state, bodyIds, loopStart);
-      mergePrev(state, lastLoopStack.continue, loopStart);
-      return [...lastLoopStack.break, loopStart];
-    },
+    //   state.loopStack.push({ break: [], continue: [] });
+    //   const bodyIds = processStmtVisitor([loopStart], state, node.body);
+    //   const lastLoopStack = state.loopStack.pop();
+    //   if (!lastLoopStack) throw new Error('Empty loop stack');
+    //   mergePrev(state, bodyIds, loopStart);
+    //   mergePrev(state, lastLoopStack.continue, loopStart);
+    //   return [...lastLoopStack.break, loopStart];
+    // },
   };
 }
-function processStmtVisitor(previds: number[], state: CFGState, node: Stmt) {
+function processStmtVisitor(
+  previds: number[],
+  state: CFGState,
+  node: acorn.Node
+) {
   try {
     const visitor = stmtVisitor(previds, state)[node.type] as (
-      _node: Extract<Stmt, { type: typeof node.type }>
+      _node: Extract<acorn.Node, { type: typeof node.type }>
     ) => number[];
+    if (!visitor) return previds;
     return visitor(node);
   } catch (e) {
     throw UnsupportedError(node.type);
@@ -261,13 +284,15 @@ function processStmtVisitor(previds: number[], state: CFGState, node: Stmt) {
 function processSubGraphVisitor(
   prevIds: number[],
   state: CFGState,
-  node: Expr
+  node: acorn.Node
 ) {
   try {
     const visitor = subgraphVisitor(prevIds, state)[node.type] as (
-      _node: Extract<Expr, { type: typeof node.type }>
+      _node: Extract<acorn.Node, { type: typeof node.type }>
     ) => Subgraph;
     const result = visitor(node);
+    if (!result)
+      return { start: state.currentId, then: prevIds, else: prevIds };
     return result;
   } catch (e) {
     throw UnsupportedError(node.type);
@@ -279,6 +304,10 @@ function addCondnode(subgraph: Subgraph, state: CFGState) {
   const thenElseNodes = subgraph.then.filter((id) =>
     subgraph.else.includes(id)
   );
+  if (state.nodes.get(thenElseNodes[0])?.type !== 'condition') {
+    //todo: check if the first node is a condition node
+  }
+
   thenElseNodes.forEach((id) => addEdge(state, id, condNode));
   subgraph.then = subgraph.then.filter((id) => !thenElseNodes.includes(id));
   subgraph.else = subgraph.else.filter((id) => !thenElseNodes.includes(id));
@@ -286,13 +315,18 @@ function addCondnode(subgraph: Subgraph, state: CFGState) {
   subgraph.else.push(condNode);
   return subgraph;
 }
-function processExprVisitor(prevIds: number[], state: CFGState, node: Expr) {
+function processExprVisitor(
+  prevIds: number[],
+  state: CFGState,
+  node: acorn.Node
+) {
   try {
     const visitor = exprVisitor(prevIds, state)[node.type] as (
-      _node: Extract<Expr, { type: typeof node.type }>
+      _node: Extract<acorn.Node, { type: typeof node.type }>
     ) => number[];
     const result = visitor(node);
     if (result.includes(state.currentId)) return undefined;
+    if (!result) return prevIds;
     return result;
   } catch (e) {
     throw UnsupportedError(node.type);
@@ -301,6 +335,22 @@ function processExprVisitor(prevIds: number[], state: CFGState, node: Expr) {
 
 function exprVisitor(previds: number[], state: CFGState): ExprVisitor {
   return {
+    VariableDeclaration(node) {
+      const varNode = node as unknown as acorn.VariableDeclaration;
+      let startPrevId = previds;
+      const decls = varNode.declarations.filter((decl) => decl.init);
+      if (decls.length === 0) {
+        return startPrevId;
+      }
+      let decl = decls[0].init
+        ? processExprVisitor(startPrevId, state, decls[0].init) ?? startPrevId
+        : startPrevId;
+      for (let i = 1; i < decls.length; i++) {
+        if (!decls[i].init) continue;
+        decl = processExprVisitor(decl, state, decls[i].init as Expr) ?? decl;
+      }
+      return decl;
+    },
     Identifier(node) {
       return previds;
     },
@@ -311,7 +361,8 @@ function exprVisitor(previds: number[], state: CFGState): ExprVisitor {
       return previds;
     },
     ArrayExpression(node) {
-      const elements = node.elements.filter(
+      const arrayNode = node as unknown as acorn.ArrayExpression;
+      const elements = arrayNode.elements.filter(
         (elem) => elem !== null && elem.type !== 'SpreadElement'
       );
       if (elements.length === 0) return previds;
@@ -322,143 +373,248 @@ function exprVisitor(previds: number[], state: CFGState): ExprVisitor {
       }
       return elemID;
     },
-    ObjectExpression(node) {
-      throw UnsupportedError('ObjectExpression');
-    },
     FunctionExpression(node) {
       throw UnsupportedError('FunctionExpression');
     },
     UnaryExpression(node) {
-      return processExprVisitor(previds, state, node.argument) ?? previds;
+      const unaryNode = node as unknown as acorn.UnaryExpression;
+      return processExprVisitor(previds, state, unaryNode.argument) ?? previds;
     },
     UpdateExpression(node) {
-      return processExprVisitor(previds, state, node.argument) ?? previds;
+      const updateNode = node as unknown as acorn.UpdateExpression;
+      return processExprVisitor(previds, state, updateNode.argument) ?? previds;
     },
     BinaryExpression(node) {
-      if (node.left.type === 'PrivateIdentifier')
-        throw UnsupportedError('PrivateIdentifier');
+      const binaryNode = node as unknown as acorn.BinaryExpression;
+      if (binaryNode.left.type === 'PrivateIdentifier') return previds;
 
-      const left = processExprVisitor(previds, state, node.left);
-      const right = processExprVisitor(previds, state, node.right);
-      return [...(left ?? previds), ...(right ?? previds)];
+      const left =
+        processExprVisitor(previds, state, binaryNode.left) ?? previds;
+      const right = processExprVisitor(left, state, binaryNode.right);
+      return [...(right ?? previds)];
+    },
+    AssignmentExpression(node) {
+      const assignNode = node as unknown as acorn.AssignmentExpression;
+      if (assignNode.left.type !== 'MemberExpression') return previds;
+      const left =
+        processExprVisitor(previds, state, assignNode.left as Expr) ?? previds;
+      const right = processExprVisitor(left, state, assignNode.right);
+      const propNode = state.nodes.get(left[0]);
+      if (left && propNode?.type === 'prop') {
+        const updateProp: Omit<CFGNodeProp, 'id' | 'next'> = {
+          type: 'prop',
+          prop: '_.' + propNode.prop + ' = _',
+        };
+        const updatePropNode = createNode(state, updateProp);
+        mergePrev(state, right ?? previds, updatePropNode);
+        return [updatePropNode];
+      }
+      return [...(right ?? previds)];
     },
     LogicalExpression(node) {
-      const left = processExprVisitor(previds, state, node.left);
+      const logicalNode = node as unknown as acorn.LogicalExpression;
+      const left = processExprVisitor(previds, state, logicalNode.left);
       const condId = createNode(state, { type: 'condition' });
       mergePrev(state, left ?? previds, condId);
-      const right = processExprVisitor([condId], state, node.right);
+      const right = processExprVisitor([condId], state, logicalNode.right);
       return [...(right ?? [condId]), condId];
     },
     ConditionalExpression(node) {
-      const test = processExprVisitor(previds, state, node.test);
+      const condNode = node as unknown as acorn.ConditionalExpression;
+      const test = processExprVisitor(previds, state, condNode.test);
       const condId = createNode(state, { type: 'condition' });
       mergePrev(state, test ?? previds, condId);
-      const consequent = processExprVisitor([condId], state, node.consequent);
-      const alternate = processExprVisitor([condId], state, node.alternate);
+      const consequent = processExprVisitor(
+        [condId],
+        state,
+        condNode.consequent
+      );
+      const alternate = processExprVisitor([condId], state, condNode.alternate);
       return [...(consequent ?? [condId]), ...(alternate ?? [condId])];
     },
     MemberExpression(node) {
-      if (node.object.type === 'Super') throw UnsupportedError('Super');
-      const object = processExprVisitor(previds, state, node.object);
-      if (!node.computed && node.property.type === 'Identifier') {
+      const memberNode = node as unknown as acorn.MemberExpression;
+      if (memberNode.object.type === 'Super') return previds;
+      const object = processExprVisitor(previds, state, memberNode.object);
+      if (!memberNode.computed && memberNode.property.type === 'Identifier') {
         const propertyNode: Omit<CFGNodeProp, 'id' | 'next'> = {
           type: 'prop',
-          prop: node.property.name,
+          prop: memberNode.property.name,
         };
         const propertyNodeId = createNode(state, propertyNode);
         mergePrev(state, object ?? previds, propertyNodeId);
         return [propertyNodeId];
       }
       if (
-        node.computed &&
-        node.property.type !== 'Identifier' &&
-        node.property.type !== 'PrivateIdentifier'
+        memberNode.computed &&
+        memberNode.property.type !== 'Identifier' &&
+        memberNode.property.type !== 'PrivateIdentifier'
       ) {
         const property = processExprVisitor(
           object ?? previds,
           state,
-          node.property
+          memberNode.property
         );
         return property ?? previds;
       }
       return object ?? previds;
+    },
+    CallExpression(node) {
+      const callNode = node as unknown as acorn.CallExpression;
+      if (callNode.callee.type === 'Super') throw UnsupportedError('Super');
+      const callee = processExprVisitor(previds, state, callNode.callee);
+      let args = callee ?? previds;
+      for (const arg of callNode.arguments) {
+        if (arg.type === 'SpreadElement') continue;
+        args = processExprVisitor(args, state, arg) ?? args;
+      }
+      return args;
+    },
+    NewExpression(node) {
+      const newNode = node as unknown as acorn.NewExpression;
+      const callee = processExprVisitor(previds, state, newNode.callee);
+      let args = callee ?? previds;
+      for (const arg of newNode.arguments) {
+        if (arg.type === 'SpreadElement') continue;
+        args = processExprVisitor(args, state, arg) ?? args;
+      }
+      return args;
+    },
+    SequenceExpression(node) {
+      const seqNode = node as unknown as acorn.SequenceExpression;
+      let prevIds = previds;
+      for (const expr of seqNode.expressions) {
+        prevIds = processExprVisitor(prevIds, state, expr) ?? prevIds;
+      }
+      return prevIds;
     },
   };
 }
 
 function subgraphVisitor(previds: number[], state: CFGState): SubGraphVisitor {
   return {
-    // VariableDeclaration(node) {
-    //   let startPrevId = previds;
-    //   const decls = node.declarations.filter((decl) => decl.init);
-    //   if (decls.length === 0) {
-    //     return { start: state.currentId, then: startPrevId, else: startPrevId };
-    //   }
-    //   let declSubgraph = decls[0].init
-    //     ? processSubGraphVisitor(,state, decls[0].init)
-    //     : {
-    //         start: state.currentId,
-    //         then: [state.currentId],
-    //         else: [state.currentId],
-    //       };
-    //   const startId = declSubgraph.start;
+    VariableDeclaration(node) {
+      const varNode = node as unknown as acorn.VariableDeclaration;
+      const decls = varNode.declarations.filter((decl) => decl.init);
+      if (decls.length === 0) {
+        return { start: state.currentId, then: previds, else: previds };
+      }
+      let declSubgraph = decls[0].init
+        ? processSubGraphVisitor(previds, state, decls[0].init)
+        : {
+            start: state.currentId,
+            then: previds,
+            else: previds,
+          };
+      const startPrevId = declSubgraph.start;
+      let start = startPrevId;
+      for (let i = 1; i < decls.length; i++) {
+        start = declSubgraph.start;
+        if (!decls[i].init) continue;
+        declSubgraph = processSubGraphVisitor(
+          [...declSubgraph.then, ...declSubgraph.else],
+          state,
+          decls[i].init as Expr
+        );
+        mergePrev(state, [...declSubgraph.then, ...declSubgraph.else], start);
+      }
 
-    //   return { start: state.currentId, then: startPrevId, else: startPrevId };
-    // },
+      return {
+        start: startPrevId,
+        then: [...declSubgraph.then],
+        else: [...declSubgraph.else],
+      };
+    },
     Identifier(node) {
       const prevId = state.currentId; // ??
       return { start: prevId, then: previds, else: previds };
     },
-    // Literal(node) {
-    //   const prevId = state.currentId;
-    //   return { start: prevId, then: [prevId], else: [prevId] };
-    // },
-    // ThisExpression(node) {
-    //   const prevId = state.currentId;
-    //   return { start: prevId, then: [prevId], else: [prevId] };
-    // },
-    // ArrayExpression(node) {
-    //   const prevId = state.currentId;
-    //   const elements = node.elements.filter(
-    //     (elem) => elem !== null && elem.type !== 'SpreadElement'
-    //   );
-    //   if (elements.length === 0) {
-    //     return {
-    //       start: prevId,
-    //       then: [prevId],
-    //       else: [prevId],
-    //     };
-    //   }
-    //   let elemSubgraph = processSubGraphVisitor(state, elements[0]);
-    //   const startPrevId = elemSubgraph.start;
-    //   for (let i = 1; i < elements.length; i++) {
-    //     const subgraph = processSubGraphVisitor(state, elements[i]);
-    //     mergePrev(state, elemSubgraph.then, subgraph.start);
-    //   }
-    //   return {
-    //     start: startPrevId,
-    //     then: [startPrevId],
-    //     else: [startPrevId],
-    //   };
-    // },
-    ObjectExpression(node) {
-      throw UnsupportedError('ObjectExpression');
+    Literal(node) {
+      const prevId = state.currentId;
+      return { start: prevId, then: previds, else: previds };
     },
-    FunctionExpression(node) {
-      throw UnsupportedError('FunctionExpression');
+    ThisExpression(node) {
+      const prevId = state.currentId;
+      return { start: prevId, then: previds, else: previds };
+    },
+    ArrayExpression(node) {
+      const arrayNode = node as unknown as acorn.ArrayExpression;
+      const prevId = state.currentId;
+      const elements = arrayNode.elements.filter(
+        (elem) => elem !== null && elem.type !== 'SpreadElement'
+      );
+      if (elements.length === 0) {
+        return {
+          start: prevId,
+          then: previds,
+          else: previds,
+        };
+      }
+      let arraySubgraph = processSubGraphVisitor(previds, state, elements[0]);
+      const startPrevId = arraySubgraph.start;
+      let start = startPrevId;
+      for (let i = 1; i < elements.length; i++) {
+        start = arraySubgraph.start;
+        arraySubgraph = processSubGraphVisitor(
+          [...arraySubgraph.then, ...arraySubgraph.else],
+          state,
+          elements[i]
+        );
+        mergePrev(state, arraySubgraph.then, start);
+      }
+      return {
+        start: startPrevId,
+        then: [...arraySubgraph.then],
+        else: [...arraySubgraph.else],
+      };
     },
     UnaryExpression(node) {
-      return processSubGraphVisitor(previds, state, node.argument);
+      const unaryNode = node as unknown as acorn.UnaryExpression;
+      return processSubGraphVisitor(previds, state, unaryNode.argument);
     },
     UpdateExpression(node) {
-      return processSubGraphVisitor(previds, state, node.argument);
+      const updateNode = node as unknown as acorn.UpdateExpression;
+      return processSubGraphVisitor(previds, state, updateNode.argument);
     },
     BinaryExpression(node) {
-      if (node.left.type === 'PrivateIdentifier')
-        throw UnsupportedError('PrivateIdentifier');
-
-      const leftSubgraph = processSubGraphVisitor(previds, state, node.left);
-      const rightSubgraph = processSubGraphVisitor(previds, state, node.right);
+      const binaryNode = node as unknown as acorn.BinaryExpression;
+      if (binaryNode.left.type === 'PrivateIdentifier')
+        return {
+          start: state.currentId,
+          then: previds,
+          else: previds,
+        };
+      const leftSubgraph = processSubGraphVisitor(
+        previds,
+        state,
+        binaryNode.left as Expr
+      );
+      const rightSubgraph = processSubGraphVisitor(
+        previds,
+        state,
+        binaryNode.right
+      );
+      mergePrev(state, leftSubgraph.then, rightSubgraph.start);
+      return {
+        start: leftSubgraph.start,
+        then: [...rightSubgraph.then],
+        else: [...rightSubgraph.else],
+      };
+    },
+    AssignmentExpression(node) {
+      const assignNode = node as unknown as acorn.AssignmentExpression;
+      if (assignNode.left.type !== 'MemberExpression')
+        return { start: state.currentId, then: previds, else: previds };
+      const leftSubgraph = processSubGraphVisitor(
+        previds,
+        state,
+        assignNode.left
+      );
+      const rightSubgraph = processSubGraphVisitor(
+        previds,
+        state,
+        assignNode.right
+      );
       mergePrev(state, leftSubgraph.then, rightSubgraph.start);
       return {
         start: leftSubgraph.start,
@@ -467,17 +623,17 @@ function subgraphVisitor(previds: number[], state: CFGState): SubGraphVisitor {
       };
     },
     LogicalExpression(node) {
+      const logicalNode = node as unknown as acorn.LogicalExpression;
       const testSubgraph = addCondnode(
-        processSubGraphVisitor(previds, state, node.left),
+        processSubGraphVisitor(previds, state, logicalNode.left),
         state
       );
-      console.log('testSubgraph', testSubgraph);
 
-      if (node.operator === '&&') {
+      if (logicalNode.operator === '&&') {
         const consequentSubgraph = processSubGraphVisitor(
           testSubgraph.then,
           state,
-          node.right
+          logicalNode.right
         );
         mergePrev(state, testSubgraph.then, consequentSubgraph.start);
         return {
@@ -489,9 +645,8 @@ function subgraphVisitor(previds: number[], state: CFGState): SubGraphVisitor {
         const consequentSubgraph = processSubGraphVisitor(
           testSubgraph.else,
           state,
-          node.right
+          logicalNode.right
         );
-        console.log('consequentSubgraph', testSubgraph, consequentSubgraph);
         mergePrev(state, testSubgraph.else, consequentSubgraph.start);
         return {
           start: testSubgraph.start,
@@ -501,22 +656,23 @@ function subgraphVisitor(previds: number[], state: CFGState): SubGraphVisitor {
       }
     },
     ConditionalExpression(node) {
+      const condNode = node as unknown as acorn.ConditionalExpression;
       const testSubgraph = addCondnode(
-        processSubGraphVisitor(previds, state, node.test),
+        processSubGraphVisitor(previds, state, condNode.test),
         state
       );
 
       const consequentSubgraph = processSubGraphVisitor(
         testSubgraph.then,
         state,
-        node.consequent
+        condNode.consequent
       );
       mergePrev(state, testSubgraph.then, consequentSubgraph.start);
 
       const alternateSubgraph = processSubGraphVisitor(
         testSubgraph.else,
         state,
-        node.alternate
+        condNode.alternate
       );
       mergePrev(state, testSubgraph.else, alternateSubgraph.start);
 
@@ -527,8 +683,9 @@ function subgraphVisitor(previds: number[], state: CFGState): SubGraphVisitor {
       };
     },
     SequenceExpression(node) {
+      const seqNode = node as unknown as acorn.SequenceExpression;
       const startPrevId = previds[0]; // ??
-      const lastSubgraph = node.expressions.reduce<Subgraph>(
+      const lastSubgraph = seqNode.expressions.reduce<Subgraph>(
         (prev, expr) => {
           const subgraph = processSubGraphVisitor(
             [...prev.then, ...prev.else],
@@ -547,14 +704,15 @@ function subgraphVisitor(previds: number[], state: CFGState): SubGraphVisitor {
       };
     },
     MemberExpression(node) {
+      const memberNode = node as unknown as acorn.MemberExpression;
       const objectSubgraph =
-        node.object.type === 'Super'
+        memberNode.object.type === 'Super'
           ? { start: state.currentId, then: previds, else: previds }
-          : processSubGraphVisitor(previds, state, node.object);
-      if (!node.computed && node.property.type === 'Identifier') {
+          : processSubGraphVisitor(previds, state, memberNode.object);
+      if (!memberNode.computed && memberNode.property.type === 'Identifier') {
         const propertyNode: Omit<CFGNodeProp, 'id' | 'next'> = {
           type: 'prop',
-          prop: node.property.name,
+          prop: memberNode.property.name,
         };
         const propertyNodeId = createNode(state, propertyNode);
         mergePrev(
@@ -572,14 +730,14 @@ function subgraphVisitor(previds: number[], state: CFGState): SubGraphVisitor {
         };
       }
       if (
-        node.computed &&
-        node.property.type !== 'Identifier' &&
-        node.property.type !== 'PrivateIdentifier'
+        memberNode.computed &&
+        memberNode.property.type !== 'Identifier' &&
+        memberNode.property.type !== 'PrivateIdentifier'
       ) {
         const propertySubgraph = processSubGraphVisitor(
           [...objectSubgraph.then, ...objectSubgraph.else],
           state,
-          node.property
+          memberNode.property
         );
         mergePrev(
           state,
@@ -594,10 +752,53 @@ function subgraphVisitor(previds: number[], state: CFGState): SubGraphVisitor {
       }
       return objectSubgraph;
     },
+    CallExpression(node) {
+      const callNode = node as unknown as acorn.CallExpression;
+      const calleeSubgraph =
+        callNode.callee.type === 'Super'
+          ? { start: state.currentId, then: previds, else: previds }
+          : processSubGraphVisitor(previds, state, callNode.callee);
+      let argsSubgraph = calleeSubgraph;
+      for (const arg of callNode.arguments) {
+        if (arg.type === 'SpreadElement') continue;
+        argsSubgraph = processSubGraphVisitor(
+          [...argsSubgraph.then, ...argsSubgraph.else],
+          state,
+          arg
+        );
+      }
+      return {
+        start: calleeSubgraph.start,
+        then: [...argsSubgraph.then],
+        else: [...argsSubgraph.else],
+      };
+    },
+    NewExpression(node) {
+      const newNode = node as unknown as acorn.NewExpression;
+      const calleeSubgraph = processSubGraphVisitor(
+        previds,
+        state,
+        newNode.callee
+      );
+      let argsSubgraph = calleeSubgraph;
+      for (const arg of newNode.arguments) {
+        if (arg.type === 'SpreadElement') continue;
+        argsSubgraph = processSubGraphVisitor(
+          [...argsSubgraph.then, ...argsSubgraph.else],
+          state,
+          arg
+        );
+      }
+      return {
+        start: calleeSubgraph.start,
+        then: [...argsSubgraph.then],
+        else: [...argsSubgraph.else],
+      };
+    },
   };
 }
 
-function generateCFG(ast: acorn.AnyNode): CFGState {
+function generateCFG(ast: acorn.Node): CFGState {
   const state: CFGState = {
     nodes: new Map(),
     currentId: 0,
@@ -607,8 +808,7 @@ function generateCFG(ast: acorn.AnyNode): CFGState {
   };
   const startId = createNode(state, { type: 'start' });
   createNode(state, { type: 'end' });
-
-  processStmtVisitor([startId], state, ast as Stmt);
+  processStmtVisitor([startId], state, ast as acorn.BlockStatement);
 
   return state;
 }
@@ -701,30 +901,43 @@ async function generatePNG(
 async function main() {
   const code2 = `
 function example() {
-  // babel-minify (2)
-  for (_.a; _.b && _.c; _.d);
-  _.e;
+  Symbol('JSCA_44_57');
+  doc = doc || document;
+  var i, val, script = doc.createElement('script');
+  script.text = code;
+  if (node) {
+    for (i in preservedScriptAttributes) {
+      val = node[i] || node.getAttribute && node.getAttribute(i);
+      if (val) {
+        script.setAttribute(i, val);
+      }
+    }
+  }
+  doc.head.appendChild(script).parentNode.removeChild(script);
 }
   `;
   const code3 = `
 function example() {
-  // original (3)
-    for (_.a; _.b; _.d) {
-      if (_.c) {
-        break;
-      }
-    }
-      _.e;
+  Symbol('JSCA_44_57'), n = n || ye;
+  var a, o, s = n.createElement('script');
+  if (s.text = e, t)
+    for (a in xe)
+      o = t[a] || t.getAttribute && t.getAttribute(a), o && s.setAttribute(a, o);
+  n.head.appendChild(s).parentNode.removeChild(s);
 }
   `;
   const code4 = `
 function example() {
-  // custom code (4)
-  for (_.a; ; _.d) {
-    if(_.b || _.c||x||x||x||x) break;
-  }
-    _.e;
+  Symbol('JSCA_2205_2224'), (t = t || 'fx');
+  var n = v.queue(e, t),
+    o = n.length,
+    r = n.shift(),
+    i = v._queueHooks(e, t);
+  'inprogress' === r && ((r = n.shift()), o--),
+    r && ('fx' === t && n.unshift('inprogress'), delete i.stop, r.call(e, i)),
+    !o && i && i.empty.fire();
 }
+
   `;
 
   for await (const c of [
@@ -756,14 +969,24 @@ if (require.main === module) {
 
 function cfg(functions: Function[]): CFG[] {
   return functions.map((func) => {
-    const ast = func.body;
-    const graph = generateCFG(ast);
-    return {
-      id: func.id,
-      name: func.name,
-      type: 'cfg',
-      nodes: graph.nodes,
-    };
+    try {
+      const ast = func.body;
+      const graph = generateCFG(ast);
+      return {
+        id: func.id,
+        name: func.name,
+        type: 'cfg',
+        nodes: graph.nodes,
+      };
+    } catch (error) {
+      console.error(`Error processing function ${func.name}:`, error);
+      return {
+        id: func.id,
+        name: func.name,
+        type: 'cfg',
+        nodes: new Map(),
+      };
+    }
   });
 }
 
