@@ -11,7 +11,6 @@ import {
   IRInst,
   Subgraph,
 } from '../utils/types';
-import { start } from 'repl';
 
 type Stmt = acorn.Statement;
 type Expr = acorn.Expression | acorn.Declaration;
@@ -270,10 +269,6 @@ function processSubGraphVisitor(
       _node: Extract<Expr, { type: typeof node.type }>
     ) => Subgraph;
     const result = visitor(node);
-    if (result.start === state.currentId) {
-      console.log(result);
-      return { start: state.currentId, then: prevIds, else: prevIds };
-    }
     return result;
   } catch (e) {
     throw UnsupportedError(node.type);
@@ -316,38 +311,38 @@ function exprVisitor(previds: number[], state: CFGState): ExprVisitor {
     ThisExpression(node) {
       return previds;
     },
-    // ArrayExpression(node) {
-    //   const elements = node.elements.filter(
-    //     (elem) => elem !== null && elem.type !== 'SpreadElement'
-    //   );
-    //   if (elements.length === 0) return previds;
+    ArrayExpression(node) {
+      const elements = node.elements.filter(
+        (elem) => elem !== null && elem.type !== 'SpreadElement'
+      );
+      if (elements.length === 0) return previds;
 
-    //   let elemID = processExprVisitor(previds,state, elements[0]);
-    //   for (let i = 1; i < elements.length; i++) {
-    //     elemID = processExprVisitor(elemID, state, elements[i]);
-    //   }
-    //   return elemID;
-    // },
-    // ObjectExpression(node) {
-    //   throw UnsupportedError('ObjectExpression');
-    // },
-    // FunctionExpression(node) {
-    //   throw UnsupportedError('FunctionExpression');
-    // },
-    // UnaryExpression(node) {
-    //   return processExprVisitor(previds, state, node.argument);
-    // },
-    // UpdateExpression(node) {
-    //   return processExprVisitor(previds, state, node.argument);
-    // },
-    // BinaryExpression(node) {
-    //   if (node.left.type === 'PrivateIdentifier')
-    //     throw UnsupportedError('PrivateIdentifier');
+      let elemID = processExprVisitor(previds, state, elements[0]) ?? previds;
+      for (let i = 1; i < elements.length; i++) {
+        elemID = processExprVisitor(elemID, state, elements[i]) ?? elemID;
+      }
+      return elemID;
+    },
+    ObjectExpression(node) {
+      throw UnsupportedError('ObjectExpression');
+    },
+    FunctionExpression(node) {
+      throw UnsupportedError('FunctionExpression');
+    },
+    UnaryExpression(node) {
+      return processExprVisitor(previds, state, node.argument) ?? previds;
+    },
+    UpdateExpression(node) {
+      return processExprVisitor(previds, state, node.argument) ?? previds;
+    },
+    BinaryExpression(node) {
+      if (node.left.type === 'PrivateIdentifier')
+        throw UnsupportedError('PrivateIdentifier');
 
-    //   const left = processExprVisitor(previds, state, node.left);
-    //   const right = processExprVisitor(previds, state, node.right);
-    //   return [...left, ...right];
-    // },
+      const left = processExprVisitor(previds, state, node.left);
+      const right = processExprVisitor(previds, state, node.right);
+      return [...(left ?? previds), ...(right ?? previds)];
+    },
     LogicalExpression(node) {
       const left = processExprVisitor(previds, state, node.left);
       const condId = createNode(state, { type: 'condition' });
@@ -447,36 +442,37 @@ function subgraphVisitor(previds: number[], state: CFGState): SubGraphVisitor {
     //     else: [startPrevId],
     //   };
     // },
-    // ObjectExpression(node) {
-    //   throw UnsupportedError('ObjectExpression');
-    // },
-    // FunctionExpression(node) {
-    //   throw UnsupportedError('FunctionExpression');
-    // },
-    // UnaryExpression(node) {
-    //   return processSubGraphVisitor(state, node.argument);
-    // },
-    // UpdateExpression(node) {
-    //   return processSubGraphVisitor(state, node.argument);
-    // },
-    // BinaryExpression(node) {
-    //   if (node.left.type === 'PrivateIdentifier')
-    //     throw UnsupportedError('PrivateIdentifier');
+    ObjectExpression(node) {
+      throw UnsupportedError('ObjectExpression');
+    },
+    FunctionExpression(node) {
+      throw UnsupportedError('FunctionExpression');
+    },
+    UnaryExpression(node) {
+      return processSubGraphVisitor(previds, state, node.argument);
+    },
+    UpdateExpression(node) {
+      return processSubGraphVisitor(previds, state, node.argument);
+    },
+    BinaryExpression(node) {
+      if (node.left.type === 'PrivateIdentifier')
+        throw UnsupportedError('PrivateIdentifier');
 
-    //   const leftSubgraph = processSubGraphVisitor(state, node.left);
-    //   const rightSubgraph = processSubGraphVisitor(state, node.right);
-    //   mergePrev(state, leftSubgraph.then, rightSubgraph.start);
-    //   return {
-    //     start: leftSubgraph.start,
-    //     then: [...rightSubgraph.then],
-    //     else: [...rightSubgraph.else],
-    //   };
-    // },
+      const leftSubgraph = processSubGraphVisitor(previds, state, node.left);
+      const rightSubgraph = processSubGraphVisitor(previds, state, node.right);
+      mergePrev(state, leftSubgraph.then, rightSubgraph.start);
+      return {
+        start: leftSubgraph.start,
+        then: [...rightSubgraph.then],
+        else: [...rightSubgraph.else],
+      };
+    },
     LogicalExpression(node) {
       const testSubgraph = addCondnode(
         processSubGraphVisitor(previds, state, node.left),
         state
       );
+      console.log('testSubgraph', testSubgraph);
 
       if (node.operator === '&&') {
         const consequentSubgraph = processSubGraphVisitor(
@@ -496,6 +492,7 @@ function subgraphVisitor(previds: number[], state: CFGState): SubGraphVisitor {
           state,
           node.right
         );
+        console.log('consequentSubgraph', testSubgraph, consequentSubgraph);
         mergePrev(state, testSubgraph.else, consequentSubgraph.start);
         return {
           start: testSubgraph.start,
@@ -638,7 +635,7 @@ async function cfgToDot(graph: CFGState): Promise<string> {
         color = '#A9A9A9'; // dark grey
         break;
       case 'condition':
-        label = 'Condition';
+        label = 'Condition' + id;
         color = '#FFA07A'; // Light salmon
         break;
       case 'loop':
