@@ -3,12 +3,11 @@ import { exec } from 'child_process';
 import { writeFile } from 'fs/promises';
 import { promisify } from 'util';
 import {
+  CFG,
   CFGNode,
   CFGNodeProp,
   CFGState,
   Function,
-  IR,
-  IRInst,
   Subgraph,
 } from '../utils/types';
 
@@ -755,15 +754,15 @@ if (require.main === module) {
   main().catch(console.error);
 }
 
-function cfg(functions: Function[]): IR[] {
+function cfg(functions: Function[]): CFG[] {
   return functions.map((func) => {
     const ast = func.body;
     const graph = generateCFG(ast);
     return {
       id: func.id,
       name: func.name,
-      type: 'ir',
-      ir: { type: IRInst.EMPTY }, // cfgToIR(graph),
+      type: 'cfg',
+      nodes: graph.nodes,
     };
   });
 }

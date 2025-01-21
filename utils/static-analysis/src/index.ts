@@ -55,7 +55,7 @@ function callScorer(f1: string, f2: string, abstractionType: AbstractionType) {
 
   switch (abstractionType) {
     case 'CFG':
-      return scorer(lib1, lib2, abstraction.cfg, comparator.ir, 'CFG');
+      return scorer(lib1, lib2, abstraction.cfg, comparator.cfg, 'CFG');
     case 'IR':
       return scorer(lib1, lib2, abstraction.ir, comparator.ir, 'IR');
     case 'Props':
