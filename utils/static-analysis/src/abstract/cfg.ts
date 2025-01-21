@@ -12,16 +12,15 @@ import {
   Subgraph,
 } from '../utils/types';
 
+type Stmt = acorn.Statement;
+type Expr = acorn.Expression | acorn.Declaration;
+
 type StatementVisitor = {
-  [K in acorn.AnyNode['type']]?: (
-    node: Extract<acorn.Statement, { type: K }>
-  ) => number[];
+  [K in acorn.AnyNode['type']]?: (node: Extract<Stmt, { type: K }>) => number[];
 };
 
 type ExprVisitor = {
-  [K in acorn.AnyNode['type']]?: (
-    node: Extract<acorn.Expression, { type: K }>
-  ) => Subgraph;
+  [K in acorn.AnyNode['type']]?: (node: Extract<Expr, { type: K }>) => Subgraph;
 };
 
 function createNode(
@@ -131,14 +130,14 @@ function stmtVisitor(previds: number[], state: CFGState): StatementVisitor {
       if (!lastLoopStack) return previds;
       lastLoopStack.break.push(...previds);
       state.loopStack.push(lastLoopStack);
-      return previds;
+      return [];
     },
     ContinueStatement(node) {
       const lastLoopStack = state.loopStack.pop();
       if (!lastLoopStack) return previds;
       lastLoopStack.continue.push(...previds);
       state.loopStack.push(lastLoopStack);
-      return previds;
+      return [];
     },
     ForInStatement(node) {
       const loopStart = createNode(state, { type: 'loop' });
@@ -202,7 +201,6 @@ function stmtVisitor(previds: number[], state: CFGState): StatementVisitor {
         testToBodyIds.push(...testSubgraph.then);
         addEdge(state, loopStart, testSubgraph.start);
       } else {
-        testToBreakIds.push(loopStart); // not sure..
         testToBodyIds.push(loopStart);
       }
 
@@ -227,14 +225,10 @@ function stmtVisitor(previds: number[], state: CFGState): StatementVisitor {
   };
 }
 
-function processStmtVisitor(
-  previds: number[],
-  state: CFGState,
-  node: acorn.Statement
-) {
+function processStmtVisitor(previds: number[], state: CFGState, node: Stmt) {
   try {
     const visitor = stmtVisitor(previds, state)[node.type] as (
-      _node: Extract<acorn.Statement, { type: typeof node.type }>
+      _node: Extract<Stmt, { type: typeof node.type }>
     ) => number[];
     return visitor(node);
   } catch (e) {
@@ -242,10 +236,10 @@ function processStmtVisitor(
   }
 }
 
-function processExprVisitor(state: CFGState, node: acorn.Expression) {
+function processExprVisitor(state: CFGState, node: Expr) {
   try {
     const visitor = exprVisitor(state)[node.type] as (
-      _node: Extract<acorn.Expression, { type: typeof node.type }>
+      _node: Extract<Expr, { type: typeof node.type }>
     ) => Subgraph;
     return visitor(node);
   } catch (e) {
@@ -256,30 +250,26 @@ function processExprVisitor(state: CFGState, node: acorn.Expression) {
 function exprVisitor(state: CFGState): ExprVisitor {
   return {
     LogicalExpression(node) {
-      const start = createNode(state, { type: 'condition' });
       const testSubgraph = processExprVisitor(state, node.left);
       const consequentSubgraph = processExprVisitor(state, node.right);
-      addEdge(state, start, testSubgraph.start);
       if (node.operator === '&&') {
         mergePrev(state, testSubgraph.then, consequentSubgraph.start);
         return {
-          start,
+          start: testSubgraph.start,
           then: [...consequentSubgraph.then],
           else: [...testSubgraph.else, ...consequentSubgraph.else],
         };
       } else {
         mergePrev(state, testSubgraph.else, consequentSubgraph.start);
         return {
-          start,
+          start: testSubgraph.start,
           then: [...testSubgraph.then, ...consequentSubgraph.then],
           else: [...consequentSubgraph.else],
         };
       }
     },
     ConditionalExpression(node) {
-      const start = createNode(state, { type: 'condition' });
       const testSubgraph = processExprVisitor(state, node.test);
-      addEdge(state, start, testSubgraph.start);
 
       const consequentSubgraph = processExprVisitor(state, node.consequent);
       mergePrev(state, testSubgraph.then, consequentSubgraph.start);
@@ -288,7 +278,7 @@ function exprVisitor(state: CFGState): ExprVisitor {
       mergePrev(state, testSubgraph.else, alternateSubgraph.start);
 
       return {
-        start,
+        start: testSubgraph.start,
         then: [...consequentSubgraph.then, ...alternateSubgraph.then],
         else: [...consequentSubgraph.else, ...alternateSubgraph.else],
       };
@@ -298,13 +288,6 @@ function exprVisitor(state: CFGState): ExprVisitor {
       const lastSubgraph = node.expressions.reduce<Subgraph>(
         (prev, expr) => {
           const subgraph = processExprVisitor(state, expr);
-          // 선택지 1. merge할 권리는 Stmt에게 준다.
-          // return {
-          //   ...subgraph,
-          //   then: [...prev.then, ...subgraph.then],
-          //   else: [...prev.else, ...subgraph.else],
-          // };
-          // 선택지 2. 여기서 merge하고 마지막 expr이 만든 브랜치만 제대로 준다.
           mergePrev(state, [...prev.then, ...prev.else], subgraph.start);
           return subgraph;
         },
@@ -361,43 +344,6 @@ function exprVisitor(state: CFGState): ExprVisitor {
   };
 }
 
-// function removeExitNodes(graph: CFGState): void {
-//   // First, identify all exit nodes
-//   const exitNodes = Array.from(graph.nodes.entries())
-//     .filter(([_, node]) => node.type === 'exit')
-//     .map(([id, _]) => id);
-
-//   // For each exit node
-//   exitNodes.forEach((exitId) => {
-//     const exitNode = graph.nodes.get(exitId);
-//     if (!exitNode) return;
-
-//     // Get all parents of the exit node
-//     const parentIds = exitNode.prev;
-
-//     // Get all children that have this exit node as a parent
-//     const childNodes = Array.from(graph.nodes.values()).filter((node) =>
-//       node.prev.includes(exitId)
-//     );
-
-//     // For each parent of the exit node
-//     parentIds.forEach((parentId) => {
-//       // Connect parent directly to all children
-//       childNodes.forEach((childNode) => {
-//         // Remove the exit node from child's prev list
-//         childNode.prev = childNode.prev.filter((id) => id !== exitId);
-//         // Add parent as a predecessor if not already present
-//         if (!childNode.prev.includes(parentId)) {
-//           childNode.prev.push(parentId);
-//         }
-//       });
-//     });
-
-//     // Remove the exit node from the graph
-//     graph.nodes.delete(exitId);
-//   });
-// }
-
 function generateCFG(ast: acorn.AnyNode): CFGState {
   const state: CFGState = {
     nodes: new Map(),
@@ -409,16 +355,10 @@ function generateCFG(ast: acorn.AnyNode): CFGState {
   const startId = createNode(state, { type: 'start' });
   createNode(state, { type: 'end' });
 
-  processStmtVisitor([startId], state, ast as acorn.Statement);
+  processStmtVisitor([startId], state, ast as Stmt);
 
   return state;
 }
-
-// function generateIR(ast: acorn.Node) {
-//   const CFG = generateCFG(ast);
-//   const ir = cfgToIR(CFG);
-//   return ir;
-// }
 
 async function cfgToDot(graph: CFGState): Promise<string> {
   const nodes = graph.nodes;
@@ -439,13 +379,6 @@ async function cfgToDot(graph: CFGState): Promise<string> {
       case 'end':
         label = 'End';
         color = '#A9A9A9'; // dark grey
-        break;
-      case 'condition':
-        label = 'Condition';
-        color = '#87CEEB'; // Light blue
-        // if (node.node?.type === 'Literal') {
-        //   label += `\\n${(node.node as acorn.Literal).value}`;
-        // }
         break;
       case 'loop':
         label = 'Loop';
@@ -509,56 +442,56 @@ async function generatePNG(
 
 // Example usage
 async function main() {
-  const code = `
+  const code2 = `
 function example() {
-  // if (_.f ? (_.g&&_.h) : (_.i||_.k)) {
-  //   return _.e;
-  // }
-  // return ((_.a ? _.b : _.c) || _.d);
-  // ((_.a ? _.b : _.c), _.d) ? (_.e&&_.f) : (_.g||_.h);
-  // return (_.i,_.j);
-  // _.a;
-  // while (_.b && _.c) {
-  //   _.d;
-  //  if(_.e) break;
-  //  _.f;
-  // }
-  // return _.g;
-  // _.a;
-  // for(b in _.b) {
-  //   if(_.c && _.d) break;
-  //   if(_.e) return;
-  //   if(_.f || _.g) continue;
-  //   _.h;
-  // }
-  // _.i;
-  // while(_.a) {
-  //   if(_.b) break;
-  // }
-  // _.c;
-  for(;;) {
-    if(_.c) continue;
-    _.d;
+  // babel-minify (2)
+  for (_.a; _.b && _.c;_.d);
+  _.e;
+}
+  `;
+  const code3 = `
+function example() {
+  // original (3)
+    for (_.a; _.b;_.d) {
+      if (_.c) {
+        break;
+      }
+    }
+    _.e;
+}
+  `;
+  const code4 = `
+function example() {
+  // custom code (4)
+  for (_.a; ;_.d) {
+    if(_.b || _.c) break;
   }
-  if(_.f) return _.g;
+    _.e;
 }
   `;
 
-  try {
-    const ast = acorn.parse(code, { ecmaVersion: 2020 });
-    const functionBody = (ast.body[0] as acorn.FunctionDeclaration).body;
-    const graph = generateCFG(functionBody);
-    console.log(JSON.stringify(Object.fromEntries(graph.nodes), null, 2));
-    // console.log(stringifyIRNode(cfgToIR(graph)));
-    const dotContent = await cfgToDot(graph);
+  for await (const c of [
+    [code2, 'cfg2'],
+    [code3, 'cfg3'],
+    [code4, 'cfg4'],
+  ]) {
+    const [code, filename] = c;
+    try {
+      const ast = acorn.parse(code, { ecmaVersion: 2020 });
+      const functionBody = (ast.body[0] as acorn.FunctionDeclaration).body;
+      const graph = generateCFG(functionBody);
+      //console.log(stringifyIRNode(cfgToIR(graph)));
+      const dotContent = await cfgToDot(graph);
 
-    await writeFile('cfg.dot', dotContent, 'utf8');
+      await writeFile(`${filename}.dot`, dotContent, 'utf8');
 
-    await generatePNG(dotContent, 'cfg.png');
-  } catch (error) {
-    console.error('Error in main:', error);
+      await generatePNG(dotContent, `${filename}.png`);
+    } catch (error) {
+      console.error('Error in main:', error);
+    }
   }
 }
+
 if (require.main === module) {
   main().catch(console.error);
 }

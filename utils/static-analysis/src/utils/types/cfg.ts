@@ -10,13 +10,6 @@ export interface CFGNodeStart extends CFGNodeBase {
 
 export interface CFGNodeLoop extends CFGNodeBase {
   type: 'loop';
-  body?: number;
-}
-
-export interface CFGNodeCondition extends CFGNodeBase {
-  type: 'condition';
-  then?: number;
-  else?: number;
 }
 
 export interface CFGNodeProp extends CFGNodeBase {
@@ -28,12 +21,7 @@ export interface CFGNodeEnd extends CFGNodeBase {
   type: 'end';
 }
 
-export type CFGNode =
-  | CFGNodeStart
-  | CFGNodeLoop
-  | CFGNodeCondition
-  | CFGNodeProp
-  | CFGNodeEnd;
+export type CFGNode = CFGNodeStart | CFGNodeLoop | CFGNodeProp | CFGNodeEnd;
 
 export interface CFGState {
   nodes: Map<number, CFGNode>;
