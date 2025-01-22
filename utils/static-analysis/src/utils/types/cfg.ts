@@ -1,43 +1,45 @@
-export interface CFGNodeBase {
+export type CFGNodeBase = {
   id: number;
-  type: 'start' | 'loop' | 'condition' | 'prop' | 'end';
-  next: number[];
-}
+  type: 'start' | 'exit' | 'exception-exit' | 'block';
+  nextIds: number[];
+};
 
 export interface CFGNodeStart extends CFGNodeBase {
   type: 'start';
 }
 
-export interface CFGNodeLoop extends CFGNodeBase {
-  type: 'loop';
+export interface CFGNodeExit extends CFGNodeBase {
+  type: 'exit';
 }
 
-export interface CFGNodeCondition extends CFGNodeBase {
-  type: 'condition';
+export interface CFGNodeExceptionExit extends CFGNodeBase {
+  type: 'exception-exit';
 }
 
-export interface CFGNodeProp extends CFGNodeBase {
-  type: 'prop';
-  prop?: string;
+export interface CFGNodeBlock extends CFGNodeBase {
+  type: 'block';
+  sequences: CFGSequence[];
 }
 
-export interface CFGNodeEnd extends CFGNodeBase {
-  type: 'end';
+export interface CFGSequence {
+  type: 'prop' | 'update_prop';
+  value: string;
 }
 
 export type CFGNode =
   | CFGNodeStart
-  | CFGNodeLoop
-  | CFGNodeProp
-  | CFGNodeEnd
-  | CFGNodeCondition;
+  | CFGNodeExit
+  | CFGNodeExceptionExit
+  | CFGNodeBlock;
 
 export interface CFGState {
-  nodes: Map<number, CFGNode>;
   currentId: number;
+  prevIds: number[];
+  nodes: Map<number, CFGNode>;
   loopStack: { break: number[]; continue: number[] }[];
-  condList: Array<{ start: number; exit: number }>; //for cfg_to_ir
+  subgraphstack: Subgraph[];
   endId: number;
+  exceptionId: number;
 }
 
 export interface Subgraph {
@@ -45,3 +47,49 @@ export interface Subgraph {
   then: number[];
   else: number[];
 }
+
+export type CFGBuilderInstType =
+  | 'insert_block'
+  | 'insert_prop'
+  | 'insert_update_prop'
+  | 'update_previds'
+  | 'update_subgraph';
+
+export interface CFGBuilderInst {
+  type: CFGBuilderInstType;
+}
+
+export interface InsertBlock extends CFGBuilderInst {
+  type: 'insert_block';
+}
+
+export interface InsertProp extends CFGBuilderInst {
+  type: 'insert_prop';
+  value: string;
+}
+
+export interface InsertUpdateProp extends CFGBuilderInst {
+  type: 'insert_update_prop';
+  value: string;
+}
+
+export interface UpdatePrevids extends CFGBuilderInst {
+  type: 'update_previds';
+  previds: number[];
+}
+
+export interface UpdateSubgraph extends CFGBuilderInst {
+  type: 'update_subgraph';
+  start: number;
+  then: number[];
+  afterThen: () => void;
+  else: number[];
+  afterElse: () => void;
+}
+
+export type CFGArgument =
+  | InsertBlock
+  | InsertProp
+  | InsertUpdateProp
+  | UpdatePrevids
+  | UpdateSubgraph;

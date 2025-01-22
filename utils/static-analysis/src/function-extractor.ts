@@ -9,13 +9,20 @@ function stripFunctions(node: acorn.AnyNode): acorn.AnyNode {
   if (!node) return node;
 
   // Replace function declarations/expressions with empty statements
-  if (
-    node.type === 'FunctionDeclaration' ||
-    (node.type === 'FunctionExpression' &&
-      JSON.stringify(node.body).toString().length > MAX_FUNCTION_SIZE)
-  ) {
+  if (node.type === 'FunctionDeclaration') {
     return {
       type: 'EmptyStatement',
+      start: node.start,
+      end: node.end,
+      loc: node.loc,
+    };
+  }
+  if (
+    node.type === 'FunctionExpression' &&
+    JSON.stringify(node.body).toString().length > MAX_FUNCTION_SIZE
+  ) {
+    return {
+      type: 'Literal',
       start: node.start,
       end: node.end,
       loc: node.loc,
