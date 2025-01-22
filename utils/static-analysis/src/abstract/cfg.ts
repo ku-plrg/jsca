@@ -336,6 +336,11 @@ function newBlock() {
 function createSubgraph(node: acorn.Expression): Subgraph {
   const prevIds = cfgState.prevIds;
   newBlock();
+  cfgState.subgraph = {
+    start: cfgState.prevIds[0],
+    then: prevIds,
+    else: prevIds,
+  };
   subgraphVisitor(node);
   cfgState.prevIds = prevIds;
   const subgraph = cfgState.subgraph;
