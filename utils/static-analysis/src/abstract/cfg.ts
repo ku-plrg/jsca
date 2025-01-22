@@ -245,8 +245,23 @@ function stmtVisitor(previds: number[], state: CFGState): StatementVisitor {
       mergePrev(state, lastLoopStack.continue, loopStart);
       return [...lastLoopStack.break, loopStart];
     },
+    TryStatement(node) {
+      const blockIds = processStmtVisitor(previds, state, node.block);
+      const handlerIds = node.handler
+        ? processStmtVisitor(blockIds, state, node.handler.body)
+        : blockIds;
+      const finalizerIds = node.finalizer
+        ? processStmtVisitor(handlerIds, state, node.finalizer)
+        : handlerIds;
+      return finalizerIds;
+    },
+    ThrowStatement(node) {
+      const argument = processExprVisitor(previds, state, node.argument);
+      mergePrev(state, argument ?? previds, state.endId);
+      return [];
+    },
     VariableDeclaration(node) {
-      throw UnsupportedError(node.type);
+      return processExprVisitor(previds, state, node) ?? previds;
     },
   };
 }
@@ -319,6 +334,25 @@ function processExprVisitor(prevIds: number[], state: CFGState, node: Expr) {
 
 function exprVisitor(previds: number[], state: CFGState): ExprVisitor {
   return {
+    EmptyStatement(node) {
+      return previds;
+    },
+    VariableDeclaration(node) {
+      const varNode = node as unknown as acorn.VariableDeclaration;
+      let startPrevId = previds;
+      const decls = varNode.declarations.filter((decl) => decl.init);
+      if (decls.length === 0) {
+        return startPrevId;
+      }
+      let decl = decls[0].init
+        ? processExprVisitor(startPrevId, state, decls[0].init) ?? startPrevId
+        : startPrevId;
+      for (let i = 1; i < decls.length; i++) {
+        if (!decls[i].init) continue;
+        decl = processExprVisitor(decl, state, decls[i].init as Expr) ?? decl;
+      }
+      return decl;
+    },
     Identifier(node) {
       return previds;
     },
@@ -341,7 +375,7 @@ function exprVisitor(previds: number[], state: CFGState): ExprVisitor {
       return elemID;
     },
     ObjectExpression(node) {
-      throw UnsupportedError('ObjectExpression');
+      return previds;
     },
     FunctionExpression(node) {
       throw UnsupportedError('FunctionExpression');
@@ -375,6 +409,24 @@ function exprVisitor(previds: number[], state: CFGState): ExprVisitor {
       const alternate = processExprVisitor([condId], state, node.alternate);
       return [...(consequent ?? [condId]), ...(alternate ?? [condId])];
     },
+    AssignmentExpression(node) {
+      const assignNode = node as unknown as acorn.AssignmentExpression;
+      if (assignNode.left.type !== 'MemberExpression') return previds;
+      const left =
+        processExprVisitor(previds, state, assignNode.left as Expr) ?? previds;
+      const right = processExprVisitor(left, state, assignNode.right);
+      const propNode = state.nodes.get(left[0]);
+      if (left && propNode?.type === 'prop') {
+        const updateProp: Omit<CFGNodeProp, 'id' | 'next'> = {
+          type: 'prop',
+          prop: '_.' + propNode.prop + ' = _',
+        };
+        const updatePropNode = createNode(state, updateProp);
+        mergePrev(state, right ?? previds, updatePropNode);
+        return [updatePropNode];
+      }
+      return [...(right ?? previds)];
+    },
     MemberExpression(node) {
       if (node.object.type === 'Super') throw UnsupportedError('Super');
       const object = processExprVisitor(previds, state, node.object);
@@ -401,73 +453,118 @@ function exprVisitor(previds: number[], state: CFGState): ExprVisitor {
       }
       return object ?? previds;
     },
-    SequenceExpression(node) {
-      throw UnsupportedError(node.type);
-    },
-    AssignmentExpression(node) {
-      throw UnsupportedError(node.type);
-    },
     CallExpression(node) {
-      throw UnsupportedError(node.type);
+      const callNode = node as unknown as acorn.CallExpression;
+      if (callNode.callee.type === 'Super') throw UnsupportedError('Super');
+      const callee = processExprVisitor(previds, state, callNode.callee);
+      let args = callee ?? previds;
+      for (const arg of callNode.arguments) {
+        if (arg.type === 'SpreadElement') continue;
+        args = processExprVisitor(args, state, arg) ?? args;
+      }
+      return args;
+    },
+    NewExpression(node) {
+      const newNode = node as unknown as acorn.NewExpression;
+      const callee = processExprVisitor(previds, state, newNode.callee);
+      let args = callee ?? previds;
+      for (const arg of newNode.arguments) {
+        if (arg.type === 'SpreadElement') continue;
+        args = processExprVisitor(args, state, arg) ?? args;
+      }
+      return args;
+    },
+    SequenceExpression(node) {
+      const seqNode = node as unknown as acorn.SequenceExpression;
+      let prevIds = previds;
+      for (const expr of seqNode.expressions) {
+        prevIds = processExprVisitor(prevIds, state, expr) ?? prevIds;
+      }
+      return prevIds;
+    },
+    TemplateLiteral(node) {
+      return previds;
     },
   };
 }
 
 function subgraphVisitor(previds: number[], state: CFGState): SubGraphVisitor {
   return {
-    // VariableDeclaration(node) {
-    //   let startPrevId = previds;
-    //   const decls = node.declarations.filter((decl) => decl.init);
-    //   if (decls.length === 0) {
-    //     return { start: state.currentId, then: startPrevId, else: startPrevId };
-    //   }
-    //   let declSubgraph = decls[0].init
-    //     ? processSubGraphVisitor(,state, decls[0].init)
-    //     : {
-    //         start: state.currentId,
-    //         then: [state.currentId],
-    //         else: [state.currentId],
-    //       };
-    //   const startId = declSubgraph.start;
+    VariableDeclaration(node) {
+      const varNode = node as unknown as acorn.VariableDeclaration;
+      const decls = varNode.declarations.filter((decl) => decl.init);
+      if (decls.length === 0) {
+        return { start: state.currentId, then: previds, else: previds };
+      }
+      let declSubgraph = decls[0].init
+        ? processSubGraphVisitor(previds, state, decls[0].init)
+        : {
+            start: state.currentId,
+            then: previds,
+            else: previds,
+          };
+      const startPrevId = declSubgraph.start;
+      let start = startPrevId;
+      for (let i = 1; i < decls.length; i++) {
+        start = declSubgraph.start;
+        if (!decls[i].init) continue;
+        declSubgraph = processSubGraphVisitor(
+          [...declSubgraph.then, ...declSubgraph.else],
+          state,
+          decls[i].init as Expr
+        );
+        mergePrev(state, [...declSubgraph.then, ...declSubgraph.else], start);
+      }
 
-    //   return { start: state.currentId, then: startPrevId, else: startPrevId };
-    // },
+      return {
+        start: startPrevId,
+        then: [...declSubgraph.then],
+        else: [...declSubgraph.else],
+      };
+    },
     Identifier(node) {
       const prevId = state.currentId; // ??
       return { start: prevId, then: previds, else: previds };
     },
-    // Literal(node) {
-    //   const prevId = state.currentId;
-    //   return { start: prevId, then: [prevId], else: [prevId] };
-    // },
-    // ThisExpression(node) {
-    //   const prevId = state.currentId;
-    //   return { start: prevId, then: [prevId], else: [prevId] };
-    // },
-    // ArrayExpression(node) {
-    //   const prevId = state.currentId;
-    //   const elements = node.elements.filter(
-    //     (elem) => elem !== null && elem.type !== 'SpreadElement'
-    //   );
-    //   if (elements.length === 0) {
-    //     return {
-    //       start: prevId,
-    //       then: [prevId],
-    //       else: [prevId],
-    //     };
-    //   }
-    //   let elemSubgraph = processSubGraphVisitor(state, elements[0]);
-    //   const startPrevId = elemSubgraph.start;
-    //   for (let i = 1; i < elements.length; i++) {
-    //     const subgraph = processSubGraphVisitor(state, elements[i]);
-    //     mergePrev(state, elemSubgraph.then, subgraph.start);
-    //   }
-    //   return {
-    //     start: startPrevId,
-    //     then: [startPrevId],
-    //     else: [startPrevId],
-    //   };
-    // },
+    Literal(node) {
+      const prevId = state.currentId;
+      return { start: prevId, then: previds, else: previds };
+    },
+    ThisExpression(node) {
+      const prevId = state.currentId;
+      return { start: prevId, then: previds, else: previds };
+    },
+    ArrayExpression(node) {
+      const arrayNode = node as unknown as acorn.ArrayExpression;
+      const prevId = state.currentId;
+      const elements = arrayNode.elements.filter(
+        (elem) => elem !== null && elem.type !== 'SpreadElement'
+      );
+      if (elements.length === 0) {
+        return {
+          start: prevId,
+          then: previds,
+          else: previds,
+        };
+      }
+      let arraySubgraph = processSubGraphVisitor(previds, state, elements[0]);
+      const startPrevId = arraySubgraph.start;
+      let start = startPrevId;
+      for (let i = 1; i < elements.length; i++) {
+        start = arraySubgraph.start;
+        arraySubgraph = processSubGraphVisitor(
+          [...arraySubgraph.then, ...arraySubgraph.else],
+          state,
+          elements[i]
+        );
+        mergePrev(state, arraySubgraph.then, start);
+      }
+      return {
+        start: startPrevId,
+        then: [...arraySubgraph.then],
+        else: [...arraySubgraph.else],
+      };
+    },
     ObjectExpression(node) {
       throw UnsupportedError('ObjectExpression');
     },
@@ -493,12 +590,32 @@ function subgraphVisitor(previds: number[], state: CFGState): SubGraphVisitor {
         else: [...rightSubgraph.else],
       };
     },
+    AssignmentExpression(node) {
+      const assignNode = node as unknown as acorn.AssignmentExpression;
+      if (assignNode.left.type !== 'MemberExpression')
+        return { start: state.currentId, then: previds, else: previds };
+      const leftSubgraph = processSubGraphVisitor(
+        previds,
+        state,
+        assignNode.left
+      );
+      const rightSubgraph = processSubGraphVisitor(
+        previds,
+        state,
+        assignNode.right
+      );
+      mergePrev(state, leftSubgraph.then, rightSubgraph.start);
+      return {
+        start: leftSubgraph.start,
+        then: [...rightSubgraph.then],
+        else: [...rightSubgraph.else],
+      };
+    },
     LogicalExpression(node) {
       const testSubgraph = addCondnode(
         processSubGraphVisitor(previds, state, node.left),
         state
       );
-      console.log('testSubgraph', testSubgraph);
 
       if (node.operator === '&&') {
         const consequentSubgraph = processSubGraphVisitor(
@@ -518,7 +635,6 @@ function subgraphVisitor(previds: number[], state: CFGState): SubGraphVisitor {
           state,
           node.right
         );
-        console.log('consequentSubgraph', testSubgraph, consequentSubgraph);
         mergePrev(state, testSubgraph.else, consequentSubgraph.start);
         return {
           start: testSubgraph.start,
@@ -621,8 +737,48 @@ function subgraphVisitor(previds: number[], state: CFGState): SubGraphVisitor {
       }
       return objectSubgraph;
     },
-    AssignmentExpression(node) {
-      throw UnsupportedError(node.type);
+    CallExpression(node) {
+      const callNode = node as unknown as acorn.CallExpression;
+      const calleeSubgraph =
+        callNode.callee.type === 'Super'
+          ? { start: state.currentId, then: previds, else: previds }
+          : processSubGraphVisitor(previds, state, callNode.callee);
+      let argsSubgraph = calleeSubgraph;
+      for (const arg of callNode.arguments) {
+        if (arg.type === 'SpreadElement') continue;
+        argsSubgraph = processSubGraphVisitor(
+          [...argsSubgraph.then, ...argsSubgraph.else],
+          state,
+          arg
+        );
+      }
+      return {
+        start: calleeSubgraph.start,
+        then: [...argsSubgraph.then],
+        else: [...argsSubgraph.else],
+      };
+    },
+    NewExpression(node) {
+      const newNode = node as unknown as acorn.NewExpression;
+      const calleeSubgraph = processSubGraphVisitor(
+        previds,
+        state,
+        newNode.callee
+      );
+      let argsSubgraph = calleeSubgraph;
+      for (const arg of newNode.arguments) {
+        if (arg.type === 'SpreadElement') continue;
+        argsSubgraph = processSubGraphVisitor(
+          [...argsSubgraph.then, ...argsSubgraph.else],
+          state,
+          arg
+        );
+      }
+      return {
+        start: calleeSubgraph.start,
+        then: [...argsSubgraph.then],
+        else: [...argsSubgraph.else],
+      };
     },
   };
 }
