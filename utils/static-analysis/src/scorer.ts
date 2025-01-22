@@ -1,5 +1,6 @@
 import { mkdirSync, writeFileSync } from 'fs';
 import path from 'path';
+import logCFG from './utils/cfg-logger';
 import LogIR from './utils/ir-logger';
 import measureTime from './utils/timer';
 import { AbsFunction, Function, Library } from './utils/types';
@@ -21,6 +22,11 @@ function FunctionScorer<T extends AbsFunction>(
     // Log IR
     LogIR(absfuncs1, lib1);
     LogIR(absfuncs2, lib2);
+  }
+
+  if (absfuncs1[0].type === 'cfg') {
+    logCFG(absfuncs1, lib1);
+    logCFG(absfuncs2, lib2);
   }
 
   //createDotGraph(propstree, file1);
@@ -128,14 +134,25 @@ function FunctionScorer<T extends AbsFunction>(
   function writeReport(
     score: ReturnType<typeof getScores>,
     l1: string,
-    l2: string
+    l2: string,
+    additionalLog: AbsFunction['type']
   ) {
     const LOG_DIR = '/utils/static-analysis/src/logs/functions';
     const IR_DIR = '/utils/static-analysis/src/logs/ir';
+    const CFG_DIR = '/utils/static-analysis/src/logs/cfg';
     const TEMPLATE = (id: string, name: string, loc: string) =>
       `[${id}(${name})](${LOG_DIR}/${loc}/${name}.js)`;
     const IRTEMPLATE = (id: string, name: string, loc: string) =>
       `[${id}(${name})](${IR_DIR}/${loc}/ir_log_${id}.txt)`;
+    const CFGTEMPLATE = (id: string, name: string, loc: string) =>
+      `[${id}(${name})](${CFG_DIR}/${loc}/cfg_log_${id}.txt)`;
+    const additionalTemplate =
+      additionalLog === 'ir'
+        ? IRTEMPLATE
+        : additionalLog === 'cfg'
+        ? CFGTEMPLATE
+        : () => '';
+
     let mdContent = '';
     mdContent += `## Scores\n|Precision|Recall|TP|TN|FP|FN|\n|---|---|---|---|---|---|\n|${score.precision}|${score.recall}|${score.truePositives.length}|${score.trueNegatives.length}|${score.falsePositives.length}|${score.falseNegatives.length}|\n\n`;
 
@@ -149,11 +166,11 @@ function FunctionScorer<T extends AbsFunction>(
             fn.id,
             fn.f2Name,
             l2
-          )}|\n|${IRTEMPLATE(fn.id, fn.f1Name, l1)}|${IRTEMPLATE(
+          )}|\n|${additionalTemplate(
             fn.id,
-            fn.f2Name,
-            l2
-          )}|\n|`
+            fn.f1Name,
+            l1
+          )}|${additionalTemplate(fn.id, fn.f2Name, l2)}|\n|`
       )
       .join('\n')}\n`;
 
@@ -167,7 +184,11 @@ function FunctionScorer<T extends AbsFunction>(
             fn.id2,
             fn.f2Name,
             l2
-          )}|`
+          )}|\n|${additionalTemplate(
+            fn.id1,
+            fn.f1Name,
+            l1
+          )}|${additionalTemplate(fn.id2, fn.f2Name, l2)}|\n|`
       )
       .join('\n')}\n`;
     mdContent += `## Unique Functions: ${
@@ -188,7 +209,7 @@ function FunctionScorer<T extends AbsFunction>(
   const scores1 = getScores(absfuncs1, absfuncs2);
   // const scores2 = getScores(propstree2, propstree1);
 
-  writeReport(scores1, lib1.name, lib2.name);
+  writeReport(scores1, lib1.name, lib2.name, absfuncs1[0].type);
   // writeReport(scores2, lib2.name, lib1.name);
   return scores1;
 }

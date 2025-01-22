@@ -12,18 +12,18 @@ import {
 } from '../utils/types';
 
 type Stmt = acorn.Statement;
-type Expr = acorn.Expression | acorn.Declaration;
+type Expr = acorn.Expression | acorn.Declaration | acorn.EmptyStatement;
 
 type StatementVisitor = {
-  [K in acorn.AnyNode['type']]?: (node: Extract<Stmt, { type: K }>) => number[];
+  [K in Stmt['type']]?: (node: Extract<Stmt, { type: K }>) => number[];
 };
 
 type SubGraphVisitor = {
-  [K in acorn.AnyNode['type']]?: (node: Extract<Expr, { type: K }>) => Subgraph;
+  [K in Expr['type']]?: (node: Extract<Expr, { type: K }>) => Subgraph;
 };
 
 type ExprVisitor = {
-  [K in acorn.AnyNode['type']]?: (node: Extract<Expr, { type: K }>) => number[];
+  [K in Expr['type']]?: (node: Extract<Expr, { type: K }>) => number[];
 };
 
 function createNode(
@@ -799,8 +799,7 @@ function generateCFG(ast: acorn.AnyNode): CFGState {
   return state;
 }
 
-async function cfgToDot(graph: CFGState): Promise<string> {
-  const nodes = graph.nodes;
+export async function cfgToDot(nodes: CFGState['nodes']): Promise<string> {
   let dotString = 'digraph CFG {\n';
   dotString += '  rankdir=TB;\n';
   dotString += '  node [shape=box, style=filled, fontname="Arial"];\n\n';
@@ -863,7 +862,7 @@ async function cfgToDot(graph: CFGState): Promise<string> {
   return dotString;
 }
 
-async function generatePNG(
+export async function generatePNG(
   dotContent: string,
   outputPath: string
 ): Promise<void> {
@@ -937,7 +936,7 @@ function example() {
       const graph = generateCFG(functionBody);
       // console.log(stringifyIRNode(cfgToIR(graph)));
       // removeExitNodes(graph);
-      const dotContent = await cfgToDot(graph);
+      const dotContent = await cfgToDot(graph.nodes);
 
       await writeFile(`${filename}.dot`, dotContent, 'utf8');
 

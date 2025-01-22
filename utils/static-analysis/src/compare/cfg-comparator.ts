@@ -4,19 +4,23 @@ import { CFG, CFGNode } from '../utils/types';
 const getNodeName = (node: CFGNode | undefined): string =>
   node ? (node.type === 'prop' ? node.prop ?? '' : node.type) : '';
 
-const toHash = (nodes: Map<number, CFGNode>): string => {
+export const stringifyCFG = (nodes: Map<number, CFGNode>): string => {
   const compareStrings: string[] = [];
   nodes.forEach((node, _) => {
-    compareStrings.push(
-      `${getNodeName(node)} -> ${node.next
-        .map((id) => getNodeName(nodes.get(id)))
-        .sort()
-        .join(',')}`
-    );
+    if (node.type !== 'end')
+      compareStrings.push(
+        `${getNodeName(node)} -> ${node.next
+          .map((id) => getNodeName(nodes.get(id)))
+          .sort()
+          .join(',')}`
+      );
   });
-  const hash = sha256(compareStrings.sort().join('\n'));
-  return hash;
+
+  return compareStrings.sort().join('\n');
 };
+
+const toHash = (nodes: Map<number, CFGNode>): string =>
+  sha256(stringifyCFG(nodes));
 
 function cfgComparator(f1: CFG, f2: CFG): boolean {
   if (f1.nodes.size !== f2.nodes.size) return false;
