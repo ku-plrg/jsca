@@ -338,9 +338,8 @@ function exprVisitor(previds: number[], state: CFGState): ExprVisitor {
       return previds;
     },
     VariableDeclaration(node) {
-      const varNode = node as unknown as acorn.VariableDeclaration;
       let startPrevId = previds;
-      const decls = varNode.declarations.filter((decl) => decl.init);
+      const decls = node.declarations.filter((decl) => decl.init);
       if (decls.length === 0) {
         return startPrevId;
       }
@@ -410,11 +409,10 @@ function exprVisitor(previds: number[], state: CFGState): ExprVisitor {
       return [...(consequent ?? [condId]), ...(alternate ?? [condId])];
     },
     AssignmentExpression(node) {
-      const assignNode = node as unknown as acorn.AssignmentExpression;
-      if (assignNode.left.type !== 'MemberExpression') return previds;
+      if (node.left.type !== 'MemberExpression') return previds;
       const left =
-        processExprVisitor(previds, state, assignNode.left as Expr) ?? previds;
-      const right = processExprVisitor(left, state, assignNode.right);
+        processExprVisitor(previds, state, node.left as Expr) ?? previds;
+      const right = processExprVisitor(left, state, node.right) ?? left;
       const propNode = state.nodes.get(left[0]);
       if (left && propNode?.type === 'prop') {
         const updateProp: Omit<CFGNodeProp, 'id' | 'next'> = {
@@ -422,7 +420,7 @@ function exprVisitor(previds: number[], state: CFGState): ExprVisitor {
           prop: '_.' + propNode.prop + ' = _',
         };
         const updatePropNode = createNode(state, updateProp);
-        mergePrev(state, right ?? previds, updatePropNode);
+        mergePrev(state, right, updatePropNode);
         return [updatePropNode];
       }
       return [...(right ?? previds)];
@@ -491,8 +489,7 @@ function exprVisitor(previds: number[], state: CFGState): ExprVisitor {
 function subgraphVisitor(previds: number[], state: CFGState): SubGraphVisitor {
   return {
     VariableDeclaration(node) {
-      const varNode = node as unknown as acorn.VariableDeclaration;
-      const decls = varNode.declarations.filter((decl) => decl.init);
+      const decls = node.declarations.filter((decl) => decl.init);
       if (decls.length === 0) {
         return { start: state.currentId, then: previds, else: previds };
       }
@@ -504,16 +501,16 @@ function subgraphVisitor(previds: number[], state: CFGState): SubGraphVisitor {
             else: previds,
           };
       const startPrevId = declSubgraph.start;
-      let start = startPrevId;
+      let next = [...declSubgraph.then, ...declSubgraph.else];
       for (let i = 1; i < decls.length; i++) {
-        start = declSubgraph.start;
         if (!decls[i].init) continue;
         declSubgraph = processSubGraphVisitor(
-          [...declSubgraph.then, ...declSubgraph.else],
+          next,
           state,
           decls[i].init as Expr
         );
-        mergePrev(state, [...declSubgraph.then, ...declSubgraph.else], start);
+        mergePrev(state, next, declSubgraph.start);
+        next = [...declSubgraph.then, ...declSubgraph.else];
       }
 
       return {
@@ -535,9 +532,8 @@ function subgraphVisitor(previds: number[], state: CFGState): SubGraphVisitor {
       return { start: prevId, then: previds, else: previds };
     },
     ArrayExpression(node) {
-      const arrayNode = node as unknown as acorn.ArrayExpression;
       const prevId = state.currentId;
-      const elements = arrayNode.elements.filter(
+      const elements = node.elements.filter(
         (elem) => elem !== null && elem.type !== 'SpreadElement'
       );
       if (elements.length === 0) {
@@ -549,15 +545,11 @@ function subgraphVisitor(previds: number[], state: CFGState): SubGraphVisitor {
       }
       let arraySubgraph = processSubGraphVisitor(previds, state, elements[0]);
       const startPrevId = arraySubgraph.start;
-      let start = startPrevId;
+      let next = [...arraySubgraph.then, ...arraySubgraph.else];
       for (let i = 1; i < elements.length; i++) {
-        start = arraySubgraph.start;
-        arraySubgraph = processSubGraphVisitor(
-          [...arraySubgraph.then, ...arraySubgraph.else],
-          state,
-          elements[i]
-        );
-        mergePrev(state, arraySubgraph.then, start);
+        arraySubgraph = processSubGraphVisitor(next, state, elements[i]);
+        mergePrev(state, next, arraySubgraph.start);
+        next = [...arraySubgraph.then, ...arraySubgraph.else];
       }
       return {
         start: startPrevId,
@@ -566,7 +558,8 @@ function subgraphVisitor(previds: number[], state: CFGState): SubGraphVisitor {
       };
     },
     ObjectExpression(node) {
-      throw UnsupportedError('ObjectExpression');
+      const prevId = state.currentId;
+      return { start: prevId, then: previds, else: previds };
     },
     FunctionExpression(node) {
       throw UnsupportedError('FunctionExpression');
@@ -583,28 +576,41 @@ function subgraphVisitor(previds: number[], state: CFGState): SubGraphVisitor {
 
       const leftSubgraph = processSubGraphVisitor(previds, state, node.left);
       const rightSubgraph = processSubGraphVisitor(previds, state, node.right);
-      mergePrev(state, leftSubgraph.then, rightSubgraph.start);
+      mergePrev(state, [...leftSubgraph.then], rightSubgraph.start);
       return {
         start: leftSubgraph.start,
         then: [...rightSubgraph.then],
-        else: [...rightSubgraph.else],
+        else: [...rightSubgraph.else, ...leftSubgraph.else],
       };
     },
     AssignmentExpression(node) {
-      const assignNode = node as unknown as acorn.AssignmentExpression;
-      if (assignNode.left.type !== 'MemberExpression')
+      if (node.left.type !== 'MemberExpression')
         return { start: state.currentId, then: previds, else: previds };
-      const leftSubgraph = processSubGraphVisitor(
-        previds,
+      const leftSubgraph = processSubGraphVisitor(previds, state, node.left);
+      const rightSubgraph = processSubGraphVisitor(previds, state, node.right);
+      mergePrev(
         state,
-        assignNode.left
+        [...leftSubgraph.then, ...leftSubgraph.else],
+        rightSubgraph.start
       );
-      const rightSubgraph = processSubGraphVisitor(
-        previds,
-        state,
-        assignNode.right
-      );
-      mergePrev(state, leftSubgraph.then, rightSubgraph.start);
+      const propNode = state.nodes.get([...leftSubgraph.then][0]);
+      if (propNode?.type === 'prop') {
+        const updateProp: Omit<CFGNodeProp, 'id' | 'next'> = {
+          type: 'prop',
+          prop: '_.' + propNode.prop + ' = _',
+        };
+        const updatePropNode = createNode(state, updateProp);
+        mergePrev(
+          state,
+          [...rightSubgraph.then, ...rightSubgraph.else],
+          updatePropNode
+        );
+        return {
+          start: leftSubgraph.start,
+          then: [updatePropNode],
+          else: [updatePropNode],
+        };
+      }
       return {
         start: leftSubgraph.start,
         then: [...rightSubgraph.then],
@@ -671,13 +677,11 @@ function subgraphVisitor(previds: number[], state: CFGState): SubGraphVisitor {
     },
     SequenceExpression(node) {
       const startPrevId = previds[0]; // ??
+      const elseIds = [];
       const lastSubgraph = node.expressions.reduce<Subgraph>(
         (prev, expr) => {
-          const subgraph = processSubGraphVisitor(
-            [...prev.then, ...prev.else],
-            state,
-            expr
-          );
+          elseIds.push(...prev.else);
+          const subgraph = processSubGraphVisitor([...prev.then], state, expr);
           mergePrev(state, [...prev.then, ...prev.else], subgraph.start);
           return subgraph;
         },
@@ -887,41 +891,35 @@ async function generatePNG(
 async function main() {
   const code2 = `
 function example() {
-  Symbol('JSCA_44_57');
-  doc = doc || document;
-  var i, val, script = doc.createElement('script');
-  script.text = code;
-  if (node) {
-    for (i in preservedScriptAttributes) {
-      val = node[i] || node.getAttribute && node.getAttribute(i);
-      if (val) {
-        script.setAttribute(i, val);
-      }
-    }
+  Symbol('JSCA_170_181');
+  var proto, Ctor;
+  if (!obj || toString.call(obj) !== '[object Object]') {
+    return false;
   }
-  doc.head.appendChild(script).parentNode.removeChild(script);
+  proto = getProto(obj);
+  if (!proto) {
+    return true;
+  }
+  Ctor = hasOwn.call(proto, 'constructor') && proto.constructor;
+  return typeof Ctor === 'function' && fnToString.call(Ctor) === ObjectFunctionString;
 }
   `;
   const code3 = `
 function example() {
-  Symbol('JSCA_44_57'), n = n || ye;
-  var a, o, s = n.createElement('script');
-  if (s.text = e, t)
-    for (a in xe)
-      o = t[a] || t.getAttribute && t.getAttribute(a), o && s.setAttribute(a, o);
-  n.head.appendChild(s).parentNode.removeChild(s);
+  Symbol('JSCA_170_181');
+  var t, n;
+  return (
+    !!(e && '[object Object]' === Se.call(e)) &&
+    (((t = le(e)), !!!t) ||
+      ((n = Ae.call(t, 'constructor') && t.constructor),
+      'function' == typeof n && he.call(n) === ge))
+  );
 }
+
   `;
   const code4 = `
 function example() {
-  Symbol('JSCA_2205_2224'), (t = t || 'fx');
-  var n = v.queue(e, t),
-    o = n.length,
-    r = n.shift(),
-    i = v._queueHooks(e, t);
-  'inprogress' === r && ((r = n.shift()), o--),
-    r && ('fx' === t && n.unshift('inprogress'), delete i.stop, r.call(e, i)),
-    !o && i && i.empty.fire();
+  Symbol('JSCA_1_13'), 'use strict', 'object' == typeof module && 'object' == typeof module.exports ? module.exports = e.document ? t(e, !0) : '' : t(e);
 }
   `;
 
