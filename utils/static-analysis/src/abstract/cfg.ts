@@ -31,11 +31,17 @@ function visit(node: acorn.AnyNode): void {
       const subgraph = cfgState.subgraphstack.pop();
       if (!subgraph) return;
       mergePrev(prevIds, subgraph.start);
-      cfgState.prevIds = subgraph.then;
+      const consequentBlock = createNode(cfgState);
+      mergePrev(subgraph.then, consequentBlock);
+      cfgState.prevIds = [consequentBlock];
       node.consequent && visit(node.consequent);
       let thenPrevids = cfgState.prevIds;
       cfgState.prevIds = subgraph.else;
+      const alternateBlock = createNode(cfgState);
+      mergePrev(subgraph.else, alternateBlock);
+      cfgState.prevIds = [alternateBlock];
       node.alternate && visit(node.alternate);
+
       cfgState.prevIds = thenPrevids.concat(cfgState.prevIds);
       break;
     case 'SwitchStatement':
@@ -87,24 +93,6 @@ function visit(node: acorn.AnyNode): void {
       }
       break;
     case 'Literal':
-      if (cfgState.prevIds.length === 1) {
-        const node = cfgState.nodes.get(cfgState.prevIds[0]);
-        if (!node || node.type !== 'block') return;
-        cfgState.nodes.set(cfgState.prevIds[0], {
-          ...node,
-          sequences: [...node.sequences, { type: 'prop', value: 'literal' }],
-        });
-      } else {
-        const nodeId = createNode(cfgState);
-        mergePrev(cfgState.prevIds, nodeId);
-        cfgState.nodes.set(nodeId, {
-          type: 'block',
-          id: nodeId,
-          nextIds: [],
-          sequences: [{ type: 'prop', value: 'literal' }],
-        });
-      }
-      break;
     case 'ThisExpression':
     case 'ArrayExpression':
     case 'ObjectExpression':
@@ -181,7 +169,7 @@ function subgraphVisitor(expr: acorn.AnyNode): void {
           ...node,
           sequences: [
             ...node.sequences,
-            { type: 'prop', value: `literal${expr.name}` },
+            { type: 'prop', value: `literal ${expr.name}` },
           ],
         });
         cfgState.subgraphstack.push({
@@ -204,35 +192,9 @@ function subgraphVisitor(expr: acorn.AnyNode): void {
           else: [nodeId],
         });
       }
+      console.log(cfgState.subgraphstack);
       break;
     case 'Literal':
-      if (cfgState.prevIds.length === 1) {
-        const node = cfgState.nodes.get(cfgState.prevIds[0]);
-        if (!node || node.type !== 'block') return;
-        cfgState.nodes.set(cfgState.prevIds[0], {
-          ...node,
-          sequences: [...node.sequences, { type: 'prop', value: 'literal' }],
-        });
-        cfgState.subgraphstack.push({
-          start: node.id,
-          then: [node.id],
-          else: [node.id],
-        });
-      } else {
-        const nodeId = createNode(cfgState);
-        mergePrev(cfgState.prevIds, nodeId);
-        cfgState.nodes.set(nodeId, {
-          type: 'block',
-          id: nodeId,
-          nextIds: [],
-          sequences: [{ type: 'prop', value: 'literal' }],
-        });
-        cfgState.subgraphstack.push({
-          start: nodeId,
-          then: [nodeId],
-          else: [nodeId],
-        });
-      }
       break;
     case 'ThisExpression':
     case 'ArrayExpression':
@@ -294,19 +256,19 @@ function subgraphVisitor(expr: acorn.AnyNode): void {
 
 function extractCFG(node: acorn.AnyNode): CFGState {
   cfgState = {
-    currentId: 0,
-    prevIds: [0],
+    currentId: 4,
+    prevIds: [3],
     nodes: new Map([
-      [0, { type: 'start', id: 0, nextIds: [] }],
-      [-1, { type: 'exit', id: -1, nextIds: [] }],
-      [-2, { type: 'exception-exit', id: -2, nextIds: [] }],
+      [3, { type: 'block', id: 3, nextIds: [], sequences: [] }],
+      [2, { type: 'start', id: 0, nextIds: [3] }],
+      [1, { type: 'exit', id: 1, nextIds: [] }],
+      [0, { type: 'exception-exit', id: 2, nextIds: [] }],
     ]),
     subgraphstack: [],
     loopStack: [],
-    endId: -1,
-    exceptionId: -2,
+    endId: 1,
+    exceptionId: 0,
   };
-
   visit(node);
   mergePrev(cfgState.prevIds, cfgState.endId);
   return cfgState;
@@ -314,8 +276,7 @@ function extractCFG(node: acorn.AnyNode): CFGState {
 // utils -------------------------------------------------------------------------------------------
 
 function createNode(state: CFGState): number {
-  const id = state.currentId;
-  state.currentId++;
+  const id = state.currentId++;
   const nextIds: number[] = [];
   state.nodes.set(id, {
     type: 'block',
@@ -381,23 +342,9 @@ async function cfgToDot(graph: CFGState): Promise<string> {
         color = '#FF6347'; // Tomato
         break;
       case 'block':
-        label = `Block ${id} ${node.sequences.map((s) => s.value).join(' ')}`;
+        label = `Block ${id} ${node.sequences.map((s) => s.value).join('/')}`;
         break;
-      // case 'update_prop':
-      //   label = `Update\\n${(node.node as acorn.Identifier)?.name || ''}`;
-      //   break;
       default:
-      // if (node.node?.type) {
-      //   label = node.node.type;
-      //   if (node.node.type === 'ReturnStatement') {
-      //     const returnNode = node.node as acorn.ReturnStatement;
-      //     if (returnNode.argument?.type === 'Literal') {
-      //       label += `\\n${(returnNode.argument as acorn.Literal).value}`;
-      //     }
-      //   }
-      // } else {
-      //   label = node.type;
-      // }
     }
 
     dotString += `  node${id} [label="${label}", fillcolor="${color}"];\n`;
@@ -464,9 +411,6 @@ if(a){}else if(b){}else if(c){}else d;
       const ast = acorn.parse(code, { ecmaVersion: 2020 });
       const functionBody = (ast.body[0] as acorn.FunctionDeclaration).body;
       const graph = extractCFG(functionBody);
-      console.log(graph);
-      // console.log(stringifyIRNode(cfgToIR(graph)));
-      // removeExitNodes(graph);
       const dotContent = await cfgToDot(graph);
 
       await writeFile(`${filename}.dot`, dotContent, 'utf8');
