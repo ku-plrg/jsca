@@ -1,8 +1,15 @@
 import * as acorn from 'acorn';
-import { CFG, CFGState, CFGArgument, Subgraph, Function } from '../utils/types';
-import { writeFile } from 'fs/promises';
 import { exec } from 'child_process';
+import { writeFile } from 'fs/promises';
 import { promisify } from 'util';
+import {
+  CFG,
+  CFGArgument,
+  CFGNode,
+  CFGState,
+  Function,
+  Subgraph,
+} from '../utils/types';
 
 let cfgState: CFGState;
 
@@ -452,8 +459,8 @@ function cfgBuilder(argument: CFGArgument) {
       break;
   }
 }
-async function cfgToDot(graph: CFGState): Promise<string> {
-  const nodes = graph.nodes;
+
+export async function cfgToDot(nodes: Map<number, CFGNode>): Promise<string> {
   let dotString = 'digraph CFG {\n';
   dotString += '  rankdir=TB;\n';
   dotString += '  node [shape=box, style=filled, fontname="Arial"];\n\n';
@@ -502,7 +509,7 @@ async function cfgToDot(graph: CFGState): Promise<string> {
   return dotString;
 }
 
-async function generatePNG(
+export async function generatePNG(
   dotContent: string,
   outputPath: string
 ): Promise<void> {
@@ -573,7 +580,7 @@ function example() {
       const ast = acorn.parse(code, { ecmaVersion: 2020 });
       const functionBody = (ast.body[0] as acorn.FunctionDeclaration).body;
       const graph = extractCFG(functionBody);
-      const dotContent = await cfgToDot(graph);
+      const dotContent = await cfgToDot(graph.nodes);
 
       await writeFile(`${filename}.dot`, dotContent, 'utf8');
 

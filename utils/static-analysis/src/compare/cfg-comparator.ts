@@ -5,19 +5,19 @@ const getNodeName = (node: CFGNode | undefined): string => {
   return node ? `${node.id}:${node.type}` : '';
 };
 
-const toHash = (nodes: Map<number, CFGNode>): string => {
+export const stringifyCFG = (nodes: Map<number, CFGNode>): string => {
   const compareStrings: string[] = [];
   nodes.forEach((node, _) => {
     compareStrings.push(
-      `${getNodeName(node)} -> ${node.nextIds
-        .map((id) => getNodeName(nodes.get(id)))
-        .sort()
-        .join(',')}`
+      `${getNodeName(node)} -> ${node.nextIds.sort().join(',')}`
     );
   });
-  const hash = sha256(compareStrings.sort().join('\n'));
-  return hash;
+
+  return compareStrings.join('\n'); // sort 해야 할까?
 };
+
+const toHash = (nodes: Map<number, CFGNode>): string =>
+  sha256(stringifyCFG(nodes));
 
 function cfgComparator(f1: CFG, f2: CFG): boolean {
   if (f1.nodes.size !== f2.nodes.size) return false;
