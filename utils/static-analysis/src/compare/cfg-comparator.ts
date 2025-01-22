@@ -1,14 +1,15 @@
 import { sha256 } from 'js-sha256';
 import { CFG, CFGNode } from '../utils/types';
 
-const getNodeName = (node: CFGNode | undefined): string =>
-  node ? (node.type === 'prop' ? node.prop ?? '' : node.type) : '';
+const getNodeName = (node: CFGNode | undefined): string => {
+  return node ? `${node.id}:${node.type}` : '';
+};
 
 const toHash = (nodes: Map<number, CFGNode>): string => {
   const compareStrings: string[] = [];
   nodes.forEach((node, _) => {
     compareStrings.push(
-      `${getNodeName(node)} -> ${node.next
+      `${getNodeName(node)} -> ${node.nextIds
         .map((id) => getNodeName(nodes.get(id)))
         .sort()
         .join(',')}`

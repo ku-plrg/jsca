@@ -23,6 +23,7 @@ function stripFunctions(node: acorn.AnyNode): acorn.AnyNode {
   ) {
     return {
       type: 'Literal',
+      value: '',
       start: node.start,
       end: node.end,
       loc: node.loc,

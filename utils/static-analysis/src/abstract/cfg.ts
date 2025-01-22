@@ -1,5 +1,5 @@
 import * as acorn from 'acorn';
-import { CFGState, CFGArgument, Subgraph } from '../utils/types';
+import { CFG, CFGState, CFGArgument, Subgraph, Function } from '../utils/types';
 import { writeFile } from 'fs/promises';
 import { exec } from 'child_process';
 import { promisify } from 'util';
@@ -111,11 +111,24 @@ function visit(node: acorn.AnyNode): void {
       break;
 
     case 'ForInStatement':
+      node.left && visit(node.left);
+      visit(node.right);
+      loopBlock();
+      const forinprevIds = cfgState.prevIds;
+      const forInLoop = loopVisitor(node.body);
+      mergePrev(forInLoop.continue.concat(cfgState.prevIds), forinprevIds[0]);
+      cfgState.prevIds = forInLoop.break;
+      break;
     case 'ForOfStatement':
     case 'FunctionDeclaration':
       break;
     case 'VariableDeclaration':
-      node.declarations.forEach(visit);
+      const declarations = node.declarations.filter(
+        (decl) => decl.init !== null
+      );
+      declarations.forEach((decl) => {
+        visit(decl.init as acorn.Expression);
+      });
       break;
     case 'ClassDeclaration':
     case 'Identifier':
@@ -153,8 +166,8 @@ function visit(node: acorn.AnyNode): void {
       break;
     case 'LogicalExpression':
       visit(node.left);
-      const logicalprevIds = cfgState.prevIds;
       CondBlock();
+      const logicalprevIds = cfgState.prevIds;
       visit(node.right);
       cfgState.prevIds = cfgState.prevIds.concat(logicalprevIds);
       break;
@@ -171,9 +184,11 @@ function visit(node: acorn.AnyNode): void {
     case 'ConditionalExpression':
       visit(node.test);
       CondBlock();
+
       visit(node.consequent);
-      CondBlock();
+      const consequent = cfgState.prevIds;
       visit(node.alternate);
+      cfgState.prevIds = cfgState.prevIds.concat(consequent);
       break;
     case 'CallExpression':
       visit(node.callee);
@@ -203,6 +218,8 @@ function visit(node: acorn.AnyNode): void {
 }
 function subgraphVisitor(expr: acorn.AnyNode): void {
   switch (expr.type) {
+    case 'VariableDeclaration':
+      throw new Error('VariableDeclaration should not be visited');
     case 'Identifier':
     case 'Literal':
     case 'ThisExpression':
@@ -215,7 +232,7 @@ function subgraphVisitor(expr: acorn.AnyNode): void {
       expr.properties.forEach(subgraphVisitor);
       break;
     case 'FunctionExpression':
-      break;
+      throw new Error('FunctionExpression should not be visited');
     case 'UnaryExpression':
       subgraphVisitor(expr.argument);
       break;
@@ -269,7 +286,7 @@ function subgraphVisitor(expr: acorn.AnyNode): void {
       subgraphVisitor(expr.consequent);
       cfgState.subgraph.then = cfgState.prevIds;
       cfgState.prevIds = condSubgraph.else;
-      stripCond();
+      newBlock();
       subgraphVisitor(expr.alternate);
       cfgState.subgraph.else = cfgState.prevIds;
       break;
@@ -315,7 +332,7 @@ function extractCFG(node: acorn.AnyNode): CFGState {
     exceptionId: -2,
   };
   visit(node);
-  mergePrev(cfgState.prevIds, cfgState.endId);
+  // mergePrev(cfgState.prevIds, cfgState.endId);
   return cfgState;
 }
 // utils -------------------------------------------------------------------------------------------
@@ -509,21 +526,32 @@ async function generatePNG(
 async function main() {
   const code2 = `
 function example() {
-  Symbol('JSCA_194_211');
-  // babel-minify (2)
-  for (_.a; _.b && _.c; _.d);
+  Symbol('JSCA_44_57');
+  doc = doc || document;
+  var i, val, script = doc.createElement('script');
+  script.text = code;
+  if (node) {
+    for (i in preservedScriptAttributes) {
+      val = node[i] || node.getAttribute && node.getAttribute(i);
+      if (val) {
+        script.setAttribute(i, val);
+      }
+    }
+  }
+  doc.head.appendChild(script).parentNode.removeChild(script);
 }
+
   `;
   const code3 = `
 function example() {
-  Symbol('JSCA_194_211');
-  // original (3)
-    for (_.a; _.b; _.d) {
-      if (_.c) {
-        break;
-      }
-    }
+  Symbol('JSCA_44_57'), n = n || ye;
+  var a, o, s = n.createElement('script');
+  if (s.text = e, t)
+    for (a in xe)
+      o = t[a] || t.getAttribute && t.getAttribute(a), o && s.setAttribute(a, o);
+  n.head.appendChild(s).parentNode.removeChild(s);
 }
+
   `;
   const code4 = `
 function example() {
@@ -559,3 +587,18 @@ function example() {
 if (require.main === module) {
   main().catch(console.error);
 }
+
+function cfg(functions: Function[]): CFG[] {
+  return functions.map((func) => {
+    const ast = func.body;
+    const graph = extractCFG(ast);
+    return {
+      id: func.id,
+      name: func.name,
+      type: 'cfg',
+      nodes: graph.nodes,
+    };
+  });
+}
+
+export default cfg;
