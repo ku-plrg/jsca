@@ -1,8 +1,9 @@
 import * as acorn from 'acorn';
-import { CFG, CFGState, CFGArgument, Subgraph } from '../utils/types';
+import { CFGState, CFGArgument, Subgraph } from '../utils/types';
 import { writeFile } from 'fs/promises';
 import { exec } from 'child_process';
 import { promisify } from 'util';
+import { start } from 'repl';
 import { stat } from 'fs';
 
 let cfgState: CFGState;
@@ -14,15 +15,12 @@ function visit(node: acorn.AnyNode): void {
       break;
     case 'BlockStatement':
       node.body.forEach((body) => {
-        newBlock(cfgState);
+        newBlock();
         visit(body);
       });
-
       break;
     case 'EmptyStatement':
-      break;
     case 'DebuggerStatement':
-      break;
     case 'WithStatement':
       break;
     case 'ReturnStatement':
@@ -34,22 +32,35 @@ function visit(node: acorn.AnyNode): void {
       );
       break;
     case 'LabeledStatement':
+      break;
     case 'BreakStatement':
+      const breakprevIds = cfgState.prevIds;
+      const loop_break = cfgState.loopStack.pop();
+      if (!loop_break) return;
+      loop_break.break.push(...breakprevIds);
+      cfgState.loopStack.push(loop_break);
+      cfgState.prevIds = cfgState.prevIds.filter(
+        (id) => !breakprevIds.includes(id)
+      );
+      break;
+
     case 'ContinueStatement':
+      const continueprevIds = cfgState.prevIds;
+      const loop_continue = cfgState.loopStack.pop();
+      if (!loop_continue) return;
+      loop_continue.continue.push(...continueprevIds);
+      cfgState.loopStack.push(loop_continue);
+      cfgState.prevIds = cfgState.prevIds.filter(
+        (id) => !continueprevIds.includes(id)
+      );
       break;
     case 'IfStatement':
-      const ifprevIds = cfgState.prevIds;
-      subgraphVisitor(node.test);
-      const subgraph = cfgState.subgraphstack.pop();
-      if (!subgraph) return;
-      mergePrev(ifprevIds, subgraph.start);
-      cfgState.prevIds = subgraph.then;
-      newCondBlock(cfgState);
-      node.consequent && visit(node.consequent);
+      const ifSubgraph = createSubgraph(node.test);
+      cfgState.prevIds = ifSubgraph.then;
+      condVisitor(node.consequent);
       let thenPrevids = cfgState.prevIds;
-      cfgState.prevIds = subgraph.else;
-      newCondBlock(cfgState);
-      node.alternate && visit(node.alternate);
+      cfgState.prevIds = ifSubgraph.else;
+      node.alternate && condVisitor(node.alternate);
       cfgState.prevIds = thenPrevids.concat(cfgState.prevIds);
       break;
     case 'SwitchStatement':
@@ -57,18 +68,42 @@ function visit(node: acorn.AnyNode): void {
     case 'TryStatement':
       break;
     case 'WhileStatement':
-      subgraphVisitor(node.test);
-      visit(node.body);
+      const whileSubgraph = createSubgraph(node.test);
+      cfgState.prevIds = whileSubgraph.then;
+      const whileLoop = loopVisitor(node.body);
+      mergePrev(
+        whileLoop.continue.concat(cfgState.prevIds),
+        whileSubgraph.start
+      );
+      cfgState.prevIds = whileLoop.break.concat(whileSubgraph.else);
       break;
     case 'DoWhileStatement':
-      visit(node.body);
-      subgraphVisitor(node.test);
+      const doWhileLoop = loopVisitor(node.body);
+      const dowhileSubgraph = createSubgraph(node.test);
+      mergePrev(
+        doWhileLoop.continue.concat(dowhileSubgraph.then),
+        dowhileSubgraph.start
+      );
+      cfgState.prevIds = doWhileLoop.break.concat(dowhileSubgraph.else);
       break;
     case 'ForStatement':
       node.init && visit(node.init);
-      node.test && subgraphVisitor(node.test);
-      node.update && visit(node.update);
-      visit(node.body);
+      if (node.test) {
+        const forSubgraph = createSubgraph(node.test);
+        cfgState.prevIds = forSubgraph.then;
+        const forLoop = loopVisitor(node.body);
+        node.update && visit(node.update);
+        mergePrev(forLoop.continue.concat(cfgState.prevIds), forSubgraph.start);
+        cfgState.prevIds = forLoop.break.concat(forSubgraph.else);
+      } else {
+        const forprevIds = cfgState.prevIds;
+        const forLoop = loopVisitor(node.body);
+        node.update && visit(node.update);
+        mergePrev(forLoop.continue, forprevIds[0]);
+        cfgState.prevIds = forLoop.break;
+      }
+      break;
+
     case 'ForInStatement':
     case 'ForOfStatement':
     case 'FunctionDeclaration':
@@ -77,33 +112,17 @@ function visit(node: acorn.AnyNode): void {
       node.declarations.forEach(visit);
       break;
     case 'ClassDeclaration':
-      break;
     case 'Identifier':
-      if (cfgState.prevIds.length === 1) {
-        const _node = cfgState.nodes.get(cfgState.prevIds[0]);
-        if (!_node || _node.type !== 'block') return;
-        cfgState.nodes.set(cfgState.prevIds[0], {
-          ..._node,
-          sequences: [
-            ..._node.sequences,
-            { type: 'prop', value: `literal ${node.name}` },
-          ],
-        });
-      } else {
-        const nodeId = createNode(cfgState);
-        mergePrev(cfgState.prevIds, nodeId);
-        cfgState.nodes.set(nodeId, {
-          type: 'block',
-          id: nodeId,
-          nextIds: [],
-          sequences: [{ type: 'prop', value: 'literal' }],
-        });
-      }
-      break;
     case 'Literal':
     case 'ThisExpression':
+      break;
     case 'ArrayExpression':
+      const elements = node.elements.filter((el) => el !== null);
+      elements.forEach(visit);
+      break;
     case 'ObjectExpression':
+      node.properties.forEach(visit);
+      break;
     case 'FunctionExpression':
       break;
     case 'UnaryExpression':
@@ -119,27 +138,33 @@ function visit(node: acorn.AnyNode): void {
     case 'AssignmentExpression':
       visit(node.left);
       visit(node.right);
+      if (
+        node.left.type === 'MemberExpression' &&
+        node.left.property.type === 'Identifier'
+      ) {
+        insertSequence(node.left.property.name, 'update_prop');
+      }
       break;
     case 'LogicalExpression':
       visit(node.left);
-      visit(node.right);
+      const logicalprevIds = cfgState.prevIds;
+      condVisitor(node.right);
+      cfgState.prevIds = cfgState.prevIds.concat(logicalprevIds);
       break;
     case 'MemberExpression':
-      // visit(node.object);
-      // if (node.computed && node.property.type === 'Identifier') {
-
-      //   visit(node.property);
-      // }
-      // if (!node.computed && node.property.type !== 'Identifier') {
-      //   visit(node.property);
-      // }
       visit(node.object);
-      visit(node.property);
+      if (!node.computed && node.property.type === 'Identifier') {
+        insertSequence(node.property.name, 'prop');
+        visit(node.property);
+      }
+      if (node.computed && node.property.type !== 'Identifier') {
+        visit(node.property);
+      }
       break;
     case 'ConditionalExpression':
       visit(node.test);
-      visit(node.consequent);
-      visit(node.alternate);
+      condVisitor(node.consequent);
+      condVisitor(node.alternate);
       break;
     case 'CallExpression':
       visit(node.callee);
@@ -170,46 +195,20 @@ function visit(node: acorn.AnyNode): void {
 function subgraphVisitor(expr: acorn.AnyNode): void {
   switch (expr.type) {
     case 'Identifier':
-      if (cfgState.prevIds.length === 1) {
-        const node = cfgState.nodes.get(cfgState.prevIds[0]);
-        if (!node || node.type !== 'block') return;
-        cfgState.nodes.set(cfgState.prevIds[0], {
-          ...node,
-          sequences: [
-            ...node.sequences,
-            { type: 'prop', value: `literal ${expr.name}` },
-          ],
-        });
-        cfgState.subgraphstack.push({
-          start: node.id,
-          then: [node.id],
-          else: [node.id],
-        });
-      } else {
-        const nodeId = createNode(cfgState);
-        mergePrev(cfgState.prevIds, nodeId);
-        cfgState.nodes.set(nodeId, {
-          type: 'block',
-          id: nodeId,
-          nextIds: [],
-          sequences: [{ type: 'prop', value: 'literal' }],
-        });
-        cfgState.subgraphstack.push({
-          start: nodeId,
-          then: [nodeId],
-          else: [nodeId],
-        });
-      }
-      break;
     case 'Literal':
-      break;
     case 'ThisExpression':
     case 'ArrayExpression':
     case 'ObjectExpression':
     case 'FunctionExpression':
       break;
     case 'UnaryExpression':
-      subgraphVisitor(expr.argument);
+      // const unarySubgraph = getSubgraph(cfgState);
+      // subgraphVisitor(expr.argument);
+      // cfgState.subgraphstack.push({
+      //   start: unarySubgraph.start,
+      //   then: unarySubgraph.then,
+      //   else: unarySubgraph.else,
+      // });
       break;
     case 'UpdateExpression':
       subgraphVisitor(expr.argument);
@@ -271,7 +270,7 @@ function extractCFG(node: acorn.AnyNode): CFGState {
       [-1, { type: 'exit', id: -1, nextIds: [] }],
       [-2, { type: 'exception-exit', id: -2, nextIds: [] }],
     ]),
-    subgraphstack: [],
+    subgraph: { start: 0, then: [0], else: [0] },
     loopStack: [],
     endId: -1,
     exceptionId: -2,
@@ -282,10 +281,10 @@ function extractCFG(node: acorn.AnyNode): CFGState {
 }
 // utils -------------------------------------------------------------------------------------------
 
-function createNode(state: CFGState): number {
-  const id = state.currentId++;
+function createNode(): number {
+  const id = cfgState.currentId++;
   const nextIds: number[] = [];
-  state.nodes.set(id, {
+  cfgState.nodes.set(id, {
     type: 'block',
     id,
     nextIds,
@@ -309,17 +308,44 @@ function mergePrev(prevIds: number[], currentId: number) {
     addEdge(prevId, currentId);
   });
 }
-function newBlock(state: CFGState) {
-  if (state.prevIds.length !== 1) {
-    const nodeId = createNode(state);
-    mergePrev(state.prevIds, nodeId);
-    state.prevIds = [nodeId];
+function newBlock() {
+  if (cfgState.prevIds.length !== 1) {
+    const nodeId = createNode();
+    mergePrev(cfgState.prevIds, nodeId);
+    cfgState.prevIds = [nodeId];
   }
 }
-function newCondBlock(state: CFGState) {
-  const nodeId = createNode(state);
-  mergePrev(state.prevIds, nodeId);
-  state.prevIds = [nodeId];
+function createSubgraph(node: acorn.Expression): Subgraph {
+  const prevIds = cfgState.prevIds;
+  newBlock();
+  cfgState.prevIds = [cfgState.prevIds[0]];
+  subgraphVisitor(node);
+  cfgState.prevIds = prevIds;
+  const subgraph = cfgState.subgraph;
+  mergePrev(cfgState.prevIds, subgraph.start);
+  return subgraph;
+}
+
+function condVisitor(node: acorn.AnyNode) {
+  const nodeId = createNode();
+  mergePrev(cfgState.prevIds, nodeId);
+  cfgState.prevIds = [nodeId];
+  visit(node);
+}
+
+function loopVisitor(node: acorn.AnyNode) {
+  cfgState.loopStack.push({ break: [], continue: [] });
+  visit(node);
+  const loop = cfgState.loopStack.pop();
+  if (!loop) throw new Error('Loop stack is empty');
+  return loop;
+}
+function insertSequence(value: string, type: 'prop' | 'update_prop') {
+  const nodeId = cfgState.prevIds[0];
+  const node = cfgState.nodes.get(nodeId);
+  if (node && node.type === 'block') {
+    node.sequences.push({ type: type, value });
+  }
 }
 //-----------------------------------------------------------------------------------------------------
 function cfgBuilder(argument: CFGArgument) {
@@ -361,7 +387,7 @@ async function cfgToDot(graph: CFGState): Promise<string> {
         color = '#FF6347'; // Tomato
         break;
       case 'block':
-        label = `Block ${id} ${node.sequences.map((s) => s.value).join('/')}`;
+        label = `Block ${id}\n${node.sequences.map((s) => s.value).join('\n')}`;
         break;
       default:
     }
@@ -406,8 +432,10 @@ async function generatePNG(
 async function main() {
   const code2 = `
 function example() {
-if(a) {} else return b;
-c
+if(a) {b};
+c;
+d;
+e;
 }
   `;
   const code3 = `

@@ -37,7 +37,7 @@ export interface CFGState {
   prevIds: number[];
   nodes: Map<number, CFGNode>;
   loopStack: { break: number[]; continue: number[] }[];
-  subgraphstack: Subgraph[];
+  subgraph: Subgraph;
   endId: number;
   exceptionId: number;
 }
