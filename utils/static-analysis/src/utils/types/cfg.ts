@@ -1,6 +1,8 @@
+import exp from 'constants';
+
 export type CFGNodeBase = {
   id: number;
-  type: 'start' | 'exit' | 'exception-exit' | 'block';
+  type: 'start' | 'exit' | 'exception-exit' | 'block' | 'condition';
   nextIds: number[];
 };
 
@@ -14,6 +16,9 @@ export interface CFGNodeExit extends CFGNodeBase {
 
 export interface CFGNodeExceptionExit extends CFGNodeBase {
   type: 'exception-exit';
+}
+export interface CFGNodeCondition extends CFGNodeBase {
+  type: 'condition';
 }
 
 export interface CFGNodeBlock extends CFGNodeBase {
@@ -30,6 +35,7 @@ export type CFGNode =
   | CFGNodeStart
   | CFGNodeExit
   | CFGNodeExceptionExit
+  | CFGNodeCondition
   | CFGNodeBlock;
 
 export interface CFGState {
