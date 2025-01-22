@@ -3,6 +3,7 @@ import { CFG, CFGState, CFGArgument, Subgraph } from '../utils/types';
 import { writeFile } from 'fs/promises';
 import { exec } from 'child_process';
 import { promisify } from 'util';
+import { stat } from 'fs';
 
 let cfgState: CFGState;
 
@@ -12,7 +13,12 @@ function visit(node: acorn.AnyNode): void {
       visit(node.expression);
       break;
     case 'BlockStatement':
-      node.body.forEach(visit);
+      node.body.forEach((body) => {
+        newBlock(cfgState);
+        visit(body);
+      });
+
+      break;
     case 'EmptyStatement':
       break;
     case 'DebuggerStatement':
@@ -20,28 +26,30 @@ function visit(node: acorn.AnyNode): void {
     case 'WithStatement':
       break;
     case 'ReturnStatement':
+      const returnprevIds = cfgState.prevIds;
       node.argument && visit(node.argument);
+      mergePrev(cfgState.prevIds, cfgState.endId);
+      cfgState.prevIds = cfgState.prevIds.filter(
+        (id) => !returnprevIds.includes(id)
+      );
+      break;
     case 'LabeledStatement':
     case 'BreakStatement':
     case 'ContinueStatement':
       break;
     case 'IfStatement':
-      let prevIds = cfgState.prevIds;
+      const ifprevIds = cfgState.prevIds;
       subgraphVisitor(node.test);
       const subgraph = cfgState.subgraphstack.pop();
       if (!subgraph) return;
-      mergePrev(prevIds, subgraph.start);
-      const consequentBlock = createNode(cfgState);
-      mergePrev(subgraph.then, consequentBlock);
-      cfgState.prevIds = [consequentBlock];
+      mergePrev(ifprevIds, subgraph.start);
+      cfgState.prevIds = subgraph.then;
+      newCondBlock(cfgState);
       node.consequent && visit(node.consequent);
       let thenPrevids = cfgState.prevIds;
       cfgState.prevIds = subgraph.else;
-      const alternateBlock = createNode(cfgState);
-      mergePrev(subgraph.else, alternateBlock);
-      cfgState.prevIds = [alternateBlock];
+      newCondBlock(cfgState);
       node.alternate && visit(node.alternate);
-
       cfgState.prevIds = thenPrevids.concat(cfgState.prevIds);
       break;
     case 'SwitchStatement':
@@ -192,7 +200,6 @@ function subgraphVisitor(expr: acorn.AnyNode): void {
           else: [nodeId],
         });
       }
-      console.log(cfgState.subgraphstack);
       break;
     case 'Literal':
       break;
@@ -256,18 +263,18 @@ function subgraphVisitor(expr: acorn.AnyNode): void {
 
 function extractCFG(node: acorn.AnyNode): CFGState {
   cfgState = {
-    currentId: 4,
-    prevIds: [3],
+    currentId: 2,
+    prevIds: [1],
     nodes: new Map([
-      [3, { type: 'block', id: 3, nextIds: [], sequences: [] }],
-      [2, { type: 'start', id: 0, nextIds: [3] }],
-      [1, { type: 'exit', id: 1, nextIds: [] }],
-      [0, { type: 'exception-exit', id: 2, nextIds: [] }],
+      [1, { type: 'block', id: 1, nextIds: [], sequences: [] }],
+      [0, { type: 'start', id: 0, nextIds: [1] }],
+      [-1, { type: 'exit', id: -1, nextIds: [] }],
+      [-2, { type: 'exception-exit', id: -2, nextIds: [] }],
     ]),
     subgraphstack: [],
     loopStack: [],
-    endId: 1,
-    exceptionId: 0,
+    endId: -1,
+    exceptionId: -2,
   };
   visit(node);
   mergePrev(cfgState.prevIds, cfgState.endId);
@@ -302,6 +309,18 @@ function mergePrev(prevIds: number[], currentId: number) {
     addEdge(prevId, currentId);
   });
 }
+function newBlock(state: CFGState) {
+  if (state.prevIds.length !== 1) {
+    const nodeId = createNode(state);
+    mergePrev(state.prevIds, nodeId);
+    state.prevIds = [nodeId];
+  }
+}
+function newCondBlock(state: CFGState) {
+  const nodeId = createNode(state);
+  mergePrev(state.prevIds, nodeId);
+  state.prevIds = [nodeId];
+}
 //-----------------------------------------------------------------------------------------------------
 function cfgBuilder(argument: CFGArgument) {
   switch (argument.type) {
@@ -327,7 +346,7 @@ async function cfgToDot(graph: CFGState): Promise<string> {
   for (const [id, node] of nodes.entries()) {
     let label = '';
     let color = 'white'; // Default color
-
+    const newId = id + 2;
     switch (node.type) {
       case 'start':
         label = 'Start';
@@ -347,7 +366,7 @@ async function cfgToDot(graph: CFGState): Promise<string> {
       default:
     }
 
-    dotString += `  node${id} [label="${label}", fillcolor="${color}"];\n`;
+    dotString += `  node${newId} [label="${label}", fillcolor="${color}"];\n`;
   }
 
   dotString += '\n  // Edges\n';
@@ -355,7 +374,7 @@ async function cfgToDot(graph: CFGState): Promise<string> {
   // Add edges
   for (const [id, node] of nodes.entries()) {
     for (const nextId of node.nextIds) {
-      dotString += `  node${id} -> node${nextId} [color="#666666"];\n`;
+      dotString += `  node${id + 2} -> node${nextId + 2} [color="#666666"];\n`;
     }
   }
 
@@ -387,7 +406,8 @@ async function generatePNG(
 async function main() {
   const code2 = `
 function example() {
-if(a) {} else b;
+if(a) {} else return b;
+c
 }
   `;
   const code3 = `
