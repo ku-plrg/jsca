@@ -55,10 +55,10 @@ function visit(node: acorn.AnyNode): void {
     case 'IfStatement':
       const ifSubgraph = createSubgraph(node.test);
       cfgState.prevIds = ifSubgraph.then;
-      condVisitor(node.consequent);
+      condVisitor(node.consequent, visit);
       let thenPrevids = cfgState.prevIds;
       cfgState.prevIds = ifSubgraph.else;
-      node.alternate && condVisitor(node.alternate);
+      node.alternate && condVisitor(node.alternate, visit);
       cfgState.prevIds = thenPrevids.concat(cfgState.prevIds);
       break;
     case 'SwitchStatement':
@@ -146,7 +146,7 @@ function visit(node: acorn.AnyNode): void {
     case 'LogicalExpression':
       visit(node.left);
       const logicalprevIds = cfgState.prevIds;
-      condVisitor(node.right);
+      condVisitor(node.right, visit);
       cfgState.prevIds = cfgState.prevIds.concat(logicalprevIds);
       break;
     case 'MemberExpression':
@@ -161,8 +161,8 @@ function visit(node: acorn.AnyNode): void {
       break;
     case 'ConditionalExpression':
       visit(node.test);
-      condVisitor(node.consequent);
-      condVisitor(node.alternate);
+      condVisitor(node.consequent, visit);
+      condVisitor(node.alternate, visit);
       break;
     case 'CallExpression':
       visit(node.callee);
@@ -227,13 +227,15 @@ function subgraphVisitor(expr: acorn.AnyNode): void {
       break;
     case 'LogicalExpression':
       subgraphVisitor(expr.left);
+      const logicalsubgraph = cfgState.subgraph;
       if (expr.operator === '&&') {
         cfgState.prevIds = cfgState.subgraph.then;
-        subgraphVisitor(expr.right);
+        condVisitor(expr.right, subgraphVisitor);
         cfgState.subgraph.then = cfgState.prevIds;
+        cfgState.subgraph.else = logicalsubgraph.else;
       } else {
         cfgState.prevIds = cfgState.subgraph.else;
-        subgraphVisitor(expr.right);
+        condVisitor(expr.right, subgraphVisitor);
         cfgState.subgraph.else = cfgState.prevIds;
       }
       break;
@@ -249,8 +251,12 @@ function subgraphVisitor(expr: acorn.AnyNode): void {
       break;
     case 'ConditionalExpression':
       subgraphVisitor(expr.test);
-      subgraphVisitor(expr.consequent);
-      subgraphVisitor(expr.alternate);
+      const condSubgraph = cfgState.subgraph;
+      condVisitor(expr.consequent, subgraphVisitor);
+      cfgState.subgraph.then = cfgState.prevIds;
+      cfgState.prevIds = condSubgraph.else;
+      condVisitor(expr.alternate, subgraphVisitor);
+      cfgState.subgraph.else = cfgState.prevIds;
       break;
     case 'CallExpression':
       subgraphVisitor(expr.callee);
@@ -348,11 +354,14 @@ function createSubgraph(node: acorn.Expression): Subgraph {
   return subgraph;
 }
 
-function condVisitor(node: acorn.AnyNode) {
+function condVisitor(
+  node: acorn.AnyNode,
+  visitor: (node: acorn.AnyNode) => void
+) {
   const nodeId = createNode();
   mergePrev(cfgState.prevIds, nodeId);
   cfgState.prevIds = [nodeId];
-  visit(node);
+  visitor(node);
 }
 
 function loopVisitor(node: acorn.AnyNode) {
@@ -454,7 +463,7 @@ async function generatePNG(
 async function main() {
   const code2 = `
 function example() {
-if(_.a) {_.b};
+if(_.a&&(_.f || _.e)) {_.b};
 _.c;
 _.d;
 _.e;
