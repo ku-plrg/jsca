@@ -245,6 +245,9 @@ function stmtVisitor(previds: number[], state: CFGState): StatementVisitor {
       mergePrev(state, lastLoopStack.continue, loopStart);
       return [...lastLoopStack.break, loopStart];
     },
+    VariableDeclaration(node) {
+      throw UnsupportedError(node.type);
+    },
   };
 }
 function processStmtVisitor(previds: number[], state: CFGState, node: Stmt) {
@@ -254,7 +257,12 @@ function processStmtVisitor(previds: number[], state: CFGState, node: Stmt) {
     ) => number[];
     return visitor(node);
   } catch (e) {
-    throw UnsupportedError(node.type);
+    console.error('Error at processStmtVisitor', node.type);
+    console.error(
+      '\t' +
+        (typeof e === 'object' && e !== null && 'message' in e ? e.message : e)
+    );
+    return previds;
   }
 }
 
@@ -270,7 +278,12 @@ function processSubGraphVisitor(
     const result = visitor(node);
     return result;
   } catch (e) {
-    throw UnsupportedError(node.type);
+    console.error('Error at processSubgraphVisitor', node.type);
+    console.error(
+      '\t' +
+        (typeof e === 'object' && e !== null && 'message' in e ? e.message : e)
+    );
+    return { start: state.currentId, then: prevIds, else: prevIds };
   }
 }
 
@@ -295,7 +308,12 @@ function processExprVisitor(prevIds: number[], state: CFGState, node: Expr) {
     if (result.includes(state.currentId)) return undefined;
     return result;
   } catch (e) {
-    throw UnsupportedError(node.type);
+    console.error('Error at processExprVisitor', node.type);
+    console.error(
+      '\t' +
+        (typeof e === 'object' && e !== null && 'message' in e ? e.message : e)
+    );
+    return undefined;
   }
 }
 
@@ -382,6 +400,15 @@ function exprVisitor(previds: number[], state: CFGState): ExprVisitor {
         return property ?? previds;
       }
       return object ?? previds;
+    },
+    SequenceExpression(node) {
+      throw UnsupportedError(node.type);
+    },
+    AssignmentExpression(node) {
+      throw UnsupportedError(node.type);
+    },
+    CallExpression(node) {
+      throw UnsupportedError(node.type);
     },
   };
 }
@@ -594,6 +621,9 @@ function subgraphVisitor(previds: number[], state: CFGState): SubGraphVisitor {
       }
       return objectSubgraph;
     },
+    AssignmentExpression(node) {
+      throw UnsupportedError(node.type);
+    },
   };
 }
 
@@ -701,29 +731,41 @@ async function generatePNG(
 async function main() {
   const code2 = `
 function example() {
-  // babel-minify (2)
-  for (_.a; _.b && _.c; _.d);
-  _.e;
+  Symbol('JSCA_44_57');
+  doc = doc || document;
+  var i, val, script = doc.createElement('script');
+  script.text = code;
+  if (node) {
+    for (i in preservedScriptAttributes) {
+      val = node[i] || node.getAttribute && node.getAttribute(i);
+      if (val) {
+        script.setAttribute(i, val);
+      }
+    }
+  }
+  doc.head.appendChild(script).parentNode.removeChild(script);
 }
   `;
   const code3 = `
 function example() {
-  // original (3)
-    for (_.a; _.b; _.d) {
-      if (_.c) {
-        break;
-      }
-    }
-      _.e;
+  Symbol('JSCA_44_57'), n = n || ye;
+  var a, o, s = n.createElement('script');
+  if (s.text = e, t)
+    for (a in xe)
+      o = t[a] || t.getAttribute && t.getAttribute(a), o && s.setAttribute(a, o);
+  n.head.appendChild(s).parentNode.removeChild(s);
 }
   `;
   const code4 = `
 function example() {
-  // custom code (4)
-  for (_.a; ; _.d) {
-    if(_.b || _.c||x||x||x||x) break;
-  }
-    _.e;
+  Symbol('JSCA_2205_2224'), (t = t || 'fx');
+  var n = v.queue(e, t),
+    o = n.length,
+    r = n.shift(),
+    i = v._queueHooks(e, t);
+  'inprogress' === r && ((r = n.shift()), o--),
+    r && ('fx' === t && n.unshift('inprogress'), delete i.stop, r.call(e, i)),
+    !o && i && i.empty.fire();
 }
   `;
 
