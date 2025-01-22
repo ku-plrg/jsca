@@ -3,8 +3,6 @@ import { CFGState, CFGArgument, Subgraph } from '../utils/types';
 import { writeFile } from 'fs/promises';
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import { start } from 'repl';
-import { stat } from 'fs';
 
 let cfgState: CFGState;
 
@@ -197,18 +195,18 @@ function subgraphVisitor(expr: acorn.AnyNode): void {
     case 'Identifier':
     case 'Literal':
     case 'ThisExpression':
+      break;
     case 'ArrayExpression':
+      const element = expr.elements.filter((el) => el !== null);
+      element.forEach(subgraphVisitor);
+      break;
     case 'ObjectExpression':
+      expr.properties.forEach(subgraphVisitor);
+      break;
     case 'FunctionExpression':
       break;
     case 'UnaryExpression':
-      // const unarySubgraph = getSubgraph(cfgState);
-      // subgraphVisitor(expr.argument);
-      // cfgState.subgraphstack.push({
-      //   start: unarySubgraph.start,
-      //   then: unarySubgraph.then,
-      //   else: unarySubgraph.else,
-      // });
+      subgraphVisitor(expr.argument);
       break;
     case 'UpdateExpression':
       subgraphVisitor(expr.argument);
@@ -220,14 +218,34 @@ function subgraphVisitor(expr: acorn.AnyNode): void {
     case 'AssignmentExpression':
       subgraphVisitor(expr.left);
       subgraphVisitor(expr.right);
+      if (
+        expr.left.type === 'MemberExpression' &&
+        expr.left.property.type === 'Identifier'
+      ) {
+        insertSequence(expr.left.property.name, 'update_prop');
+      }
       break;
     case 'LogicalExpression':
       subgraphVisitor(expr.left);
-      subgraphVisitor(expr.right);
+      if (expr.operator === '&&') {
+        cfgState.prevIds = cfgState.subgraph.then;
+        subgraphVisitor(expr.right);
+        cfgState.subgraph.then = cfgState.prevIds;
+      } else {
+        cfgState.prevIds = cfgState.subgraph.else;
+        subgraphVisitor(expr.right);
+        cfgState.subgraph.else = cfgState.prevIds;
+      }
       break;
     case 'MemberExpression':
       subgraphVisitor(expr.object);
-      expr.computed && subgraphVisitor(expr.property);
+      if (!expr.computed && expr.property.type === 'Identifier') {
+        insertSequence(expr.property.name, 'prop');
+        subgraphVisitor(expr.property);
+      }
+      if (expr.computed && expr.property.type !== 'Identifier') {
+        subgraphVisitor(expr.property);
+      }
       break;
     case 'ConditionalExpression':
       subgraphVisitor(expr.test);
@@ -270,7 +288,7 @@ function extractCFG(node: acorn.AnyNode): CFGState {
       [-1, { type: 'exit', id: -1, nextIds: [] }],
       [-2, { type: 'exception-exit', id: -2, nextIds: [] }],
     ]),
-    subgraph: { start: 0, then: [0], else: [0] },
+    subgraph: { start: 1, then: [1], else: [1] },
     loopStack: [],
     endId: -1,
     exceptionId: -2,
@@ -318,7 +336,6 @@ function newBlock() {
 function createSubgraph(node: acorn.Expression): Subgraph {
   const prevIds = cfgState.prevIds;
   newBlock();
-  cfgState.prevIds = [cfgState.prevIds[0]];
   subgraphVisitor(node);
   cfgState.prevIds = prevIds;
   const subgraph = cfgState.subgraph;
@@ -432,10 +449,10 @@ async function generatePNG(
 async function main() {
   const code2 = `
 function example() {
-if(a) {b};
-c;
-d;
-e;
+if(_.a) {_.b};
+_.c;
+_.d;
+_.e;
 }
   `;
   const code3 = `
