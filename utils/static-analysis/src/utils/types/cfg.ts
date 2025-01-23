@@ -19,6 +19,8 @@ export interface CFGNodeExceptionExit extends CFGNodeBase {
 }
 export interface CFGNodeCondition extends CFGNodeBase {
   type: 'condition';
+  then: number[];
+  else: number[];
 }
 
 export interface CFGNodeBlock extends CFGNodeBase {
@@ -44,13 +46,13 @@ export interface CFGState {
   nodes: Map<number, CFGNode>;
   loopStack: { break: number[]; continue: number[] }[];
   subgraph: Subgraph[];
+  context: boolean;
   endId: number;
   exceptionId: number;
 }
 
 export interface Subgraph {
   start: number;
-  prevs: number[];
   then: number[];
   else: number[];
 }
