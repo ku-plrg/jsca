@@ -35,18 +35,30 @@ async function FunctionScorer<T extends AbsFunction>(
     if (!existsSync(dirname1)) mkdirSync(dirname1, { recursive: true });
     const dirname2 = `src/logs/cfg_png/${lib2.name}`;
     if (!existsSync(dirname2)) mkdirSync(dirname2, { recursive: true });
-    for (const f of absfuncs1) {
+    await processInChunks(absfuncs1, 50, async (f) => {
       const filename = `${dirname1}/${f.id}`;
       const dot = cfgToDot((f as any).nodes);
       await writeFile(`${filename}.dot`, dot, 'utf8');
       await generatePNG(dot, filename);
-    }
-    for (const f of absfuncs2) {
+    });
+    await processInChunks(absfuncs2, 50, async (f) => {
       const filename = `${dirname2}/${f.id}`;
       const dot = cfgToDot((f as any).nodes);
       await writeFile(`${filename}.dot`, dot, 'utf8');
       await generatePNG(dot, filename);
-    }
+    });
+    // for (const f of absfuncs1) {
+    //   const filename = `${dirname1}/${f.id}`;
+    //   const dot = cfgToDot((f as any).nodes);
+    //   await writeFile(`${filename}.dot`, dot, 'utf8');
+    //   await generatePNG(dot, filename);
+    // }
+    // for (const f of absfuncs2) {
+    //   const filename = `${dirname2}/${f.id}`;
+    //   const dot = cfgToDot((f as any).nodes);
+    //   await writeFile(`${filename}.dot`, dot, 'utf8');
+    //   await generatePNG(dot, filename);
+    // }
   }
 
   //createDotGraph(propstree, file1);
@@ -160,12 +172,13 @@ async function FunctionScorer<T extends AbsFunction>(
     const LOG_DIR = '/utils/static-analysis/src/logs/functions';
     const IR_DIR = '/utils/static-analysis/src/logs/ir';
     const CFG_DIR = '/utils/static-analysis/src/logs/cfg';
+    const CFG_PNG_DIR = '/utils/static-analysis/src/logs/cfg_png';
     const TEMPLATE = (id: string, name: string, loc: string) =>
       `[${id}(${name})](${LOG_DIR}/${loc}/${name}.js)`;
     const IRTEMPLATE = (id: string, name: string, loc: string) =>
       `[${id}(${name})](${IR_DIR}/${loc}/ir_log_${id}.txt)`;
     const CFGTEMPLATE = (id: string, name: string, loc: string) =>
-      `[${id}(${name})](${CFG_DIR}/${loc}/cfg_log_${id}.txt)`;
+      `[${id}(${name})](${CFG_DIR}/${loc}/cfg_log_${id}.txt) ![CFG](${CFG_PNG_DIR}/${loc}/${id}.png)`;
     const additionalTemplate =
       additionalLog === 'ir'
         ? IRTEMPLATE
@@ -233,6 +246,26 @@ async function FunctionScorer<T extends AbsFunction>(
   // writeReport(scores2, lib2.name, lib1.name);
   console.log('finish compare', lib1.name, lib2.name);
   return scores1;
+}
+
+async function processInChunks<T>(
+  items: T[],
+  chunkSize: number,
+  asyncFn: (item: T) => Promise<void>
+): Promise<void> {
+  function chunkArray(array: T[], size: number): T[][] {
+    const result: T[][] = [];
+    for (let i = 0; i < array.length; i += size) {
+      result.push(array.slice(i, i + size));
+    }
+    return result;
+  }
+
+  const chunks = chunkArray(items, chunkSize);
+
+  for (const chunk of chunks) {
+    await Promise.all(chunk.map(asyncFn));
+  }
 }
 
 export default FunctionScorer;

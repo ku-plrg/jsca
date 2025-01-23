@@ -13,10 +13,10 @@ const TARGET_ABSTRACTIONS: AbstractionType[] = ['CFG']; // ['IR', 'Props', 'Prop
 
 const TARGET_CODES: [string, string][] = [
   ['jquery_3.7.1.js', 'jquery_3.7.1_babel-minify.js'],
-  ['jquery_3.7.1.js', 'jquery_3.7.1_esbuild.js'],
-  ['jquery_3.7.1.js', 'jquery_3.7.1_swc.js'],
-  ['jquery_3.7.1.js', 'jquery_3.7.1_terser.js'],
-  ['jquery_3.7.1.js', 'jquery_3.7.1_uglifyjs.js'],
+  // ['jquery_3.7.1.js', 'jquery_3.7.1_esbuild.js'],
+  // ['jquery_3.7.1.js', 'jquery_3.7.1_swc.js'],
+  // ['jquery_3.7.1.js', 'jquery_3.7.1_terser.js'],
+  // ['jquery_3.7.1.js', 'jquery_3.7.1_uglifyjs.js'],
 ];
 /* 하나만 돌리고 싶으면 이 친구를 쓰세요 */
 /* 
