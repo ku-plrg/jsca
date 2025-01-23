@@ -2,7 +2,15 @@ import { sha256 } from 'js-sha256';
 import { CFG, CFGNode } from '../utils/types';
 
 const getNodeName = (node: CFGNode | undefined): string => {
-  return node ? `${node.id}:${node.type}` : '';
+  if (!node) return '';
+  switch (node.type) {
+    case 'block':
+      return `${node.id}:${node.sequences
+        .map((s) => (s.type == 'update_prop' ? `${s.value}=_` : s.value))
+        .join(',')}`;
+    default:
+      return `${node.id}:${node.type}`;
+  }
 };
 
 export const stringifyCFG = (nodes: Map<number, CFGNode>): string => {

@@ -13,6 +13,8 @@ import {
 
 let cfgState: CFGState;
 
+const SKIP_BUILTIN = ['Math', 'String', 'Number'];
+
 function visit(node: acorn.AnyNode): void {
   switch (node.type) {
     case 'ExpressionStatement':
@@ -28,12 +30,13 @@ function visit(node: acorn.AnyNode): void {
     case 'WithStatement':
       break;
     case 'ReturnStatement':
-      const returnprevIds = cfgState.prevIds;
+      // const returnprevIds = cfgState.prevIds;
       node.argument && visit(node.argument);
       mergePrev(cfgState.prevIds, cfgState.endId);
-      cfgState.prevIds = cfgState.prevIds.filter(
-        (id) => !returnprevIds.includes(id)
-      );
+      cfgState.prevIds = [];
+      // cfgState.prevIds.filter(
+      //   (id) => !returnprevIds.includes(id)
+      // );
       break;
     case 'LabeledStatement':
       break;
@@ -103,14 +106,14 @@ function visit(node: acorn.AnyNode): void {
         const forsubgraph = cfgState.subgraph;
         cfgState.prevIds = forsubgraph.then;
         const forLoop = loopVisitor(node.body);
-        loopBlock();
+        //loopBlock();
         node.update && visit(node.update);
         mergePrev(forLoop.continue.concat(cfgState.prevIds), forsubgraph.start);
         cfgState.prevIds = forLoop.break.concat(forsubgraph.else);
       } else {
         const forprevIds = cfgState.prevIds;
         const forLoop = loopVisitor(node.body);
-        loopBlock();
+        //loopBlock();
         node.update && visit(node.update);
         mergePrev(forLoop.continue.concat(cfgState.prevIds), forprevIds[0]);
         cfgState.prevIds = forLoop.break;
@@ -166,19 +169,32 @@ function visit(node: acorn.AnyNode): void {
       visit(node.right);
       if (
         node.left.type === 'MemberExpression' &&
-        node.left.property.type === 'Identifier'
+        node.left.property.type === 'Identifier' &&
+        !node.left.computed
       ) {
         insertSequence(node.left.property.name, 'update_prop');
       }
       break;
     case 'LogicalExpression':
-      visit(node.left);
-      CondBlock();
-      const logicalprevIds = cfgState.prevIds;
-      visit(node.right);
-      cfgState.prevIds = cfgState.prevIds.concat(logicalprevIds);
+      createSubgraph(node.left);
+      const leftSubgraph = cfgState.subgraph;
+      if (node.operator === '&&') {
+        cfgState.prevIds = leftSubgraph.then;
+        visit(node.right);
+        cfgState.prevIds = cfgState.prevIds.concat(leftSubgraph.else);
+      } else {
+        cfgState.prevIds = leftSubgraph.else;
+        visit(node.right);
+        cfgState.prevIds = cfgState.prevIds.concat(leftSubgraph.then);
+      }
       break;
     case 'MemberExpression':
+      if (
+        node.object.type === 'Identifier' &&
+        SKIP_BUILTIN.includes(node.object.name)
+      ) {
+        break;
+      }
       visit(node.object);
       if (!node.computed && node.property.type === 'Identifier') {
         insertSequence(node.property.name, 'prop');
@@ -189,13 +205,14 @@ function visit(node: acorn.AnyNode): void {
       }
       break;
     case 'ConditionalExpression':
-      visit(node.test);
-      CondBlock();
-
+      createSubgraph(node.test);
+      const testSubgraph = cfgState.subgraph;
+      cfgState.prevIds = testSubgraph.then;
       visit(node.consequent);
-      const consequent = cfgState.prevIds;
+      let thenPrevIds = cfgState.prevIds;
+      cfgState.prevIds = testSubgraph.else;
       visit(node.alternate);
-      cfgState.prevIds = cfgState.prevIds.concat(consequent);
+      cfgState.prevIds = thenPrevIds.concat(cfgState.prevIds); //cfgState.prevIds.concat(consequent);
       break;
     case 'CallExpression':
       visit(node.callee);
@@ -255,6 +272,7 @@ function subgraphVisitor(expr: acorn.AnyNode): void {
       subgraphVisitor(expr.right);
       if (
         expr.left.type === 'MemberExpression' &&
+        !expr.left.computed &&
         expr.left.property.type === 'Identifier'
       ) {
         insertSequence(expr.left.property.name, 'update_prop');
@@ -262,21 +280,29 @@ function subgraphVisitor(expr: acorn.AnyNode): void {
       break;
     case 'LogicalExpression':
       subgraphVisitor(expr.left);
-      const logicalsubgraph = cfgState.subgraph;
+      const logicalSubgraph = cfgState.subgraph;
       stripCond();
+      const prevIds = cfgState.prevIds;
       if (expr.operator === '&&') {
         cfgState.prevIds = cfgState.subgraph.then;
         subgraphVisitor(expr.right);
         cfgState.subgraph.then = cfgState.prevIds;
-        cfgState.subgraph.else = logicalsubgraph.else.concat(cfgState.prevIds);
+        cfgState.subgraph.else = logicalSubgraph.else.concat(cfgState.prevIds);
       } else {
         cfgState.prevIds = cfgState.subgraph.else;
         subgraphVisitor(expr.right);
-        cfgState.subgraph.then = logicalsubgraph.then.concat(cfgState.prevIds);
+        cfgState.subgraph.then = logicalSubgraph.then.concat(cfgState.prevIds);
         cfgState.subgraph.else = cfgState.prevIds;
       }
+      cfgState.prevIds = prevIds;
       break;
     case 'MemberExpression':
+      if (
+        expr.object.type === 'Identifier' &&
+        SKIP_BUILTIN.includes(expr.object.name)
+      ) {
+        break;
+      }
       subgraphVisitor(expr.object);
       if (!expr.computed && expr.property.type === 'Identifier') {
         insertSequence(expr.property.name, 'prop');
@@ -339,7 +365,7 @@ function extractCFG(node: acorn.AnyNode): CFGState {
     exceptionId: -2,
   };
   visit(node);
-  // mergePrev(cfgState.prevIds, cfgState.endId);
+  mergePrev(cfgState.prevIds, cfgState.endId);
   return cfgState;
 }
 // utils -------------------------------------------------------------------------------------------
@@ -460,7 +486,7 @@ function cfgBuilder(argument: CFGArgument) {
   }
 }
 
-export async function cfgToDot(nodes: Map<number, CFGNode>): Promise<string> {
+export function cfgToDot(nodes: Map<number, CFGNode>): string {
   let dotString = 'digraph CFG {\n';
   dotString += '  rankdir=TB;\n';
   dotString += '  node [shape=box, style=filled, fontname="Arial"];\n\n';
@@ -514,7 +540,7 @@ export async function generatePNG(
   outputPath: string
 ): Promise<void> {
   try {
-    const tempDotFile = 'temp_graph.dot';
+    const tempDotFile = `temp_${outputPath}.dot`;
     await writeFile(tempDotFile, dotContent, 'utf8');
 
     const execAsync = promisify(exec);
@@ -533,40 +559,20 @@ export async function generatePNG(
 async function main() {
   const code2 = `
 function example() {
-  Symbol('JSCA_44_57');
-  doc = doc || document;
-  var i, val, script = doc.createElement('script');
-  script.text = code;
-  if (node) {
-    for (i in preservedScriptAttributes) {
-      val = node[i] || node.getAttribute && node.getAttribute(i);
-      if (val) {
-        script.setAttribute(i, val);
-      }
-    }
-  }
-  doc.head.appendChild(script).parentNode.removeChild(script);
+  if(a || _.b) c;
+  else d;
 }
 
   `;
   const code3 = `
 function example() {
-  Symbol('JSCA_44_57'), n = n || ye;
-  var a, o, s = n.createElement('script');
-  if (s.text = e, t)
-    for (a in xe)
-      o = t[a] || t.getAttribute && t.getAttribute(a), o && s.setAttribute(a, o);
-  n.head.appendChild(s).parentNode.removeChild(s);
+  (a || _.b) ? c : d;
 }
 
   `;
   const code4 = `
 function example() {
-  Symbol('JSCA_194_211');
-  // custom code (4)
-  for (_.a; ; _.d) {
-    if(_.b || _.c) break;
-  }
+
 }
   `;
 
@@ -580,7 +586,7 @@ function example() {
       const ast = acorn.parse(code, { ecmaVersion: 2020 });
       const functionBody = (ast.body[0] as acorn.FunctionDeclaration).body;
       const graph = extractCFG(functionBody);
-      const dotContent = await cfgToDot(graph.nodes);
+      const dotContent = cfgToDot(graph.nodes);
 
       await writeFile(`${filename}.dot`, dotContent, 'utf8');
 
@@ -599,6 +605,7 @@ function cfg(functions: Function[]): CFG[] {
   return functions.map((func) => {
     const ast = func.body;
     const graph = extractCFG(ast);
+
     return {
       id: func.id,
       name: func.name,
