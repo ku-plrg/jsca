@@ -51,8 +51,9 @@ function visit(node: acorn.AnyNode): void {
       cfgState.prevIds = [];
       break;
     case 'IfStatement':
-      createSubgraph(node.test);
-      const ifSubgraph = cfgState.subgraph;
+      const ifSubgraph = createSubgraph(node.test);
+      mergePrev(cfgState.prevIds, ifSubgraph.start);
+      if (!ifSubgraph) throw new Error('Subgraph is empty');
       cfgState.prevIds = ifSubgraph.then;
       visit(node.consequent);
       let thenPrevids = cfgState.prevIds;
@@ -65,10 +66,9 @@ function visit(node: acorn.AnyNode): void {
     case 'TryStatement':
       break;
     case 'WhileStatement':
-      loopBlock();
-      createSubgraph(node.test);
-      const whileSubgraph = cfgState.subgraph;
-      cfgState.prevIds = whileSubgraph.then;
+      newBlock(true);
+      const whileSubgraph = createSubgraph(node.test);
+      mergePrev(cfgState.prevIds, whileSubgraph.start);
       const whileLoop = loopVisitor(node.body);
       mergePrev(
         whileLoop.continue.concat(cfgState.prevIds),
@@ -77,10 +77,10 @@ function visit(node: acorn.AnyNode): void {
       cfgState.prevIds = whileLoop.break.concat(whileSubgraph.else);
       break;
     case 'DoWhileStatement':
-      loopBlock();
+      newBlock(true);
       const doWhileLoop = loopVisitor(node.body);
-      createSubgraph(node.test);
-      const doWhileSubgraph = cfgState.subgraph;
+      const doWhileSubgraph = createSubgraph(node.test);
+      mergePrev(cfgState.prevIds, doWhileSubgraph.start);
       mergePrev(
         doWhileLoop.continue.concat(doWhileSubgraph.then),
         doWhileSubgraph.start
@@ -89,12 +89,12 @@ function visit(node: acorn.AnyNode): void {
       break;
     case 'ForStatement':
       node.init && visit(node.init);
-      loopBlock();
+      newBlock(true);
       const forprevIds = cfgState.prevIds;
       let forSubgraph;
       if (node.test) {
-        createSubgraph(node.test);
-        forSubgraph = cfgState.subgraph;
+        forSubgraph = createSubgraph(node.test);
+        mergePrev(forprevIds, forSubgraph.start);
         cfgState.prevIds = forSubgraph.then;
       }
       const forLoop = loopVisitor(node.body);
@@ -110,7 +110,7 @@ function visit(node: acorn.AnyNode): void {
     case 'ForInStatement':
       node.left && visit(node.left);
       visit(node.right);
-      loopBlock();
+      newBlock(true);
       const forinprevIds = cfgState.prevIds;
       const forInLoop = loopVisitor(node.body);
       mergePrev(forInLoop.continue.concat(cfgState.prevIds), forinprevIds[0]);
@@ -163,9 +163,8 @@ function visit(node: acorn.AnyNode): void {
       }
       break;
     case 'LogicalExpression':
-      createSubgraph(node.left);
-      const leftSubgraph = cfgState.subgraph;
-      console.log('leftSubgraph', leftSubgraph);
+      const leftSubgraph = createSubgraph(node.left);
+      mergePrev(cfgState.prevIds, leftSubgraph.start);
       if (node.operator === '&&') {
         cfgState.prevIds = leftSubgraph.then;
         visit(node.right);
@@ -193,8 +192,8 @@ function visit(node: acorn.AnyNode): void {
       }
       break;
     case 'ConditionalExpression':
-      createSubgraph(node.test);
-      const testSubgraph = cfgState.subgraph;
+      const testSubgraph = createSubgraph(node.test);
+      mergePrev(cfgState.prevIds, testSubgraph.start);
       cfgState.prevIds = testSubgraph.then;
       visit(node.consequent);
       let thenPrevIds = cfgState.prevIds;
@@ -228,7 +227,10 @@ function visit(node: acorn.AnyNode): void {
       break;
   }
 }
-function subgraphVisitor(expr: acorn.AnyNode): void {
+
+// subgraphVisitor -------------------------------------------------------------------------------------------
+
+function subgraphBuilder(expr: acorn.AnyNode): void {
   switch (expr.type) {
     case 'VariableDeclaration':
       throw new Error('VariableDeclaration should not be visited');
@@ -238,52 +240,36 @@ function subgraphVisitor(expr: acorn.AnyNode): void {
       break;
     case 'ArrayExpression':
       const element = expr.elements.filter((el) => el !== null);
-      element.forEach(subgraphVisitor);
+      element.forEach(subgraphBuilder);
       break;
     case 'ObjectExpression':
-      expr.properties.forEach(subgraphVisitor);
+      expr.properties.forEach(subgraphBuilder);
       break;
     case 'FunctionExpression':
       throw new Error('FunctionExpression should not be visited');
     case 'UnaryExpression':
-      subgraphVisitor(expr.argument);
+      subgraphBuilder(expr.argument);
       break;
     case 'UpdateExpression':
-      subgraphVisitor(expr.argument);
+      subgraphBuilder(expr.argument);
       break;
     case 'BinaryExpression':
-      subgraphVisitor(expr.left);
-      subgraphVisitor(expr.right);
+      subgraphBuilder(expr.left);
+      subgraphBuilder(expr.right);
       break;
     case 'AssignmentExpression':
-      subgraphVisitor(expr.left);
-      subgraphVisitor(expr.right);
+      subgraphBuilder(expr.left);
+      subgraphBuilder(expr.right);
       if (
         expr.left.type === 'MemberExpression' &&
         !expr.left.computed &&
         expr.left.property.type === 'Identifier'
       ) {
-        insertSequence(expr.left.property.name, 'update_prop');
       }
       break;
     case 'LogicalExpression':
-      subgraphVisitor(expr.left);
-      const logicalSubgraph = cfgState.subgraph;
-      stripCond();
-      console.log('logicalSubgraph', logicalSubgraph);
-      const prevIds = cfgState.prevIds;
-      if (expr.operator === '&&') {
-        cfgState.prevIds = cfgState.subgraph.then;
-        subgraphVisitor(expr.right);
-        cfgState.subgraph.then = cfgState.subgraph.then;
-        cfgState.subgraph.else = logicalSubgraph.else.concat(cfgState.prevIds);
-      } else {
-        cfgState.prevIds = cfgState.subgraph.else;
-        subgraphVisitor(expr.right);
-        cfgState.subgraph.then = logicalSubgraph.then.concat(cfgState.prevIds);
-        cfgState.subgraph.else = cfgState.prevIds;
-      }
-      cfgState.prevIds = prevIds;
+      subgraphBuilder(expr.left);
+      subgraphBuilder(expr.right);
       break;
     case 'MemberExpression':
       if (
@@ -292,36 +278,29 @@ function subgraphVisitor(expr: acorn.AnyNode): void {
       ) {
         break;
       }
-      subgraphVisitor(expr.object);
+      subgraphBuilder(expr.object);
       if (!expr.computed && expr.property.type === 'Identifier') {
-        insertSequence(expr.property.name, 'prop');
-        subgraphVisitor(expr.property);
+        subgraphBuilder(expr.property);
       }
       if (expr.computed && expr.property.type !== 'Identifier') {
-        subgraphVisitor(expr.property);
+        subgraphBuilder(expr.property);
       }
       break;
     case 'ConditionalExpression':
-      subgraphVisitor(expr.test);
-      const condSubgraph = cfgState.subgraph;
-      stripCond();
-      subgraphVisitor(expr.consequent);
-      cfgState.subgraph.then = cfgState.prevIds;
-      cfgState.prevIds = condSubgraph.else;
-      newBlock();
-      subgraphVisitor(expr.alternate);
-      cfgState.subgraph.else = cfgState.prevIds;
+      subgraphBuilder(expr.test);
+      subgraphBuilder(expr.consequent);
+      subgraphBuilder(expr.alternate);
       break;
     case 'CallExpression':
-      subgraphVisitor(expr.callee);
-      expr.arguments.forEach(subgraphVisitor);
+      subgraphBuilder(expr.callee);
+      expr.arguments.forEach(subgraphBuilder);
       break;
     case 'NewExpression':
-      subgraphVisitor(expr.callee);
-      expr.arguments.forEach(subgraphVisitor);
+      subgraphBuilder(expr.callee);
+      expr.arguments.forEach(subgraphBuilder);
       break;
     case 'SequenceExpression':
-      expr.expressions.forEach(subgraphVisitor);
+      expr.expressions.forEach(subgraphBuilder);
       break;
     case 'ArrowFunctionExpression':
     case 'YieldExpression':
@@ -348,7 +327,7 @@ function extractCFG(node: acorn.AnyNode): CFGState {
       [-1, { type: 'exit', id: -1, nextIds: [] }],
       [-2, { type: 'exception-exit', id: -2, nextIds: [] }],
     ]),
-    subgraph: { start: 1, then: [1], else: [1] },
+    subgraph: [],
     loopStack: [],
     endId: -1,
     exceptionId: -2,
@@ -359,24 +338,14 @@ function extractCFG(node: acorn.AnyNode): CFGState {
 }
 // utils -------------------------------------------------------------------------------------------
 
-function createNode(): number {
+function createNode(type: 'condition' | 'block'): number {
   const id = cfgState.currentId++;
   const nextIds: number[] = [];
   cfgState.nodes.set(id, {
-    type: 'block',
+    type: type,
     id,
     nextIds,
     sequences: [],
-  });
-  return id;
-}
-function createCondNode(): number {
-  const id = cfgState.currentId++;
-  const nextIds: number[] = [];
-  cfgState.nodes.set(id, {
-    type: 'condition',
-    id,
-    nextIds,
   });
   return id;
 }
@@ -396,26 +365,24 @@ function mergePrev(prevIds: number[], currentId: number) {
     addEdge(prevId, currentId);
   });
 }
-function newBlock() {
-  if (
-    cfgState.prevIds.length === 1 &&
-    cfgState.nodes.get(cfgState.prevIds[0])?.type === 'block'
-  ) {
-    return;
+function newBlock(loop = false) {
+  const create =
+    loop ||
+    !(
+      cfgState.prevIds.length === 1 &&
+      cfgState.nodes.get(cfgState.prevIds[0])?.type === 'block'
+    );
+  if (create) {
+    const nodeId = createNode('block');
+    mergePrev(cfgState.prevIds, nodeId);
+    cfgState.prevIds = [nodeId];
   }
-  const nodeId = createNode();
-  mergePrev(cfgState.prevIds, nodeId);
-  cfgState.prevIds = [nodeId];
 }
 
-function loopBlock() {
-  const nodeId = createNode();
-  mergePrev(cfgState.prevIds, nodeId);
-  cfgState.prevIds = [nodeId];
-}
 function stripCond(): Subgraph {
-  const subgraph = cfgState.subgraph;
-  const condNode = createCondNode();
+  const subgraph = cfgState.subgraph.pop();
+  if (!subgraph) throw new Error('Subgraph is empty');
+  const condNode = createNode('condition');
   const thenElseNodes = subgraph.then.filter((id) =>
     subgraph.else.includes(id)
   );
@@ -426,18 +393,25 @@ function stripCond(): Subgraph {
   subgraph.else.push(condNode);
   return subgraph;
 }
-function createSubgraph(node: acorn.Expression) {
-  newBlock();
+function currentSubgraph(): Subgraph {
+  const subgraph = cfgState.subgraph.at(-1);
+  if (!subgraph) throw new Error('Subgraph is empty');
+  return subgraph;
+}
+function createSubgraph(node: acorn.Expression): Subgraph {
   const prevIds = cfgState.prevIds;
-  cfgState.subgraph = {
-    start: cfgState.prevIds[0],
+  newBlock();
+  visit(node);
+  cfgState.subgraph.push({
+    start: prevIds[0],
+    prevs: [],
     then: prevIds,
     else: prevIds,
-  };
-  subgraphVisitor(node);
+  });
+  subgraphBuilder(node);
   cfgState.prevIds = prevIds;
   const subgraph = stripCond();
-  mergePrev(cfgState.prevIds, subgraph.start);
+  return subgraph;
 }
 
 function loopVisitor(node: acorn.AnyNode) {
@@ -453,7 +427,7 @@ function insertSequence(value: string, type: 'prop' | 'update_prop') {
   const node = cfgState.nodes.get(nodeId);
   if (node && node.type === 'block') {
     node.sequences.push({ type: type, value });
-  }
+  } else throw new Error('Node is not a block');
 }
 //-----------------------------------------------------------------------------------------------------
 function cfgBuilder(argument: CFGArgument) {
