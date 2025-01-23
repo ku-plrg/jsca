@@ -71,11 +71,13 @@ function callScorer(f1: string, f2: string, abstractionType: AbstractionType) {
   }
 }
 
-TARGET_ABSTRACTIONS.forEach((abstractionType) => {
-  const scores = TARGET_CODES.map(([p0, p1]) => ({
-    target: p1,
-    scores: callScorer(p0, p1, abstractionType),
-  }));
+TARGET_ABSTRACTIONS.forEach(async (abstractionType) => {
+  const scores = [];
+  for (const [p0, p1] of TARGET_CODES) {
+    const score = await callScorer(p0, p1, abstractionType);
+    scores.push({ target: p1, scores: score });
+  }
+
   const mdContent = `# Scores for ${abstractionType}\n\n|minifier|precision|recall|TP|TN|FP|FN|\n|-|-|-|-|-|-|-|\n${scores
     .map(
       (score) =>

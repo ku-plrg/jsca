@@ -1,11 +1,13 @@
-import { mkdirSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import { writeFile } from 'fs/promises';
 import path from 'path';
+import { cfgToDot, generatePNG } from './abstract/cfg';
 import logCFG from './utils/cfg-logger';
 import LogIR from './utils/ir-logger';
 import measureTime from './utils/timer';
 import { AbsFunction, Function, Library } from './utils/types';
 
-function FunctionScorer<T extends AbsFunction>(
+async function FunctionScorer<T extends AbsFunction>(
   lib1: Library,
   lib2: Library,
   abstraction: (f: Function[]) => T[],
@@ -25,8 +27,26 @@ function FunctionScorer<T extends AbsFunction>(
   }
 
   if (absfuncs1[0].type === 'cfg') {
+    console.log('compare cfg', lib1.name, lib2.name);
     logCFG(absfuncs1, lib1);
     logCFG(absfuncs2, lib2);
+
+    const dirname1 = `src/logs/cfg_png/${lib1.name}`;
+    if (!existsSync(dirname1)) mkdirSync(dirname1, { recursive: true });
+    const dirname2 = `src/logs/cfg_png/${lib2.name}`;
+    if (!existsSync(dirname2)) mkdirSync(dirname2, { recursive: true });
+    for (const f of absfuncs1) {
+      const filename = `${dirname1}/${f.id}`;
+      const dot = cfgToDot((f as any).nodes);
+      await writeFile(`${filename}.dot`, dot, 'utf8');
+      await generatePNG(dot, filename);
+    }
+    for (const f of absfuncs2) {
+      const filename = `${dirname2}/${f.id}`;
+      const dot = cfgToDot((f as any).nodes);
+      await writeFile(`${filename}.dot`, dot, 'utf8');
+      await generatePNG(dot, filename);
+    }
   }
 
   //createDotGraph(propstree, file1);
@@ -211,6 +231,7 @@ function FunctionScorer<T extends AbsFunction>(
 
   writeReport(scores1, lib1.name, lib2.name, absfuncs1[0].type);
   // writeReport(scores2, lib2.name, lib1.name);
+  console.log('finish compare', lib1.name, lib2.name);
   return scores1;
 }
 

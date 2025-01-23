@@ -540,15 +540,15 @@ export async function generatePNG(
   outputPath: string
 ): Promise<void> {
   try {
-    const tempDotFile = `temp_${outputPath}.dot`;
+    const tempDotFile = `${outputPath}_temp.dot`;
     await writeFile(tempDotFile, dotContent, 'utf8');
 
     const execAsync = promisify(exec);
-    await execAsync(`dot -Tpng ${tempDotFile} -o ${outputPath}`);
+    await execAsync(`dot -Tpng ${tempDotFile} -o ${outputPath}.png`);
 
     await execAsync(`rm ${tempDotFile}`);
 
-    console.log(`Successfully generated PNG at ${outputPath}`);
+    console.log(`Successfully generated PNG at ${outputPath}.png`);
   } catch (error) {
     console.error('Error generating PNG:', error);
     throw error;
@@ -590,7 +590,7 @@ function example() {
 
       await writeFile(`${filename}.dot`, dotContent, 'utf8');
 
-      await generatePNG(dotContent, `${filename}.png`);
+      await generatePNG(dotContent, `${filename}`);
     } catch (error) {
       console.error('Error in main:', error);
     }

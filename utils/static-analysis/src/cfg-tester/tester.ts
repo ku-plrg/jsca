@@ -28,7 +28,7 @@ async function CFGtest(code: string, filename: string) {
   const [cfgGraph] = cfg([{ id: '', name: '', params: [], body: func_body }]);
   const dot = await cfgToDot(cfgGraph.nodes);
   await writeFile(`${filename}.dot`, dot, 'utf-8');
-  await generatePNG(dot, `${filename}.png`);
+  await generatePNG(dot, `${filename}`);
   console.log('CFG generated ', `${filename}.dot`, `${filename}.png`);
   const cfgString = stringifyCFG(cfgGraph.nodes);
   await writeFile(`${filename}.txt`, cfgString, 'utf-8');
