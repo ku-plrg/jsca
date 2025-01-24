@@ -51,15 +51,7 @@ function visit(node: acorn.AnyNode): void {
       cfgState.prevIds = [];
       break;
     case 'IfStatement':
-      let testNode: acorn.Expression;
-      if (node.test.type === 'SequenceExpression') {
-        const testExprs = node.test.expressions;
-        const lastExpr = testExprs.pop();
-        if (!lastExpr) throw new Error('Empty Sequence Expression');
-        testExprs.forEach(visit);
-        testNode = lastExpr;
-      } else testNode = node.test;
-      const ifSubgraph = createSubgraph(testNode);
+      const ifSubgraph = createSubgraph(node.test);
       mergePrev(cfgState.prevIds, ifSubgraph.start);
       cfgState.prevIds = ifSubgraph.then;
       visitWithContext(node.consequent, true);
@@ -101,15 +93,7 @@ function visit(node: acorn.AnyNode): void {
       const forprevIds = [...cfgState.prevIds];
       let forSubgraph;
       if (node.test) {
-        if (node.test.type === 'SequenceExpression') {
-          const testExprs = node.test.expressions;
-          const lastExpr = testExprs.pop();
-          if (!lastExpr) throw new Error('Empty Sequence Expression');
-          testExprs.forEach(visit);
-          forSubgraph = createSubgraph(lastExpr);
-        } else {
-          forSubgraph = createSubgraph(node.test);
-        }
+        forSubgraph = createSubgraph(node.test);
         mergePrev(cfgState.prevIds, forSubgraph.start);
         cfgState.prevIds = forSubgraph.then;
       }
@@ -381,6 +365,13 @@ function stripCond(): Subgraph {
 }
 
 function createSubgraph(node: acorn.Expression): Subgraph {
+  let Expr: acorn.Expression | undefined = node;
+  if (node.type === 'SequenceExpression') {
+    const expressions = node.expressions;
+    Expr = expressions.pop();
+    if (!Expr) throw new Error('Empty Sequence Expression');
+    expressions.forEach(visit);
+  }
   const prevIds = [...cfgState.prevIds];
   newBlock();
   const subgraphprevIds = [...cfgState.prevIds];
@@ -389,7 +380,7 @@ function createSubgraph(node: acorn.Expression): Subgraph {
     then: [],
     else: [],
   });
-  visit(node);
+  visit(Expr);
   const subgraphstart = cfgState.nodes.get(subgraphprevIds[0]);
   if (!subgraphstart) throw new Error('No subgraph start');
   subgraphBuilder(subgraphstart);
