@@ -7,6 +7,8 @@ import LogIR from './utils/ir-logger';
 import measureTime from './utils/timer';
 import { AbsFunction, Function, Library } from './utils/types';
 
+const GENERATE_PNG = false;
+
 async function FunctionScorer<T extends AbsFunction>(
   lib1: Library,
   lib2: Library,
@@ -35,30 +37,20 @@ async function FunctionScorer<T extends AbsFunction>(
     if (!existsSync(dirname1)) mkdirSync(dirname1, { recursive: true });
     const dirname2 = `src/logs/cfg_png/${lib2.name}`;
     if (!existsSync(dirname2)) mkdirSync(dirname2, { recursive: true });
-    await processInChunks(absfuncs1, 50, async (f) => {
-      const filename = `${dirname1}/${f.id}`;
-      const dot = cfgToDot((f as any).nodes);
-      await writeFile(`${filename}.dot`, dot, 'utf8');
-      await generatePNG(dot, filename);
-    });
-    await processInChunks(absfuncs2, 50, async (f) => {
-      const filename = `${dirname2}/${f.id}`;
-      const dot = cfgToDot((f as any).nodes);
-      await writeFile(`${filename}.dot`, dot, 'utf8');
-      await generatePNG(dot, filename);
-    });
-    // for (const f of absfuncs1) {
-    //   const filename = `${dirname1}/${f.id}`;
-    //   const dot = cfgToDot((f as any).nodes);
-    //   await writeFile(`${filename}.dot`, dot, 'utf8');
-    //   await generatePNG(dot, filename);
-    // }
-    // for (const f of absfuncs2) {
-    //   const filename = `${dirname2}/${f.id}`;
-    //   const dot = cfgToDot((f as any).nodes);
-    //   await writeFile(`${filename}.dot`, dot, 'utf8');
-    //   await generatePNG(dot, filename);
-    // }
+    if (GENERATE_PNG) {
+      await processInChunks(absfuncs1, 50, async (f) => {
+        const filename = `${dirname1}/${f.id}`;
+        const dot = cfgToDot((f as any).nodes);
+        await writeFile(`${filename}.dot`, dot, 'utf8');
+        await generatePNG(dot, filename);
+      });
+      await processInChunks(absfuncs2, 50, async (f) => {
+        const filename = `${dirname2}/${f.id}`;
+        const dot = cfgToDot((f as any).nodes);
+        await writeFile(`${filename}.dot`, dot, 'utf8');
+        await generatePNG(dot, filename);
+      });
+    }
   }
 
   //createDotGraph(propstree, file1);
@@ -238,13 +230,14 @@ async function FunctionScorer<T extends AbsFunction>(
     );
     mkdirSync(path.resolve(__dirname, fileDir), { recursive: true });
     writeFileSync(filePath, mdContent, 'utf-8');
+    console.log('finish compare', lib1.name, lib2.name, filePath);
   }
   const scores1 = getScores(absfuncs1, absfuncs2);
   // const scores2 = getScores(propstree2, propstree1);
 
   writeReport(scores1, lib1.name, lib2.name, absfuncs1[0].type);
   // writeReport(scores2, lib2.name, lib1.name);
-  console.log('finish compare', lib1.name, lib2.name);
+
   return scores1;
 }
 

@@ -13,10 +13,10 @@ const TARGET_ABSTRACTIONS: AbstractionType[] = ['CFG']; // ['IR', 'Props', 'Prop
 
 const TARGET_CODES: [string, string][] = [
   ['jquery_3.7.1.js', 'jquery_3.7.1_babel-minify.js'],
-  // ['jquery_3.7.1.js', 'jquery_3.7.1_esbuild.js'],
-  // ['jquery_3.7.1.js', 'jquery_3.7.1_swc.js'],
-  // ['jquery_3.7.1.js', 'jquery_3.7.1_terser.js'],
-  // ['jquery_3.7.1.js', 'jquery_3.7.1_uglifyjs.js'],
+  ['jquery_3.7.1.js', 'jquery_3.7.1_esbuild.js'],
+  ['jquery_3.7.1.js', 'jquery_3.7.1_swc.js'],
+  ['jquery_3.7.1.js', 'jquery_3.7.1_terser.js'],
+  ['jquery_3.7.1.js', 'jquery_3.7.1_uglifyjs.js'],
 ];
 /* 하나만 돌리고 싶으면 이 친구를 쓰세요 */
 /* 
@@ -84,9 +84,10 @@ TARGET_ABSTRACTIONS.forEach(async (abstractionType) => {
         `|${score.target}|${score.scores.precision}|${score.scores.recall}|${score.scores.truePositives.length}|${score.scores.trueNegatives.length}|${score.scores.falsePositives.length}|${score.scores.falseNegatives.length}|`
     )
     .join('\n')}`;
-  writeFileSync(
-    resolve(__dirname, `./logs/reports/scores_${abstractionType}.md`),
-    mdContent,
-    'utf-8'
+  const filePath = resolve(
+    __dirname,
+    `./logs/reports/scores_${abstractionType}.md`
   );
+  writeFileSync(filePath, mdContent, 'utf-8');
+  console.log(`Scores for ${abstractionType} saved at `, filePath);
 });

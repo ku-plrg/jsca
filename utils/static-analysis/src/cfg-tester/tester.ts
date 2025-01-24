@@ -5,27 +5,20 @@ import { stringifyCFG } from '../compare/cfg-comparator';
 
 const codeMap = {
   test1: `
-    function a() {  
-    if (_.a) {
-      if (_.b) {
-        _.d
+    function a() {
+      if (x) {
+        if (y) {
+          return true;
+        }
       }
+      _.a;
     }
-  _.e;
-}
 `,
   test2: `
-    function a() {  
-    _.a && (_.b) && _.d;
-  _.e;
-}
-`,
-  test3: `
-  function a() {
-    if(_.a && _.b) {
-    _.d;}
-    _.e;
-  }
+    function a() {
+      if (x && y) return !0;
+      _.a;
+    }
 `,
 };
 
