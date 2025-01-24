@@ -7,7 +7,7 @@ const codeMap = {
   test1: `
     function a() {  
     if (_.a) {
-      if (_.b || _.c) {
+      if (_.b) {
         _.d
       }
     }
@@ -16,9 +16,16 @@ const codeMap = {
 `,
   test2: `
     function a() {  
-    _.a && (_.b || _.c) && _.d;
+    _.a && (_.b) && _.d;
   _.e;
 }
+`,
+  test3: `
+  function a() {
+    if(_.a && _.b) {
+    _.d;}
+    _.e;
+  }
 `,
 };
 
@@ -32,12 +39,13 @@ async function CFGtest(code: string, filename: string) {
   console.log('CFG generated ', `${filename}.dot`, `${filename}.png`);
   const cfgString = stringifyCFG(cfgGraph.nodes);
   await writeFile(`${filename}.txt`, cfgString, 'utf-8');
-  console.log(cfgString);
+  //console.log(cfgString);
 }
 
 (async () => {
   if (require.main === module) {
     for (const [filename, code] of Object.entries(codeMap)) {
+      console.log('-------------------', filename, '-------------------');
       await CFGtest(code, filename).catch(console.error);
     }
   }
