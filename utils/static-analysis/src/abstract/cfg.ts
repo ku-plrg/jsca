@@ -54,10 +54,10 @@ function visit(node: acorn.AnyNode): void {
       const ifSubgraph = createSubgraph(node.test);
       mergePrev(cfgState.prevIds, ifSubgraph.start);
       cfgState.prevIds = ifSubgraph.then;
-      visit(node.consequent);
+      visitWithContext(node.consequent, true);
       let thenPrevids = [...cfgState.prevIds];
       cfgState.prevIds = ifSubgraph.else;
-      node.alternate && visit(node.alternate);
+      node.alternate && visitWithContext(node.alternate, false);
       cfgState.prevIds = thenPrevids.concat(cfgState.prevIds);
       break;
     case 'SwitchStatement':
@@ -166,21 +166,11 @@ function visit(node: acorn.AnyNode): void {
       console.log('left subgraph', leftSubgraph);
       if (node.operator === '&&') {
         cfgState.prevIds = leftSubgraph.then;
-        // if (node.right.type !== 'LogicalExpression') {
-        cfgState.context = true;
-        visit(node.right);
+        visitWithContext(node.right, true);
         cfgState.prevIds = cfgState.prevIds.concat(leftSubgraph.else);
-        // } else {
-        //   const rightSubgraph = createSubgraph(node.right);
-        //   cfgState.prevIds = [
-        //     ...rightSubgraph.else,
-        //     ...rightSubgraph.then,
-        //   ].concat(leftSubgraph.else);
-        // }
       } else {
         cfgState.prevIds = leftSubgraph.else;
-        cfgState.context = false;
-        visit(node.right);
+        visitWithContext(node.right, false);
         cfgState.prevIds = cfgState.prevIds.concat(leftSubgraph.then);
       }
       break;
@@ -203,12 +193,10 @@ function visit(node: acorn.AnyNode): void {
     case 'ConditionalExpression':
       const testSubgraph = createSubgraph(node.test);
       cfgState.prevIds = testSubgraph.then;
-      cfgState.context = true;
-      visit(node.consequent);
+      visitWithContext(node.consequent, true);
       let thenPrevIds = [...cfgState.prevIds];
       cfgState.prevIds = testSubgraph.else;
-      cfgState.context = false;
-      visit(node.alternate);
+      visitWithContext(node.alternate, false);
       cfgState.prevIds = thenPrevIds.concat(cfgState.prevIds); //cfgState.prevIds.concat(consequent);
       break;
     case 'CallExpression':
@@ -386,6 +374,7 @@ function stripCond(): Subgraph {
   subgraph.else.push(condNode);
   return subgraph;
 }
+
 function createSubgraph(node: acorn.Expression): Subgraph {
   console.log(
     'create subgraph of ',
@@ -416,7 +405,12 @@ function createSubgraph(node: acorn.Expression): Subgraph {
   );
   return subgraph;
 }
-
+function visitWithContext(node: acorn.AnyNode, context: boolean) {
+  const prevContext = cfgState.context;
+  cfgState.context = context;
+  visit(node);
+  cfgState.context = prevContext;
+}
 function loopVisitor(node: acorn.AnyNode) {
   cfgState.loopStack.push({ break: [], continue: [] });
   visit(node);
@@ -521,21 +515,31 @@ export async function generatePNG(
 async function main() {
   const code2 = `
 function example() {
-  for(_.a;_.b;_.c) {if(_.d)continue;}
+  Symbol('JSCA_194_211');
+  // babel-minify (2)
+  for (_.a; _.b && _.c; _.d);
 }
-
   `;
   const code3 = `
 function example() {
-_.a ;
-while(_.b) {if(_.d){continue;}; _.c}
+  Symbol('JSCA_194_211');
+  // original (3)
+    for (_.a; _.b; _.d) {
+      if (_.c) {
+        break;
+      }
+    }
 }
-
   `;
   const code4 = `
 function example() {
-
+  Symbol('JSCA_194_211');
+  // custom code (4)
+  for (_.a; ; _.d) {
+    if(_.b || _.c) break;
+  }
 }
+
   `;
 
   for await (const c of [

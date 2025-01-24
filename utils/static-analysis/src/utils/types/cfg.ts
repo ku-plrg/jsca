@@ -1,5 +1,3 @@
-import exp from 'constants';
-
 export type CFGNodeBase = {
   id: number;
   type: 'start' | 'exit' | 'exception-exit' | 'block' | 'condition';
