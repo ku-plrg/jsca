@@ -31,7 +31,6 @@ function visit(node: acorn.AnyNode): void {
       break;
     case 'ReturnStatement':
       node.argument && visit(node.argument);
-      console.log('ReturnStatement', cfgState.prevIds);
       connect(cfgState.endId);
       cfgState.prevIds = [];
       break;
@@ -157,8 +156,8 @@ function visit(node: acorn.AnyNode): void {
         const elseprev = cfgState.prevIds.filter(([, context]) => !context);
         cfgState.prevIds = thenprev.concat(elseprev);
       } else {
-        const thenprev = cfgState.prevIds.filter(([, context]) => context);
         const elseprev = visitWithContext(node.right, false);
+        const thenprev = cfgState.prevIds.filter(([, context]) => context);
         cfgState.prevIds = thenprev.concat(elseprev);
       }
       break;
@@ -248,8 +247,18 @@ function connect(to: number) {
   cfgState.prevIds.forEach(([node, context]) => {
     switch (node.type) {
       case 'condition':
-        if (context) node.then = to;
-        else node.else = to;
+        if (context) {
+          if (!node.then) {
+            console.log('node', node);
+            // throw new Error('Node has already been connected');
+          }
+          node.then = to;
+        } else {
+          if (!node.else) {
+            // throw new Error('Node has already been connected');
+          }
+          node.else = to;
+        }
         break;
       case 'block':
       case 'loop':
@@ -270,6 +279,16 @@ function connect_test(to: number) {
         if (node.next) throw new Error('Block has already been connected');
         node.next = to;
         cfgState.prevIds = cfgState.prevIds.filter(([n]) => n.id !== node.id);
+        break;
+      case 'condition':
+        console.log('cfgState.prevIds', cfgState.prevIds);
+        if (node.then === undefined && node.else === undefined) {
+          if (cfgState.context) node.then = to;
+          else node.else = to;
+          cfgState.prevIds = cfgState.prevIds.filter(
+            ([n, c]) => n.id !== node.id && c !== cfgState.context
+          );
+        }
         break;
       default:
         break;
@@ -298,7 +317,6 @@ function visitWithContext(node: acorn.AnyNode, context: boolean): prevId[] {
     prevIds: [...cfgState.prevIds],
     context: cfgState.context,
   };
-
   cfgState.prevIds = cfgState.prevIds.filter(([, c]) => c === context);
   cfgState.context = context;
 
@@ -307,6 +325,12 @@ function visitWithContext(node: acorn.AnyNode, context: boolean): prevId[] {
   cfgState.prevIds = stateBackup.prevIds;
   cfgState.context = stateBackup.context;
   return result;
+}
+function get_thenprevIds() {
+  return cfgState.prevIds.filter(([, context]) => context);
+}
+function get_elseprevIds() {
+  return cfgState.prevIds.filter(([, context]) => !context);
 }
 function loopVisitor(node: acorn.AnyNode) {
   cfgState.loopStack.push({ break: [], continue: [] });
