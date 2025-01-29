@@ -8,7 +8,7 @@ import {
   CFGNode,
   CFGState,
   Function,
-  Subgraph,
+  prevId,
 } from '../utils/types';
 
 let cfgState: CFGState;
@@ -31,7 +31,8 @@ function visit(node: acorn.AnyNode): void {
       break;
     case 'ReturnStatement':
       node.argument && visit(node.argument);
-      mergePrev(cfgState.prevIds, cfgState.endId);
+      console.log('ReturnStatement', cfgState.prevIds);
+      connect(cfgState.endId);
       cfgState.prevIds = [];
       break;
     case 'LabeledStatement':
@@ -51,70 +52,57 @@ function visit(node: acorn.AnyNode): void {
       cfgState.prevIds = [];
       break;
     case 'IfStatement':
-      const ifSubgraph = createSubgraph(node.test);
-      mergePrev(cfgState.prevIds, ifSubgraph.start);
-      cfgState.prevIds = ifSubgraph.then;
-      visitWithContext(node.consequent, true);
-      let thenPrevids = [...cfgState.prevIds];
-      cfgState.prevIds = ifSubgraph.else;
-      node.alternate && visitWithContext(node.alternate, false);
-      cfgState.prevIds = thenPrevids.concat(cfgState.prevIds);
+      addCondition(node.test);
+      let thenprev = visitWithContext(node.consequent, true);
+      let elseprev = node.alternate
+        ? visitWithContext(node.alternate, false)
+        : cfgState.prevIds.filter(([, context]) => !context);
+      cfgState.prevIds = thenprev.concat(elseprev);
       break;
     case 'SwitchStatement':
     case 'ThrowStatement':
     case 'TryStatement':
       break;
     case 'WhileStatement':
-      newBlock(true);
-      const whileSubgraph = createSubgraph(node.test);
-      mergePrev(cfgState.prevIds, whileSubgraph.start);
-      cfgState.prevIds = whileSubgraph.then;
-      const whileLoop = loopVisitor(node.body);
-      mergePrev(
-        whileLoop.continue.concat(cfgState.prevIds),
-        whileSubgraph.start
+      const whileLoop = addLoop();
+      addCondition(node.test);
+      let whileprevIds = [...cfgState.prevIds];
+      cfgState.prevIds = cfgState.prevIds.filter(([, context]) => context);
+      const whileLoopstack = loopVisitor(node.body);
+      cfgState.prevIds = whileLoopstack.continue.concat(cfgState.prevIds);
+      connect(whileLoop.id);
+      cfgState.prevIds = whileLoopstack.break.concat(
+        whileprevIds.filter(([, context]) => !context)
       );
-      cfgState.prevIds = whileLoop.break.concat(whileSubgraph.else);
       break;
     case 'DoWhileStatement':
-      newBlock(true);
-      const doWhileLoop = loopVisitor(node.body);
-      const doWhileSubgraph = createSubgraph(node.test);
-      mergePrev(cfgState.prevIds, doWhileSubgraph.start);
-      mergePrev(
-        doWhileLoop.continue.concat(doWhileSubgraph.then),
-        doWhileSubgraph.start
+      const doLoop = addLoop();
+      const doLoopstack = loopVisitor(node.body);
+      addCondition(node.test);
+      const doprevIds = [...cfgState.prevIds];
+      cfgState.prevIds = cfgState.prevIds.filter(([, context]) => context);
+      cfgState.prevIds = doLoopstack.continue.concat(cfgState.prevIds);
+      connect(doLoop.id);
+      cfgState.prevIds = doLoopstack.break.concat(
+        doprevIds.filter(([, context]) => !context)
       );
-      cfgState.prevIds = doWhileLoop.break.concat(doWhileSubgraph.else);
       break;
     case 'ForStatement':
       node.init && visit(node.init);
-      newBlock(true);
-      const forprevIds = [...cfgState.prevIds];
-      let forSubgraph;
-      if (node.test) {
-        forSubgraph = createSubgraph(node.test);
-        mergePrev(cfgState.prevIds, forSubgraph.start);
-        cfgState.prevIds = forSubgraph.then;
-      }
-      const forLoop = loopVisitor(node.body);
+      const forLoop = addLoop();
+      node.test && addCondition(node.test);
+      let forprevIds = [...cfgState.prevIds];
+      cfgState.prevIds = cfgState.prevIds.filter(([, context]) => context);
+      const forLoopstack = loopVisitor(node.body);
       node.update && visit(node.update);
-      mergePrev(
-        forLoop.continue.concat(cfgState.prevIds),
-        forSubgraph?.start ?? forprevIds[0]
+      cfgState.prevIds = forLoopstack.continue.concat(cfgState.prevIds);
+      connect(forLoop.id);
+      cfgState.prevIds = forLoopstack.break.concat(
+        forprevIds.filter(([, context]) => !context)
       );
-      cfgState.prevIds = forLoop.break.concat(forSubgraph?.else ?? []);
-
       break;
 
     case 'ForInStatement':
-      node.left && visit(node.left);
-      visit(node.right);
-      newBlock(true);
-      const forinprevIds = [...cfgState.prevIds];
-      const forInLoop = loopVisitor(node.body);
-      mergePrev(forInLoop.continue.concat(cfgState.prevIds), forinprevIds[0]);
-      cfgState.prevIds = forInLoop.break.concat(forinprevIds);
       break;
     case 'ForOfStatement':
     case 'FunctionDeclaration':
@@ -163,15 +151,15 @@ function visit(node: acorn.AnyNode): void {
       }
       break;
     case 'LogicalExpression':
-      const leftSubgraph = createSubgraph(node.left);
+      addCondition(node.left);
       if (node.operator === '&&') {
-        cfgState.prevIds = leftSubgraph.then;
-        visitWithContext(node.right, true);
-        cfgState.prevIds = cfgState.prevIds.concat(leftSubgraph.else);
+        const thenprev = visitWithContext(node.right, true);
+        const elseprev = cfgState.prevIds.filter(([, context]) => !context);
+        cfgState.prevIds = thenprev.concat(elseprev);
       } else {
-        cfgState.prevIds = leftSubgraph.else;
-        visitWithContext(node.right, false);
-        cfgState.prevIds = cfgState.prevIds.concat(leftSubgraph.then);
+        const thenprev = cfgState.prevIds.filter(([, context]) => context);
+        const elseprev = visitWithContext(node.right, false);
+        cfgState.prevIds = thenprev.concat(elseprev);
       }
       break;
     case 'MemberExpression':
@@ -191,13 +179,10 @@ function visit(node: acorn.AnyNode): void {
       }
       break;
     case 'ConditionalExpression':
-      const testSubgraph = createSubgraph(node.test);
-      cfgState.prevIds = testSubgraph.then;
-      visitWithContext(node.consequent, true);
-      let thenPrevIds = [...cfgState.prevIds];
-      cfgState.prevIds = testSubgraph.else;
-      visitWithContext(node.alternate, false);
-      cfgState.prevIds = thenPrevIds.concat(cfgState.prevIds); //cfgState.prevIds.concat(consequent);
+      addCondition(node.test);
+      const thencondprev = visitWithContext(node.consequent, true);
+      const elsecondprev = visitWithContext(node.alternate, false);
+      cfgState.prevIds = thencondprev.concat(elsecondprev);
       break;
     case 'CallExpression':
       visit(node.callee);
@@ -226,173 +211,102 @@ function visit(node: acorn.AnyNode): void {
   }
 }
 
-// subgraphVisitor -------------------------------------------------------------------------------------------
-
-function subgraphBuilder(cfgNode: CFGNode, visited = new Set<number>()) {
-  const subgraph = cfgState.subgraph.at(-1);
-  if (!subgraph) throw new Error('Subgraph is empty');
-  if (visited.has(cfgNode.id)) return;
-
-  visited.add(cfgNode.id);
-  cfgNode.nextIds.forEach((nextId) => {
-    const nextNode = cfgState.nodes.get(nextId);
-    if (!nextNode) throw new Error('Next node is not found');
-    switch (nextNode.type) {
-      case 'block':
-        if (nextNode.nextIds.length === 0) {
-          subgraph.then.push(nextId);
-          subgraph.else.push(nextId);
-        } else {
-          subgraphBuilder(nextNode, visited);
-        }
-        break;
-      case 'condition':
-        //if (nextNode.else.length === 0 && nextNode.then.length === 0) {
-        /*} else*/
-        if (nextNode.then.length === 0) {
-          subgraph.then.push(nextId);
-        }
-        if (nextNode.else.length === 0) {
-          subgraph.else.push(nextId);
-        }
-
-        subgraphBuilder(nextNode, visited);
-        break;
-      default:
-        break;
-    }
-  });
-  cfgState.subgraph.pop();
-  cfgState.subgraph.push(subgraph);
-}
-
 function extractCFG(node: acorn.AnyNode): CFGState {
+  const start: CFGNode = { id: 0, type: 'start' };
   cfgState = {
-    currentId: 2,
-    prevIds: [1],
-    nodes: new Map([
-      [1, { type: 'block', id: 1, nextIds: [], sequences: [] }],
-      [0, { type: 'start', id: 0, nextIds: [1] }],
-      [-1, { type: 'exit', id: -1, nextIds: [] }],
-      [-2, { type: 'exception-exit', id: -2, nextIds: [] }],
+    currentId: 1,
+    prevIds: [[start, true]],
+    nodes: new Map<number, CFGNode>([
+      [0, start],
+      [-1, { type: 'exit', id: -1 }],
+      [-2, { type: 'exception-exit', id: -2 }],
     ]),
-    subgraph: [],
     context: true,
     loopStack: [],
     endId: -1,
     exceptionId: -2,
   };
   visit(node);
-  mergePrev(cfgState.prevIds, cfgState.endId);
+  connect(cfgState.endId);
   return cfgState;
 }
 // utils -------------------------------------------------------------------------------------------
 
-function createNode(type: 'condition' | 'block'): number {
+function createNode(
+  type: 'start' | 'exit' | 'exception-exit' | 'condition' | 'block' | 'loop'
+): CFGNode {
   const id = cfgState.currentId++;
-  const nextIds: number[] = [];
-  if (type === 'condition') {
-    cfgState.nodes.set(id, {
-      type: 'condition',
-      id,
-      then: [],
-      else: [],
-      nextIds,
-    });
-  } else {
-    cfgState.nodes.set(id, {
-      type: 'block',
-      id,
-      nextIds,
-      sequences: [],
-    });
-  }
-  return id;
-}
-function addEdge(from: number, to: number): void {
-  if (from === to) return;
-  const fromNode = cfgState.nodes.get(from);
-  const toNode = cfgState.nodes.get(to);
-  if (fromNode && toNode) {
-    if (!fromNode.nextIds.includes(to)) {
-      fromNode.nextIds.push(to);
-    }
-    if (fromNode.type === 'condition') {
-      if (cfgState.context) {
-        fromNode.then.push(to);
-      } else {
-        fromNode.else.push(to);
-      }
-    }
-  }
+  const node: CFGNode = {
+    type: type,
+    id,
+  };
+  cfgState.nodes.set(id, node);
+  return node;
 }
 
-function mergePrev(prevIds: number[], currentId: number) {
-  prevIds.forEach((prevId) => {
-    addEdge(prevId, currentId);
+function connect(to: number) {
+  cfgState.prevIds.forEach(([node, context]) => {
+    switch (node.type) {
+      case 'condition':
+        if (context) node.then = to;
+        else node.else = to;
+        break;
+      case 'block':
+      case 'loop':
+      case 'start':
+        if (node.next !== undefined)
+          throw new Error('Node has already been connected');
+        node.next = to;
+        break;
+    }
   });
 }
-function newBlock(loop = false) {
-  const create =
-    loop ||
-    !(
-      cfgState.prevIds.length === 1 &&
-      cfgState.nodes.get(cfgState.prevIds[0])?.type === 'block'
-    );
-  if (create) {
-    const nodeId = createNode('block');
-    mergePrev(cfgState.prevIds, nodeId);
-    cfgState.prevIds = [nodeId];
-  }
-}
-
-function stripCond(): Subgraph {
-  const subgraph = cfgState.subgraph.pop();
-  if (!subgraph) throw new Error('Subgraph is empty');
-  if (subgraph.then.length === 0) subgraph.then.push(subgraph.start);
-  if (subgraph.else.length === 0) subgraph.else.push(subgraph.start);
-  const condNode = createNode('condition');
-  const thenElseNodes = subgraph.then.filter((id) =>
-    subgraph.else.includes(id)
-  );
-
-  thenElseNodes.forEach((id) => addEdge(id, condNode));
-  subgraph.then = subgraph.then.filter((id) => !thenElseNodes.includes(id));
-  subgraph.else = subgraph.else.filter((id) => !thenElseNodes.includes(id));
-  subgraph.then.push(condNode);
-  subgraph.else.push(condNode);
-  return subgraph;
-}
-
-function createSubgraph(node: acorn.Expression): Subgraph {
-  let Expr: acorn.Expression | undefined = node;
-  if (node.type === 'SequenceExpression') {
-    const expressions = node.expressions;
-    Expr = expressions.pop();
-    if (!Expr) throw new Error('Empty Sequence Expression');
-    expressions.forEach(visit);
-  }
-  const prevIds = [...cfgState.prevIds];
-  newBlock();
-  const subgraphprevIds = [...cfgState.prevIds];
-  cfgState.subgraph.push({
-    start: subgraphprevIds[0],
-    then: [],
-    else: [],
+function connect_test(to: number) {
+  cfgState.prevIds.forEach(([node]) => {
+    switch (node.type) {
+      case 'block':
+      case 'loop':
+      case 'start':
+        if (node.next) throw new Error('Block has already been connected');
+        node.next = to;
+        cfgState.prevIds = cfgState.prevIds.filter(([n]) => n.id !== node.id);
+        break;
+      default:
+        break;
+    }
   });
-  visit(Expr);
-  const subgraphstart = cfgState.nodes.get(subgraphprevIds[0]);
-  if (!subgraphstart) throw new Error('No subgraph start');
-  subgraphBuilder(subgraphstart);
-  const subgraph = stripCond();
-  cfgState.prevIds = prevIds;
-  return subgraph;
 }
-function visitWithContext(node: acorn.AnyNode, context: boolean) {
-  const prevContext = cfgState.context;
-  cfgState.context = context;
+
+function addCondition(node: acorn.AnyNode) {
   visit(node);
-  cfgState.context = prevContext;
+  const condition = createNode('condition');
+  connect_test(condition.id);
+  cfgState.prevIds = [
+    ...cfgState.prevIds,
+    [condition, true],
+    [condition, false],
+  ];
+}
+function addLoop(): CFGNode {
+  const loop = createNode('loop');
+  connect_test(loop.id);
+  cfgState.prevIds = [[loop, true]];
+  return loop;
+}
+function visitWithContext(node: acorn.AnyNode, context: boolean): prevId[] {
+  const stateBackup = {
+    prevIds: [...cfgState.prevIds],
+    context: cfgState.context,
+  };
+
+  cfgState.prevIds = cfgState.prevIds.filter(([, c]) => c === context);
+  cfgState.context = context;
+
+  visit(node);
+  const result = cfgState.prevIds;
+  cfgState.prevIds = stateBackup.prevIds;
+  cfgState.context = stateBackup.context;
+  return result;
 }
 function loopVisitor(node: acorn.AnyNode) {
   cfgState.loopStack.push({ break: [], continue: [] });
@@ -402,11 +316,13 @@ function loopVisitor(node: acorn.AnyNode) {
   return loop;
 }
 function insertSequence(value: string, type: 'prop' | 'update_prop') {
-  newBlock();
-  const nodeId = cfgState.prevIds[0];
-  const node = cfgState.nodes.get(nodeId);
+  const block = createNode('block');
+  connect(block.id);
+  cfgState.prevIds = [[block, true]];
+  const node = cfgState.nodes.get(block.id);
   if (node && node.type === 'block') {
-    node.sequences.push({ type: type, value });
+    if (!node.sequences) node.sequences = [];
+    node.sequences.push({ type, value });
   } else throw new Error('Node is not a block');
 }
 //-----------------------------------------------------------------------------------------------------
@@ -448,12 +364,18 @@ export function cfgToDot(nodes: Map<number, CFGNode>): string {
         label = 'Exception Exit';
         color = '#FF6347'; // Tomato
         break;
+      case 'loop':
+        label = `Loop ${id}`;
+        color = '#87CEFA'; // Light sky blue
+        break;
       case 'condition':
         label = `Condition ${id}`;
         color = '#FFD700'; // Gold
         break;
       case 'block':
-        label = `Block ${id}\n${node.sequences.map((s) => s.value).join('\n')}`;
+        label = `Block ${id}\n${node.sequences
+          ?.map((s) => s.value)
+          .join('\n')}`;
         break;
       default:
     }
@@ -465,8 +387,44 @@ export function cfgToDot(nodes: Map<number, CFGNode>): string {
 
   // Add edges
   for (const [id, node] of nodes.entries()) {
-    for (const nextId of node.nextIds) {
-      dotString += `  node${id + 2} -> node${nextId + 2} [color="#666666"];\n`;
+    const newId = id + 2;
+    switch (node.type) {
+      case 'start':
+        if (node.next !== undefined) {
+          dotString += `  node${newId} -> node${node.next + 2};\n`;
+        }
+        break;
+      case 'exit':
+      case 'exception-exit':
+        break;
+      case 'loop':
+        if (node.next !== undefined) {
+          dotString += `  node${newId} -> node${node.next + 2};\n`;
+        }
+        break;
+      case 'condition':
+        if (node.then !== undefined) {
+          dotString += `  node${newId} -> node${
+            node.then + 2
+          } [label="true"];\n`;
+        }
+        if (node.else !== undefined) {
+          dotString += `  node${newId} -> node${
+            node.else + 2
+          } [label="false"];\n`;
+        }
+        break;
+      case 'block':
+        if (node.next !== undefined) {
+          dotString += `  node${newId} -> node${node.next + 2};\n`;
+        }
+        break;
+      case 'loop':
+        if (node.next !== undefined) {
+          dotString += `  node${newId} -> node${node.next + 2};\n`;
+        }
+        break;
+      default:
     }
   }
 

@@ -1,29 +1,31 @@
 export type CFGNodeBase = {
   id: number;
-  type: 'start' | 'exit' | 'exception-exit' | 'block' | 'condition';
-  nextIds: number[];
+  type: 'start' | 'exit' | 'exception-exit' | 'block' | 'condition' | 'loop';
 };
 
 export interface CFGNodeStart extends CFGNodeBase {
   type: 'start';
+  next?: number;
 }
 
 export interface CFGNodeExit extends CFGNodeBase {
-  type: 'exit';
+  type: 'exit' | 'exception-exit';
 }
 
-export interface CFGNodeExceptionExit extends CFGNodeBase {
-  type: 'exception-exit';
-}
 export interface CFGNodeCondition extends CFGNodeBase {
   type: 'condition';
-  then: number[];
-  else: number[];
+  then?: number;
+  else?: number;
+}
+export interface CFGNodeLoop extends CFGNodeBase {
+  type: 'loop';
+  next?: number;
 }
 
 export interface CFGNodeBlock extends CFGNodeBase {
   type: 'block';
-  sequences: CFGSequence[];
+  sequences?: CFGSequence[];
+  next?: number;
 }
 
 export interface CFGSequence {
@@ -34,25 +36,19 @@ export interface CFGSequence {
 export type CFGNode =
   | CFGNodeStart
   | CFGNodeExit
-  | CFGNodeExceptionExit
   | CFGNodeCondition
-  | CFGNodeBlock;
+  | CFGNodeBlock
+  | CFGNodeLoop;
 
+export type prevId = [CFGNode, boolean];
 export interface CFGState {
   currentId: number;
-  prevIds: number[];
+  prevIds: prevId[];
   nodes: Map<number, CFGNode>;
-  loopStack: { break: number[]; continue: number[] }[];
-  subgraph: Subgraph[];
+  loopStack: { break: [CFGNode, boolean][]; continue: [CFGNode, boolean][] }[];
   context: boolean;
   endId: number;
   exceptionId: number;
-}
-
-export interface Subgraph {
-  start: number;
-  then: number[];
-  else: number[];
 }
 
 export type CFGBuilderInstType =

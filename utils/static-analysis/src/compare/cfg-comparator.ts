@@ -5,9 +5,13 @@ const getNodeName = (node: CFGNode | undefined): string => {
   if (!node) return '';
   switch (node.type) {
     case 'block':
-      return `${node.id}:${node.sequences
-        .map((s) => (s.type == 'update_prop' ? `${s.value}=_` : s.value))
-        .join(',')}`;
+      return `${node.id}:${
+        node.sequences
+          ? node.sequences
+              .map((s) => (s.type == 'update_prop' ? `${s.value}=_` : s.value))
+              .join(',')
+          : ''
+      }`;
     default:
       return `${node.id}:${node.type}`;
   }
@@ -16,9 +20,29 @@ const getNodeName = (node: CFGNode | undefined): string => {
 export const stringifyCFG = (nodes: Map<number, CFGNode>): string => {
   const compareStrings: string[] = [];
   nodes.forEach((node, _) => {
-    compareStrings.push(
-      `${getNodeName(node)} -> ${node.nextIds.sort().join(',')}`
-    );
+    switch (node.type) {
+      case 'condition':
+        compareStrings.push(
+          `${getNodeName(node)} -> ${
+            node.then
+              ? getNodeName(nodes.get(node.then))
+              : '' + (node.else ? getNodeName(nodes.get(node.else)) : '')
+          }`
+        );
+        break;
+
+      case 'loop':
+      case 'block':
+      case 'start':
+        compareStrings.push(
+          `${getNodeName(node)} -> ${
+            node.next ? getNodeName(nodes.get(node.next)) : ''
+          }`
+        );
+        break;
+      default:
+        break;
+    }
   });
 
   return compareStrings.join('\n'); // sort 해야 할까?
