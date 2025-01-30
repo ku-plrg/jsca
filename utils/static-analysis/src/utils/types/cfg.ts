@@ -40,13 +40,12 @@ export type CFGNode =
   | CFGNodeBlock
   | CFGNodeLoop;
 
-export type prevId = [CFGNode, boolean];
+export type prevId = [CFGNode, boolean?, boolean?];
 export interface CFGState {
   currentId: number;
   prevIds: prevId[];
   nodes: Map<number, CFGNode>;
-  loopStack: { break: [CFGNode, boolean][]; continue: [CFGNode, boolean][] }[];
-  context: boolean;
+  loopStack: { break: prevId[]; continue: prevId[] }[];
   endId: number;
   exceptionId: number;
 }

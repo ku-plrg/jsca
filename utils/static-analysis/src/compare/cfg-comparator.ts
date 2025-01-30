@@ -22,13 +22,11 @@ export const stringifyCFG = (nodes: Map<number, CFGNode>): string => {
   nodes.forEach((node, _) => {
     switch (node.type) {
       case 'condition':
-        compareStrings.push(
-          `${getNodeName(node)} -> ${
-            node.then
-              ? getNodeName(nodes.get(node.then))
-              : '' + (node.else ? getNodeName(nodes.get(node.else)) : '')
-          }`
-        );
+        let thennode = node.then ? getNodeName(nodes.get(node.then)) : '';
+        let elsenode = node.else ? getNodeName(nodes.get(node.else)) : '';
+        [thennode, elsenode] =
+          thennode > elsenode ? [elsenode, thennode] : [thennode, elsenode];
+        compareStrings.push(`${getNodeName(node)} -> ${thennode + elsenode}`);
         break;
 
       case 'loop':
