@@ -90,7 +90,7 @@ function visit(node: acorn.AnyNode): void {
       node.init && visit(node.init);
       const forLoop = addLoop();
       node.test && addCond(node.test);
-      let forprevIds = [...cfgState.prevIds];
+      const forprevIds = [...cfgState.prevIds];
       cfgState.prevIds = cfgState.prevIds.filter(([, context]) => context);
       const forLoopstack = loopVisitor(node.body);
       node.update && visit(node.update);
@@ -102,6 +102,17 @@ function visit(node: acorn.AnyNode): void {
       break;
 
     case 'ForInStatement':
+      node.left && visit(node.left);
+      addCond(node.right);
+      const forInLoop = addLoop();
+      const forInprevIds = [...cfgState.prevIds];
+      cfgState.prevIds = cfgState.prevIds.filter(([, context]) => context);
+      const forInLoopstack = loopVisitor(node.body);
+      cfgState.prevIds = forInLoopstack.continue.concat(cfgState.prevIds);
+      connect(forInLoop.id);
+      cfgState.prevIds = forInLoopstack.break.concat(
+        forInprevIds.filter(([, context]) => !context)
+      );
       break;
     case 'ForOfStatement':
     case 'FunctionDeclaration':
@@ -118,6 +129,7 @@ function visit(node: acorn.AnyNode): void {
     case 'Identifier':
     case 'Literal':
     case 'ThisExpression':
+      convert_mergable();
       break;
     case 'ArrayExpression':
       const elements = node.elements.filter((el) => el !== null);
@@ -340,13 +352,19 @@ function loopVisitor(node: acorn.AnyNode) {
   return loop;
 }
 function insertSequence(value: string, type: 'prop' | 'update_prop') {
+  if (
+    cfgState.prevIds.length === 1 &&
+    cfgState.prevIds[0][0].type === 'block'
+  ) {
+    cfgState.prevIds[0][0].sequences?.push({ type, value });
+    return;
+  }
   const block = createNode('block');
   connect(block.id);
   cfgState.prevIds = [[block]];
   const node = cfgState.nodes.get(block.id);
   if (node && node.type === 'block') {
-    if (!node.sequences) node.sequences = [];
-    node.sequences.push({ type, value });
+    node.sequences = [{ type, value }];
   } else throw new Error('Node is not a block');
 }
 function convert_mergable() {
@@ -354,7 +372,7 @@ function convert_mergable() {
     if (node.type === 'condition') {
       return [node, context, true];
     }
-    return [node];
+    return [node, context];
   });
 }
 //-----------------------------------------------------------------------------------------------------
@@ -405,9 +423,15 @@ export function cfgToDot(nodes: Map<number, CFGNode>): string {
         color = '#FFD700'; // Gold
         break;
       case 'block':
-        label = `Block ${id}\n${node.sequences
-          ?.map((s) => s.value)
-          .join('\n')}`;
+        label = `Block ${id}\n${
+          node.sequences
+            ? node.sequences
+                .map((s) =>
+                  s.type == 'update_prop' ? `${s.value} = _` : s.value
+                )
+                .join('\n')
+            : ''
+        }`;
         break;
       default:
     }
