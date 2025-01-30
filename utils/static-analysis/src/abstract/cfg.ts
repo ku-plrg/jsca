@@ -29,8 +29,7 @@ function visit(node: acorn.AnyNode): void {
       break;
     case 'ReturnStatement':
       node.argument && visit(node.argument);
-      connect(cfgState.endId);
-      cfgState.prevIds = [];
+      connect_end();
       break;
     case 'LabeledStatement':
       break;
@@ -50,9 +49,9 @@ function visit(node: acorn.AnyNode): void {
       break;
     case 'IfStatement':
       addCond(node.test);
-      let thenprev = visitWithContext(node.consequent, true);
+      let thenprev = condVisitor(node.consequent, true);
       let elseprev = node.alternate
-        ? visitWithContext(node.alternate, false)
+        ? condVisitor(node.alternate, false)
         : cfgState.prevIds.filter(([, context]) => !context);
       cfgState.prevIds = thenprev.concat(elseprev);
       break;
@@ -146,11 +145,11 @@ function visit(node: acorn.AnyNode): void {
     case 'LogicalExpression':
       addCond(node.left);
       if (node.operator === '&&') {
-        const thenprev = visitWithContext(node.right, true);
+        const thenprev = condVisitor(node.right, true);
         const elseprev = cfgState.prevIds.filter(([, context]) => !context);
         cfgState.prevIds = thenprev.concat(elseprev);
       } else {
-        const elseprev = visitWithContext(node.right, false);
+        const elseprev = condVisitor(node.right, false);
         const thenprev = cfgState.prevIds.filter(([, context]) => context);
         cfgState.prevIds = thenprev.concat(elseprev);
       }
@@ -173,8 +172,8 @@ function visit(node: acorn.AnyNode): void {
       break;
     case 'ConditionalExpression':
       addCond(node.test);
-      const thencondprev = visitWithContext(node.consequent, true);
-      const elsecondprev = visitWithContext(node.alternate, false);
+      const thencondprev = condVisitor(node.consequent, true);
+      const elsecondprev = condVisitor(node.alternate, false);
       cfgState.prevIds = thencondprev.concat(elsecondprev);
       break;
     case 'CallExpression':
@@ -222,15 +221,88 @@ function extractCFG(node: acorn.AnyNode): CFGState {
     exceptionId: -2,
   };
   visit(node);
-  connect(cfgState.endId);
+  connect_end();
   return cfgState;
 }
+
 // utils -------------------------------------------------------------------------------------------
 
 function visitExp(node: acorn.AnyNode) {
   visit(node);
   convert_mergeable();
 }
+function connect_end() {
+  connect(cfgState.endId);
+  cfgState.prevIds = [];
+}
+function convert_mergeable() {
+  cfgState.prevIds = cfgState.prevIds.map(([node, context]) => {
+    if (node.type === 'condition') {
+      return [node, context, true];
+    }
+    return [node, context];
+  });
+}
+function addCond(node: acorn.AnyNode) {
+  visit(node);
+  const condition = createNode('condition');
+  connect_test(condition.id);
+  cfgState.prevIds = [
+    ...cfgState.prevIds,
+    [condition, true, false],
+    [condition, false, false],
+  ];
+}
+function addLoop(): CFGNode {
+  const loop = createNode('loop');
+  connect(loop.id);
+  cfgState.prevIds = [[loop, true]];
+  return loop;
+}
+function condVisitor(node: acorn.AnyNode, context: boolean): prevId[] {
+  const prevIds = [...cfgState.prevIds];
+  cfgState.prevIds = cfgState.prevIds.filter(([, c]) => c === context);
+  visit(node);
+  const result = cfgState.prevIds;
+  cfgState.prevIds = prevIds;
+  return result;
+}
+function loopVisitor(node: acorn.AnyNode) {
+  cfgState.loopStack.push({ break: [], continue: [] });
+  visit(node);
+  const loop = cfgState.loopStack.pop();
+  if (!loop) throw new Error('Loop stack is empty');
+  return loop;
+}
+function endLoop(
+  loop: { break: prevId[]; continue: prevId[] },
+  id: number,
+  prevIds: prevId[]
+) {
+  cfgState.prevIds = loop.continue.concat(cfgState.prevIds);
+  connect(id);
+  cfgState.prevIds = loop.break.concat(
+    prevIds.filter(([, context]) => !context)
+  );
+}
+function insertSequence(value: string, type: 'prop' | 'update_prop') {
+  if (
+    cfgState.prevIds.length === 1 &&
+    cfgState.prevIds[0][0].type === 'block'
+  ) {
+    cfgState.prevIds[0][0].sequences?.push({ type, value });
+    return;
+  }
+  const block = createNode('block');
+  connect(block.id);
+  cfgState.prevIds = [[block]];
+  const node = cfgState.nodes.get(block.id);
+  if (node && node.type === 'block') {
+    node.sequences = [{ type, value }];
+  } else throw new Error('Node is not a block');
+}
+
+// helper functions -------------------------------------------------------------------------------------------
 function createNode(
   type: 'start' | 'exit' | 'exception-exit' | 'condition' | 'block' | 'loop'
 ): CFGNode {
@@ -242,7 +314,6 @@ function createNode(
   cfgState.nodes.set(id, node);
   return node;
 }
-
 function connect(to: number) {
   cfgState.prevIds.forEach(([node, context]) => {
     switch (node.type) {
@@ -302,73 +373,6 @@ function connect_test(to: number) {
   });
 }
 
-function addCond(node: acorn.AnyNode) {
-  visit(node);
-  const condition = createNode('condition');
-  connect_test(condition.id);
-  cfgState.prevIds = [
-    ...cfgState.prevIds,
-    [condition, true, false],
-    [condition, false, false],
-  ];
-}
-function addLoop(): CFGNode {
-  const loop = createNode('loop');
-  connect(loop.id);
-  cfgState.prevIds = [[loop, true]];
-  return loop;
-}
-function visitWithContext(node: acorn.AnyNode, context: boolean): prevId[] {
-  const prevIds = [...cfgState.prevIds];
-  cfgState.prevIds = cfgState.prevIds.filter(([, c]) => c === context);
-  visit(node);
-  const result = cfgState.prevIds;
-  cfgState.prevIds = prevIds;
-  return result;
-}
-function loopVisitor(node: acorn.AnyNode) {
-  cfgState.loopStack.push({ break: [], continue: [] });
-  visit(node);
-  const loop = cfgState.loopStack.pop();
-  if (!loop) throw new Error('Loop stack is empty');
-  return loop;
-}
-function endLoop(
-  loop: { break: prevId[]; continue: prevId[] },
-  id: number,
-  prevIds: prevId[]
-) {
-  cfgState.prevIds = loop.continue.concat(cfgState.prevIds);
-  connect(id);
-  cfgState.prevIds = loop.break.concat(
-    prevIds.filter(([, context]) => !context)
-  );
-}
-
-function insertSequence(value: string, type: 'prop' | 'update_prop') {
-  if (
-    cfgState.prevIds.length === 1 &&
-    cfgState.prevIds[0][0].type === 'block'
-  ) {
-    cfgState.prevIds[0][0].sequences?.push({ type, value });
-    return;
-  }
-  const block = createNode('block');
-  connect(block.id);
-  cfgState.prevIds = [[block]];
-  const node = cfgState.nodes.get(block.id);
-  if (node && node.type === 'block') {
-    node.sequences = [{ type, value }];
-  } else throw new Error('Node is not a block');
-}
-function convert_mergeable() {
-  cfgState.prevIds = cfgState.prevIds.map(([node, context]) => {
-    if (node.type === 'condition') {
-      return [node, context, true];
-    }
-    return [node, context];
-  });
-}
 //-----------------------------------------------------------------------------------------------------
 function cfgBuilder(argument: CFGArgument) {
   switch (argument.type) {
