@@ -263,8 +263,12 @@ function convert_context() {
     .map(([node]) => node.id)
     .filter((id, index, array) => array.filter((x) => x === id).length === 2);
   cfgState.prevIds = cfgState.prevIds.map(([node, context, mergeable]) => {
-    if (node.type === 'condition' && duplicateIds.includes(node.id)) {
-      return [node, !context, mergeable];
+    if (node.type === 'condition') {
+      if (duplicateIds.includes(node.id)) {
+        return [node, !context, mergeable];
+      } else if (!mergeable) {
+        return [node, !context, mergeable];
+      }
     }
     return [node, context, mergeable];
   });
@@ -344,14 +348,15 @@ function connect(to: number) {
   cfgState.prevIds.forEach(([node, context]) => {
     switch (node.type) {
       case 'condition':
+        if (node.then && node.else) throw new Error('Condition has 2 branches');
         if (context) {
           if (node.then) {
-            throw new Error('Node has already been connected');
+            node.else = node.then;
           }
           node.then = to;
         } else {
           if (node.else) {
-            throw new Error('Node has already been connected');
+            node.then = node.else;
           }
           node.else = to;
         }
@@ -377,11 +382,13 @@ function connect_test(to: number) {
         break;
       case 'condition':
         if (mergeable) {
+          if (node.then && node.else)
+            throw new Error('Condition has 2 branches');
           if (context) {
-            if (node.then) throw new Error('Node has already been connected');
+            if (node.then) node.else = node.then;
             node.then = to;
           } else {
-            if (node.else) throw new Error('Node has already been connected');
+            if (node.else) node.then = node.else;
             node.else = to;
           }
           cfgState.prevIds = cfgState.prevIds.filter(
