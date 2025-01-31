@@ -85,11 +85,19 @@ function visit(node: acorn.AnyNode): void {
       node.update && visit(node.update);
       endLoop(forLoopstack, forLoop.id, forprevIds);
       break;
-    //TODO: addCond is not working properly
     case 'ForInStatement':
-      node.left && visit(node.left);
-      addCond(node.right);
-      const forInLoop = addLoop();
+      visit(node.left);
+      let forInLoop;
+      if (node.right.type === 'SequenceExpression') {
+        const last = node.right.expressions.pop();
+        if (!last) throw new Error('Sequence expression is empty');
+        node.right.expressions.forEach(visit);
+        forInLoop = addLoop();
+        addCond(last); // condVisitor를 사용하는게 나을 수 있음
+      } else {
+        forInLoop = addLoop();
+        addCond(node.right);
+      }
       const forInprevIds = [...cfgState.prevIds];
       cfgState.prevIds = cfgState.prevIds.filter(([, context]) => context);
       const forInLoopstack = loopVisitor(node.body);
@@ -355,16 +363,13 @@ function connect_test(to: number) {
           if (context) {
             if (node.then) throw new Error('Node has already been connected');
             node.then = to;
-            cfgState.prevIds = cfgState.prevIds.filter(
-              ([n, c]) => n.id !== node.id && c
-            );
           } else {
             if (node.else) throw new Error('Node has already been connected');
             node.else = to;
-            cfgState.prevIds = cfgState.prevIds.filter(
-              ([n, c]) => n.id !== node.id && !c
-            );
           }
+          cfgState.prevIds = cfgState.prevIds.filter(
+            ([n, c]) => !(n.id === node.id && !c === !context) // undefined and false should be equal
+          );
         }
         break;
       default:
