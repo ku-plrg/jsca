@@ -130,7 +130,11 @@ function visit(node: acorn.AnyNode): void {
     case 'FunctionExpression':
       break;
     case 'UnaryExpression':
-      visit(node.argument);
+      if (node.operator === '!') {
+        visit(node.argument);
+        convert_context();
+      } else visitExp(node.argument);
+
       break;
     case 'UpdateExpression':
       visitExp(node.argument);
@@ -138,6 +142,9 @@ function visit(node: acorn.AnyNode): void {
     case 'BinaryExpression':
       visitExp(node.left);
       visitExp(node.right);
+      // if (node.operator === '!==') {
+      //   convert_context();
+      // }
       break;
     case 'AssignmentExpression':
       visitExp(node.left);
@@ -251,6 +258,17 @@ function convert_mergeable() {
     return [node, context];
   });
 }
+function convert_context() {
+  const duplicateIds = cfgState.prevIds
+    .map(([node]) => node.id)
+    .filter((id, index, array) => array.filter((x) => x === id).length === 2);
+  cfgState.prevIds = cfgState.prevIds.map(([node, context, mergeable]) => {
+    if (node.type === 'condition' && duplicateIds.includes(node.id)) {
+      return [node, !context, mergeable];
+    }
+    return [node, context, mergeable];
+  });
+}
 function addCond(node: acorn.AnyNode) {
   visit(node);
   const condition = createNode('condition');
@@ -328,7 +346,6 @@ function connect(to: number) {
       case 'condition':
         if (context) {
           if (node.then) {
-            console.log('node', node);
             throw new Error('Node has already been connected');
           }
           node.then = to;
@@ -368,7 +385,7 @@ function connect_test(to: number) {
             node.else = to;
           }
           cfgState.prevIds = cfgState.prevIds.filter(
-            ([n, c]) => !(n.id === node.id && !c === !context) // undefined and false should be equal
+            ([n, c]) => !(n.id === node.id && !c === !context)
           );
         }
         break;
