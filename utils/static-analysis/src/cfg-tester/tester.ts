@@ -4,155 +4,51 @@ import cfg, { cfgToDot, generatePNG } from '../abstract/cfg';
 import { stringifyCFG } from '../compare/cfg-comparator';
 
 const codeMap = {
-  //   test1: `
-  //     function a() {
-  //   Symbol('JSCA_517_657');
-  //   var subWindow, doc = node ? node.ownerDocument || node : preferredDoc;
-  //   if (doc == document || doc.nodeType !== 9 || !doc.documentElement) {
-  //     return document;
-  //   }
-  //   document = doc;
-  //   documentElement = document.documentElement;
-  //   documentIsHTML = !jQuery.isXMLDoc(document);
-  //   matches = documentElement.matches || documentElement.webkitMatchesSelector || documentElement.msMatchesSelector;
-  //   if (documentElement.msMatchesSelector && preferredDoc != document && (subWindow = document.defaultView) && subWindow.top !== subWindow) {
-  //     subWindow.addEventListener('unload', unloadHandler);
-  //   }
-  //   support.getById = assert('');
-  //   support.disconnectedMatch = assert('');
-  //   support.scope = assert('');
-  //   support.cssHas = assert('');
-  //   if (support.getById) {
-  //     Expr.filter.ID = '';
-  //     Expr.find.ID = '';
-  //   } else {
-  //     Expr.filter.ID = '';
-  //     Expr.find.ID = '';
-  //   }
-  //   Expr.find.TAG = '';
-  //   Expr.find.CLASS = '';
-  //   rbuggyQSA = [];
-  //   assert('');
-  //   if (!support.cssHas) {
-  //     rbuggyQSA.push(':has');
-  //   }
-  //   rbuggyQSA = rbuggyQSA.length && new RegExp(rbuggyQSA.join('|'));
-  //   sortOrder = '';
-  //   return document;
-  // }
-  // `,
-  //   test3: `
-  //   function a(){
-  //   Symbol('JSCA_517_657');
-  //   var c,
-  //     S = s ? s.ownerDocument || s : Se;
-  //   return (
-  //     S == a ||
-  //       S.nodeType !== 9 ||
-  //       !S.documentElement ||
-  //       ((a = S),
-  //       (f = a.documentElement),
-  //       (l = !i.isXMLDoc(a)),
-  //       (h = f.matches || f.webkitMatchesSelector || f.msMatchesSelector),
-  //       f.msMatchesSelector &&
-  //         Se != a &&
-  //         (c = a.defaultView) &&
-  //         c.top !== c &&
-  //         c.addEventListener('unload', kr),
-  //       (k.getById = Oe('')),
-  //       (k.disconnectedMatch = Oe('')),
-  //       (k.scope = Oe('')),
-  //       (k.cssHas = Oe('')),
-  //       k.getById
-  //         ? ((t.filter.ID = ''), (t.find.ID = ''))
-  //         : ((t.filter.ID = ''), (t.find.ID = '')),
-  //       (t.find.TAG = ''),
-  //       (t.find.CLASS = ''),
-  //       (d = []),
-  //       Oe(''),
-  //       k.cssHas || d.push(':has'),
-  //       (d = d.length && new RegExp(d.join('|'))),
-  //       (B = '')),
-  //     a
-  //   );
-  // }
-
-  //   `,
-  //   test4: `
-  //   function a() {
-  //   Symbol('JSCA_170_181');
-  //   var t, n;
-  //   return (
-  //     !!(e && '[object Object]' === Se.call(e)) &&
-  //     (((t = le(e)), !!!t) ||
-  //       ((n = Ae.call(t, 'constructor') && t.constructor),
-  //       'function' == typeof n && he.call(n) === ge))
-  //   );
-  // }
-  // `,
-  //   test5: `
-  // function a() {
-  //   Symbol('JSCA_3046_3051');
-  //   if (k(_.a&&_.b)
-  //   ) {
-  //     return jQuery(elem).children('tbody')[0] || elem;
-  //   }
-  //   return elem;
-  // }
-
-  //     `,
-
-  //   test6: `function f(){
-  //   return (Symbol('JSCA_58_63'), null == e)
-  //     ? e + ''
-  //     : (void 0 === e ? 'undefined' : o(e)) === 'object' || 'function' == typeof e
-  //     ? f[d.call(e)] || 'object'
-  //     : void 0 === e
-  //     ? 'undefined'
-  //     : o(e);
-  // }
-  // `,
-  //   test7: `function f(){
-  //   Symbol('JSCA_58_63');
-  //   if (obj == null) {
-  //     return obj + '';
-  //   }
-  //   return typeof obj === 'object' || typeof obj === 'function'
-  //     ? class2type[toString.call(obj)] || 'object'
-  //     : typeof obj;
-  // }
-  // `,
-  test8: `function f() {
-    return (void 0!==o||void 0!==o)?o:void 0
-  }`,
-  test8_1: `function f() {
-    if(o !== undefined || o !== undefined) {
-      return o;
+  test1: `function foo(a, b) {
+  Symbol('JSCA_2105_2120');
+  var name;
+  if (data === undefined && elem.nodeType === 1) {
+    name = 'data-' + key.replace(rmultiDash, '-$&').toLowerCase();
+    data = elem.getAttribute(name);
+    if (typeof data === 'string') {
+      try {
+        data = getData(data);
+      } catch (e) {}
+      dataUser.set(elem, key, data);
+    } else {
+      data = undefined;
     }
-    return void 0
-  }`,
-  test9: `function f(){
-    if (data !== undefined) {
-      return data;
-    }
-    if (data !== undefined) {
-      return data;
-    }
-    return;
-  }`,
-  // test10: `function f() {
-  //   return (void 0!==o||void 0!==(_.a,o))?o:void 0
-  // }`,
-  // test11: `function f(){
-  //   if (data !== undefined) {
-  //     return data;
-  //   }
-  //   _.a;
-  //   if (data !== undefined) {
-  //     return data;
-  //   }
-  //   return;
-  // }`,
+  }
+  return data;
+}
+`,
+  test2: `function foo(a, b) {
+  var o, r;
+  if ((Symbol('JSCA_2105_2120'), void 0 === n && 1 === e.nodeType)) {
+    if (
+      ((o = 'data-' + t.replace(es, '-$&').toLowerCase()),
+      'string' == typeof (n = e.getAttribute(o)))
+    ) {
+      try {
+        (r = n),
+          Symbol('JSCA_2087_2104'),
+          (n =
+            'true' === r ||
+            ('false' !== r &&
+              ('null' === r
+                ? null
+                : r === +r + ''
+                ? +r
+                : ea.test(r)
+                ? JSON.parse(r)
+                : r)));
+      } catch (e) {}
+      el.set(e, t, n);
+    } else n = void 0;
+  }
+  return n;
+}
+`,
 };
 
 async function CFGtest(code: string, filename: string) {

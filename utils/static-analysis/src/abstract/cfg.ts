@@ -13,7 +13,7 @@ import {
 
 let cfgState: CFGState;
 
-const SKIP_BUILTIN = ['Math', 'String', 'Number'];
+const SKIP_BUILTIN: string[] = ['Math', 'String', 'Number'];
 
 function visit(node: acorn.AnyNode): void {
   switch (node.type) {
@@ -56,8 +56,16 @@ function visit(node: acorn.AnyNode): void {
       cfgState.prevIds = thenprev.concat(elseprev);
       break;
     case 'SwitchStatement':
+      break;
     case 'ThrowStatement':
+      visit(node.argument);
+      connect(cfgState.exceptionId);
+      cfgState.prevIds = [];
+      break;
     case 'TryStatement':
+      visit(node.block);
+      node.handler && visit(node.handler);
+      node.finalizer && visit(node.finalizer);
       break;
     case 'WhileStatement':
       const whileLoop = addLoop();
@@ -193,6 +201,7 @@ function visit(node: acorn.AnyNode): void {
       break;
     case 'CallExpression':
       visitExp(node.callee);
+      //insertSequence(`callexpr_${node.arguments.length}`, 'prop');
       node.arguments.forEach(visitExp);
       break;
     case 'NewExpression':

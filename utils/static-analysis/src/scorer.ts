@@ -6,6 +6,12 @@ import logCFG from './utils/cfg-logger';
 import LogIR from './utils/ir-logger';
 import measureTime from './utils/timer';
 import { AbsFunction, Function, Library } from './utils/types';
+import {
+  ComparisonResult,
+  NegativeItem,
+  PositiveItem,
+  UniqueFuncItem,
+} from './utils/types/misc';
 
 const GENERATE_PNG = false;
 
@@ -15,12 +21,14 @@ async function FunctionScorer<T extends AbsFunction>(
   abstraction: (f: Function[]) => T[],
   comparison: (f1: T, f2: T) => boolean,
   logFileName: string
-) {
-  const absfuncs1 = measureTime(`make abstraction from ${lib1.name}`, () =>
-    abstraction(lib1.functions)
+): Promise<ComparisonResult> {
+  const { value: absfuncs1, ms: t1 } = measureTime(
+    `make abstraction from ${lib1.name}`,
+    () => abstraction(lib1.functions)
   );
-  const absfuncs2 = measureTime(`make abstraction from ${lib2.name}`, () =>
-    abstraction(lib2.functions)
+  const { value: absfuncs2, ms: t2 } = measureTime(
+    `make abstraction from ${lib2.name}`,
+    () => abstraction(lib2.functions)
   );
   if (absfuncs1[0].type === 'ir') {
     // Log IR
@@ -56,83 +64,89 @@ async function FunctionScorer<T extends AbsFunction>(
   //createDotGraph(propstree, file1);
   //createDotGraph(propstree2, file2);
   function compare(pt1: T[], pt2: T[]) {
-    const truePositives: { f1Name: string; f2Name: string; id: string }[] = [];
-    const trueNegatives: {
-      f1Name: string;
-      f2Name: string;
-      id1: string;
-      id2: string;
-    }[] = [];
-    const falsePositives: {
-      f1Name: string;
-      f2Name: string;
-      id1: string;
-      id2: string;
-    }[] = [];
-    const falseNegatives: {
-      f1Name: string;
-      f2Name: string;
-      id: string;
-    }[] = [];
-    const uniquefuncs: { f1Name: string; id: string }[] = [];
+    const tp: PositiveItem[] = [];
+    const tn: NegativeItem[] = [];
+    const fp: NegativeItem[] = [];
+    const fn: PositiveItem[] = [];
+    const uniquefuncs: UniqueFuncItem[] = [];
 
-    pt1.forEach((f1) => {
-      let uniqueMatch = true;
-      pt2.forEach((f2) => {
-        const logicallySame = comparison(f1, f2);
-        const reallySame = f1.id === f2.id;
+    pt1
+      .filter(
+        (p) =>
+          !(
+            p.type === 'cfg' &&
+            Array.from(p.nodes.values()).reduce((acc, n) => {
+              if (n.type === 'block') return acc + (n.sequences?.length ?? 1);
+              return acc + 1;
+            }, 0) < 5
+          )
+      )
+      .forEach((f1) => {
+        let uniqueMatch = true;
+        pt2
+          .filter(
+            (p) =>
+              !(
+                p.type === 'cfg' &&
+                Array.from(p.nodes.values()).reduce((acc, n) => {
+                  if (n.type === 'block')
+                    return acc + (n.sequences?.length ?? 1);
+                  return acc + 1;
+                }, 0) < 5
+              )
+          )
+          .forEach((f2) => {
+            const logicallySame = comparison(f1, f2);
+            const reallySame = f1.id === f2.id;
 
-        if (logicallySame && reallySame)
-          truePositives.push({ f1Name: f1.name, f2Name: f2.name, id: f1.id });
-        if (logicallySame && !reallySame) {
-          falsePositives.push({
-            f1Name: f1.name,
-            f2Name: f2.name,
-            id1: f1.id,
-            id2: f2.id,
+            if (logicallySame && reallySame)
+              tp.push({ f1Name: f1.name, f2Name: f2.name, id: f1.id });
+            if (logicallySame && !reallySame) {
+              fp.push({
+                f1Name: f1.name,
+                f2Name: f2.name,
+                id1: f1.id,
+                id2: f2.id,
+              });
+              uniqueMatch = false;
+            }
+            if (!logicallySame && reallySame) {
+              fn.push({
+                f1Name: f1.name,
+                f2Name: f2.name,
+                id: f1.id,
+              });
+              uniqueMatch = false;
+            }
+            if (!logicallySame && !reallySame)
+              tn.push({
+                f1Name: f1.name,
+                f2Name: f2.name,
+                id1: f1.id,
+                id2: f2.id,
+              });
           });
-          uniqueMatch = false;
+        if (uniqueMatch) {
+          uniquefuncs.push({ f1Name: f1.name, id: f1.id });
         }
-        if (!logicallySame && reallySame) {
-          falseNegatives.push({
-            f1Name: f1.name,
-            f2Name: f2.name,
-            id: f1.id,
-          });
-          uniqueMatch = false;
-        }
-        if (!logicallySame && !reallySame)
-          trueNegatives.push({
-            f1Name: f1.name,
-            f2Name: f2.name,
-            id1: f1.id,
-            id2: f2.id,
-          });
       });
-      if (uniqueMatch) {
-        uniquefuncs.push({ f1Name: f1.name, id: f1.id });
-      }
-    });
     return {
-      truePositives,
-      trueNegatives,
-      falsePositives,
-      falseNegatives,
+      tp,
+      tn,
+      fp,
+      fn,
       uniquefuncs,
     };
   }
 
   function getScores(pt1: T[], pt2: T[]) {
     const {
-      truePositives,
-      trueNegatives,
-      falsePositives,
-      falseNegatives,
-      uniquefuncs,
+      value: { tp, tn, fp, fn, uniquefuncs },
+      ms,
     } = measureTime('compare', () => compare(pt1, pt2));
-    const numTP = truePositives.length;
-    const numFP = falsePositives.length;
-    const numFN = falseNegatives.length;
+    const numTP = tp.length;
+    const numFP = fp.length;
+    const numFN = fn.length;
 
     const precisionString = `${numTP} / (${numTP} + ${numFP})`;
     const precision = numTP / (numTP + numFP);
@@ -142,25 +156,33 @@ async function FunctionScorer<T extends AbsFunction>(
     const uniques = uniquefuncs.length;
 
     return {
-      truePositives,
-      trueNegatives,
-      falsePositives,
-      falseNegatives,
-      precision,
-      precisionString,
-      recall,
-      recallString,
-      uniquefuncs,
-      uniques,
+      score: {
+        tp,
+        tn,
+        fp,
+        fn,
+        precision,
+        precisionString,
+        recall,
+        recallString,
+        uniquefuncs,
+        uniques,
+      },
+      times: {
+        abs1: t1,
+        abs2: t2,
+        compare: ms,
+      },
     };
   }
 
   function writeReport(
-    score: ReturnType<typeof getScores>,
+    result: ComparisonResult,
     l1: string,
     l2: string,
     additionalLog: AbsFunction['type']
   ) {
+    const { score, times } = result;
     const LOG_DIR = '/utils/static-analysis/src/logs/functions';
     const IR_DIR = '/utils/static-analysis/src/logs/ir';
     const CFG_DIR = '/utils/static-analysis/src/logs/cfg';
@@ -179,11 +201,11 @@ async function FunctionScorer<T extends AbsFunction>(
         : () => '';
 
     let mdContent = '';
-    mdContent += `## Scores\n|Precision|Recall|TP|TN|FP|FN|\n|---|---|---|---|---|---|\n|${score.precision}|${score.recall}|${score.truePositives.length}|${score.trueNegatives.length}|${score.falsePositives.length}|${score.falseNegatives.length}|\n\n`;
+    mdContent += `## Scores\n|Precision|Recall|TP|TN|FP|FN|\n|---|---|---|---|---|---|\n|${score.precision}|${score.recall}|${score.tp.length}|${score.tn.length}|${score.fp.length}|${score.fn.length}|\n\n`;
 
     mdContent += `## False Negatives: ${
-      score.falseNegatives.length
-    }\n|f1|f2|\n|--|--|\n${score.falseNegatives
+      score.fn.length
+    }\n|f1|f2|\n|--|--|\n${score.fn
       .slice(0, 50)
       .map(
         (fn) =>
@@ -200,8 +222,8 @@ async function FunctionScorer<T extends AbsFunction>(
       .join('\n')}\n`;
 
     mdContent += `## False Positives: ${
-      score.falsePositives.length
-    }\n|f1|f2|\n|--|--|\n${score.falsePositives
+      score.fp.length
+    }\n|f1|f2|\n|--|--|\n${score.fp
       .slice(0, 20)
       .map(
         (fn) =>
@@ -217,7 +239,7 @@ async function FunctionScorer<T extends AbsFunction>(
       )
       .join('\n')}\n`;
     mdContent += `## Unique Functions: ${
-      score.uniques
+      score.uniquefuncs.length
     }\n|f1|\n|--|\n${score.uniquefuncs
       .slice(0, 20)
       .map((fn) => `|${TEMPLATE(fn.id, fn.f1Name, l1)}|`)

@@ -45,4 +45,5 @@ export type AbsFunction = Propstree | Props | CFG | IR;
 
 export * from './cfg';
 export * from './ir';
+export * from './misc';
 export * from './propstree';
