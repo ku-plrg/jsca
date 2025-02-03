@@ -1,5 +1,4 @@
 import * as acorn from 'acorn';
-import { stringifyIRNode } from '../utils/ir_stringifier';
 import {
   EmptyNode,
   Function,
@@ -79,54 +78,16 @@ function createVisitor(): Visitor {
     IfStatement(node: acorn.IfStatement): IRNode {
       const test = compile(node.test);
       const consequent = compile(node.consequent);
-      const alternate = node.alternate ? compile(node.alternate) : emptyNode;
-
-      if (
-        (node.test.type === 'BinaryExpression' &&
-          node.test.operator === '!==') ||
-        (node.test.type === 'UnaryExpression' && node.test.operator === '!')
-      ) {
-        return {
-          type: IRInst.SEQ,
-          left: test,
-          right: {
-            type: IRInst.SEQ,
-            left: {
-              type: IRInst.COND,
-              test: { type: IRInst.BLOCK },
-              true: { type: IRInst.BLOCK },
-              false: { type: IRInst.BLOCK },
-            },
-            right: {
-              type: IRInst.SEQ,
-              left: alternate,
-              right: consequent,
-            },
-          },
-        };
-      }
-      const strConsequent = stringifyIRNode(consequent).split('\n')[0].length;
-      const strAlternate = stringifyIRNode(alternate).split('\n')[0].length;
-      const [left, right] =
-        strConsequent > strAlternate
-          ? [consequent, alternate]
-          : [alternate, consequent];
+      const block: IRNode = { type: IRInst.BLOCK };
+      const alternate = node.alternate ? compile(node.alternate) : block;
       return {
         type: IRInst.SEQ,
         left: test,
         right: {
-          type: IRInst.SEQ,
-          left: {
-            type: IRInst.COND,
-            test: { type: IRInst.BLOCK },
-            true: { type: IRInst.BLOCK },
-            false: { type: IRInst.BLOCK },
-          },
-          right: {
-            type: IRInst.SEQ,
-            left: consequent,
-            right: alternate,
-          },
+          type: IRInst.COND,
+          test: { type: IRInst.BLOCK },
+          true: consequent,
+          false: alternate,
         },
       };
     },
@@ -330,17 +291,6 @@ function createVisitor(): Visitor {
       return compile(node.argument);
     },
     BinaryExpression(node: acorn.BinaryExpression): SeqNode {
-      if (node.operator === 'in') {
-        return {
-          type: IRInst.SEQ,
-          left: compile(node.left),
-          right: {
-            type: IRInst.SEQ,
-            left: { type: IRInst.LITERAL, id: node.operator },
-            right: compile(node.right),
-          },
-        };
-      }
       return {
         type: IRInst.SEQ,
         left: compile(node.left),
@@ -384,18 +334,10 @@ function createVisitor(): Visitor {
         type: IRInst.SEQ,
         left: left,
         right: {
-          type: IRInst.SEQ,
-          left: {
-            type: IRInst.COND,
-            test: { type: IRInst.BLOCK },
-            true: { type: IRInst.BLOCK },
-            false: { type: IRInst.BLOCK },
-          },
-          right: {
-            type: IRInst.SEQ,
-            left: right,
-            right: { type: IRInst.EMPTY },
-          },
+          type: IRInst.COND,
+          test: { type: IRInst.BLOCK },
+          true: right,
+          false: { type: IRInst.BLOCK },
         },
       };
     },
@@ -428,60 +370,15 @@ function createVisitor(): Visitor {
       const test = compile(node.test);
       const consequent = compile(node.consequent);
       const alternate = compile(node.alternate);
-      if (
-        node.consequent.type === 'Literal' &&
-        node.consequent.value === 'undefined'
-      ) {
-        return { type: IRInst.EMPTY };
-      }
-      if (
-        (node.test.type === 'BinaryExpression' &&
-          node.test.operator === '!==') ||
-        (node.test.type === 'UnaryExpression' && node.test.operator === '!')
-      ) {
-        return {
-          type: IRInst.SEQ,
-          left: test,
-          right: {
-            type: IRInst.SEQ,
-            left: {
-              type: IRInst.COND,
-              test: { type: IRInst.BLOCK },
-              true: { type: IRInst.BLOCK },
-              false: { type: IRInst.BLOCK },
-            },
-            right: {
-              type: IRInst.SEQ,
-              left: alternate,
-              right: consequent,
-            },
-          },
-        };
-      }
-
-      const strConsequent = stringifyIRNode(consequent).split('\n')[0];
-      const strAlternate = stringifyIRNode(alternate);
-      const [left, right] =
-        strConsequent > strAlternate
-          ? [consequent, alternate]
-          : [alternate, consequent];
 
       return {
         type: IRInst.SEQ,
         left: test,
         right: {
-          type: IRInst.SEQ,
-          left: {
-            type: IRInst.COND,
-            test: { type: IRInst.BLOCK },
-            true: { type: IRInst.BLOCK },
-            false: { type: IRInst.BLOCK },
-          },
-          right: {
-            type: IRInst.SEQ,
-            left: consequent,
-            right: alternate,
-          },
+          type: IRInst.COND,
+          test: { type: IRInst.BLOCK },
+          true: consequent,
+          false: alternate,
         },
       };
     },
