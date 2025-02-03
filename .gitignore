@@ -138,6 +138,8 @@ dist
 build
 dist
 utils/static-analysis/target/*.js
+utils/static-analysis/test*.txt
+utils/static-analysis/**/test*.txt
 
 # utils/crawlers
 utils/crawlers/license/data

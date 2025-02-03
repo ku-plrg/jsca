@@ -4,6 +4,10 @@
   "main": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "test-ir": "ts-node src/ir-tester/tester.ts",
+    "test-cfg": "ts-node src/cfg-tester/tester.ts",
+    "remove-test": "rm test*.txt test*.png test*.dot",
+    "copy-reports": "mkdir -p src/logs/reports-prev && mv src/logs/reports/* src/logs/reports-prev",
     "start": "ts-node src/index.ts"
   },
   "author": "",
@@ -13,7 +17,8 @@
     "@types/escodegen": "^0.0.10",
     "acorn": "^8.14.0",
     "acorn-walk": "^8.3.4",
-    "escodegen": "^2.1.0"
+    "escodegen": "^2.1.0",
+    "js-sha256": "0.11.0"
   },
   "devDependencies": {
     "@types/node": "^20.17.12",

@@ -1,9 +1,10 @@
-function measureTime<T>(label: string, fn: () => T): T {
+function measureTime<T>(label: string, fn: () => T): { value: T; ms: number } {
   const start = process.hrtime();
   const result = fn();
-  const diff = process.hrtime(start);
-  console.log(`${label} took ${diff[0]}s ${diff[1] / 1000000}ms`);
-  return result;
+  const [seconds, nanoseconds] = process.hrtime(start);
+  console.log(`${label} took ${seconds}s ${nanoseconds / 1000000}ms`);
+  const ms = seconds * 1000 + nanoseconds / 1000000;
+  return { value: result, ms };
 }
 
 export default measureTime;

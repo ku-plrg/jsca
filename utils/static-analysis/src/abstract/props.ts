@@ -1,4 +1,4 @@
-import { Node } from 'acorn';
+import * as acorn from 'acorn';
 import { simple } from 'acorn-walk';
 
 import { Function, Props } from '../utils/types';
@@ -11,17 +11,13 @@ const option: Option = {
   allow_computed: true,
 };
 
-function collectProps(func: Node): string[] {
+function collectProps(func: acorn.AnyNode): string[] {
   const props: string[] = [];
   simple(func, {
-    MemberExpression(node: any) {
+    MemberExpression(node: acorn.MemberExpression) {
       if (node.property?.type === 'Identifier') {
         if (!node.computed) props.push(node.property.name);
-      } else if (
-        option.allow_computed &&
-        (node.property?.type === 'StringLiteral' ||
-          node.property?.type === 'Literal')
-      ) {
+      } else if (option.allow_computed && node.property?.type === 'Literal') {
         if (
           typeof node.property.value === 'string' &&
           node.property.value.length > 1

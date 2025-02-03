@@ -1,5 +1,4 @@
 import * as acorn from 'acorn';
-import { stringifyIRNode } from '../utils/ir_stringifier';
 import {
   EmptyNode,
   Function,
@@ -10,12 +9,14 @@ import {
 } from '../utils/types';
 
 type Visitor = {
-  [key: string]: <T extends acorn.Node>(node: T) => IRNode;
+  [K in acorn.AnyNode['type']]?: (
+    node: Extract<acorn.AnyNode, { type: K }>
+  ) => IRNode;
 };
 
 const emptyNode: EmptyNode = { type: IRInst.EMPTY };
 
-function nodesToSeqNode(exprs: acorn.Node[]): IRNode {
+function nodesToSeqNode(exprs: acorn.AnyNode[]): IRNode {
   let result: IRNode = exprs[0] !== undefined ? compile(exprs[0]) : emptyNode;
   for (let i = 1; i < exprs.length; i++) {
     const eachResult: SeqNode = {
@@ -77,54 +78,16 @@ function createVisitor(): Visitor {
     IfStatement(node: acorn.IfStatement): IRNode {
       const test = compile(node.test);
       const consequent = compile(node.consequent);
-      const alternate = node.alternate ? compile(node.alternate) : emptyNode;
-
-      if (
-        (node.test.type === 'BinaryExpression' &&
-          node.test.operator === '!==') ||
-        (node.test.type === 'UnaryExpression' && node.test.operator === '!')
-      ) {
-        return {
-          type: IRInst.SEQ,
-          left: test,
-          right: {
-            type: IRInst.SEQ,
-            left: {
-              type: IRInst.COND,
-              test: { type: IRInst.BLOCK },
-              true: { type: IRInst.BLOCK },
-              false: { type: IRInst.BLOCK },
-            },
-            right: {
-              type: IRInst.SEQ,
-              left: alternate,
-              right: consequent,
-            },
-          },
-        };
-      }
-      const strConsequent = stringifyIRNode(consequent).split('\n')[0].length;
-      const strAlternate = stringifyIRNode(alternate).split('\n')[0].length;
-      const [left, right] =
-        strConsequent > strAlternate
-          ? [consequent, alternate]
-          : [alternate, consequent];
+      const block: IRNode = { type: IRInst.BLOCK };
+      const alternate = node.alternate ? compile(node.alternate) : block;
       return {
         type: IRInst.SEQ,
         left: test,
         right: {
-          type: IRInst.SEQ,
-          left: {
-            type: IRInst.COND,
-            test: { type: IRInst.BLOCK },
-            true: { type: IRInst.BLOCK },
-            false: { type: IRInst.BLOCK },
-          },
-          right: {
-            type: IRInst.SEQ,
-            left: consequent,
-            right: alternate,
-          },
+          type: IRInst.COND,
+          test: { type: IRInst.BLOCK },
+          true: consequent,
+          false: alternate,
         },
       };
     },
@@ -328,17 +291,6 @@ function createVisitor(): Visitor {
       return compile(node.argument);
     },
     BinaryExpression(node: acorn.BinaryExpression): SeqNode {
-      if (node.operator === 'in') {
-        return {
-          type: IRInst.SEQ,
-          left: compile(node.left),
-          right: {
-            type: IRInst.SEQ,
-            left: { type: IRInst.LITERAL, id: node.operator },
-            right: compile(node.right),
-          },
-        };
-      }
       return {
         type: IRInst.SEQ,
         left: compile(node.left),
@@ -382,18 +334,10 @@ function createVisitor(): Visitor {
         type: IRInst.SEQ,
         left: left,
         right: {
-          type: IRInst.SEQ,
-          left: {
-            type: IRInst.COND,
-            test: { type: IRInst.BLOCK },
-            true: { type: IRInst.BLOCK },
-            false: { type: IRInst.BLOCK },
-          },
-          right: {
-            type: IRInst.SEQ,
-            left: right,
-            right: { type: IRInst.EMPTY },
-          },
+          type: IRInst.COND,
+          test: { type: IRInst.BLOCK },
+          true: right,
+          false: { type: IRInst.BLOCK },
         },
       };
     },
@@ -403,7 +347,7 @@ function createVisitor(): Visitor {
       const Objnode = compile(node.object);
 
       if (!node.computed && node.property.type === 'Identifier') {
-        const prop_node = {
+        const prop_node: IRNode = {
           type: IRInst.PROP,
           id: node.property.name,
           object: { type: IRInst.BLOCK },
@@ -426,60 +370,15 @@ function createVisitor(): Visitor {
       const test = compile(node.test);
       const consequent = compile(node.consequent);
       const alternate = compile(node.alternate);
-      if (
-        node.consequent.type === 'Literal' &&
-        node.consequent.value === 'undefined'
-      ) {
-        return { type: IRInst.EMPTY };
-      }
-      if (
-        (node.test.type === 'BinaryExpression' &&
-          node.test.operator === '!==') ||
-        (node.test.type === 'UnaryExpression' && node.test.operator === '!')
-      ) {
-        return {
-          type: IRInst.SEQ,
-          left: test,
-          right: {
-            type: IRInst.SEQ,
-            left: {
-              type: IRInst.COND,
-              test: { type: IRInst.BLOCK },
-              true: { type: IRInst.BLOCK },
-              false: { type: IRInst.BLOCK },
-            },
-            right: {
-              type: IRInst.SEQ,
-              left: alternate,
-              right: consequent,
-            },
-          },
-        };
-      }
-
-      const strConsequent = stringifyIRNode(consequent).split('\n')[0];
-      const strAlternate = stringifyIRNode(alternate);
-      const [left, right] =
-        strConsequent > strAlternate
-          ? [consequent, alternate]
-          : [alternate, consequent];
 
       return {
         type: IRInst.SEQ,
         left: test,
         right: {
-          type: IRInst.SEQ,
-          left: {
-            type: IRInst.COND,
-            test: { type: IRInst.BLOCK },
-            true: { type: IRInst.BLOCK },
-            false: { type: IRInst.BLOCK },
-          },
-          right: {
-            type: IRInst.SEQ,
-            left: consequent,
-            right: alternate,
-          },
+          type: IRInst.COND,
+          test: { type: IRInst.BLOCK },
+          true: consequent,
+          false: alternate,
         },
       };
     },
@@ -578,7 +477,7 @@ function createVisitor(): Visitor {
     SpreadElement(node: acorn.SpreadElement): IRNode {
       return compile(node.argument);
     },
-  } as Visitor;
+  };
 }
 function UnsupportedStatementError(statement: string) {
   const error = new Error(`Unsupported statement type: ${statement}`);
@@ -586,10 +485,12 @@ function UnsupportedStatementError(statement: string) {
   return error;
 }
 
-export function compile(node: acorn.Node): IRNode {
+export function compile(node: acorn.AnyNode): IRNode {
   const visitor = createVisitor();
   try {
-    const handler = visitor[node.type];
+    const handler = visitor[node.type] as
+      | ((_node: Extract<acorn.AnyNode, { type: typeof node.type }>) => IRNode)
+      | undefined;
 
     if (!handler) {
       console.error(`Unsupported node type: ${node.type}`);

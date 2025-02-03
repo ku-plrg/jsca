@@ -5,17 +5,25 @@ import { Function } from './utils/types';
 
 const MAX_FUNCTION_SIZE = 0;
 
-function stripFunctions(node: acorn.Node): acorn.Node {
+function stripFunctions(node: acorn.AnyNode): acorn.AnyNode {
   if (!node) return node;
 
   // Replace function declarations/expressions with empty statements
-  if (
-    node.type === 'FunctionDeclaration' ||
-    (node.type === 'FunctionExpression' &&
-      JSON.stringify((node as any).body).toString().length > MAX_FUNCTION_SIZE)
-  ) {
+  if (node.type === 'FunctionDeclaration') {
     return {
       type: 'EmptyStatement',
+      start: node.start,
+      end: node.end,
+      loc: node.loc,
+    };
+  }
+  if (
+    node.type === 'FunctionExpression' &&
+    JSON.stringify(node.body).toString().length > MAX_FUNCTION_SIZE
+  ) {
+    return {
+      type: 'Literal',
+      value: '',
       start: node.start,
       end: node.end,
       loc: node.loc,

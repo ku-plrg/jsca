@@ -5,18 +5,24 @@ import comparator from './compare';
 import extractFunctions from './function-extractor';
 import scorer from './scorer';
 import logFunctionCode from './utils/function-logger';
+import { getTotalScores } from './utils/misc';
 import measureTime from './utils/timer';
 import { Function, Library } from './utils/types';
 
 type AbstractionType = 'IR' | 'PropsTree' | 'Props' | 'CFG';
-const TARGET_ABSTRACTIONS: AbstractionType[] = ['CFG']; // ['IR', 'Props', 'PropsTree'];
+const TARGET_ABSTRACTIONS: AbstractionType[] = [
+  // 'IR',
+  // 'Props',
+  // 'PropsTree',
+  'CFG',
+];
 
 const TARGET_CODES: [string, string][] = [
   ['jquery_3.7.1.js', 'jquery_3.7.1_babel-minify.js'],
   ['jquery_3.7.1.js', 'jquery_3.7.1_esbuild.js'],
   ['jquery_3.7.1.js', 'jquery_3.7.1_swc.js'],
   ['jquery_3.7.1.js', 'jquery_3.7.1_terser.js'],
-  ['jquery_3.7.1.js', 'jquery_3.7.1_uglifyjs.js'],
+  //['jquery_3.7.1.js', 'jquery_3.7.1_uglifyjs.js'],
 ];
 /* 하나만 돌리고 싶으면 이 친구를 쓰세요 */
 /* 
@@ -41,7 +47,7 @@ function callScorer(f1: string, f2: string, abstractionType: AbstractionType) {
       );
       logFunctionCode(extractedFunctions, file);
       return extractedFunctions;
-    });
+    }).value;
   }
 
   const lib1: Library = {
@@ -55,7 +61,7 @@ function callScorer(f1: string, f2: string, abstractionType: AbstractionType) {
 
   switch (abstractionType) {
     case 'CFG':
-      return scorer(lib1, lib2, abstraction.cfg, comparator.ir, 'CFG');
+      return scorer(lib1, lib2, abstraction.cfg, comparator.cfg, 'CFG');
     case 'IR':
       return scorer(lib1, lib2, abstraction.ir, comparator.ir, 'IR');
     case 'Props':
@@ -71,20 +77,28 @@ function callScorer(f1: string, f2: string, abstractionType: AbstractionType) {
   }
 }
 
-TARGET_ABSTRACTIONS.forEach((abstractionType) => {
-  const scores = TARGET_CODES.map(([p0, p1]) => ({
-    target: p1,
-    scores: callScorer(p0, p1, abstractionType),
-  }));
-  const mdContent = `# Scores for ${abstractionType}\n\n|minifier|precision|recall|TP|TN|FP|FN|\n|-|-|-|-|-|-|-|\n${scores
+TARGET_ABSTRACTIONS.forEach(async (abstractionType) => {
+  const scores = [];
+  for (const [p0, p1] of TARGET_CODES) {
+    const score = await callScorer(p0, p1, abstractionType);
+    scores.push({ target: p1, scores: score });
+  }
+  const totalScore = getTotalScores(scores.map((s) => s.scores));
+
+  const mdContent = `# Scores for ${abstractionType}\n\n|minifier|abs-time|comp-time|precision|recall|TP|TN|FP|FN|\n|-|-|-|-|-|-|-|-|-|\n${scores
     .map(
-      (score) =>
-        `|${score.target}|${score.scores.precision}|${score.scores.recall}|${score.scores.truePositives.length}|${score.scores.trueNegatives.length}|${score.scores.falsePositives.length}|${score.scores.falseNegatives.length}|`
+      ({ target, scores: { score, times } }) =>
+        `|${target}|${times.abs2}|${times.compare}|${score.precision}|${score.recall}|${score.tp.length}|${score.tn.length}|${score.fp.length}|${score.fn.length}|`
     )
-    .join('\n')}`;
-  writeFileSync(
-    resolve(__dirname, `./logs/reports/scores_${abstractionType}.md`),
-    mdContent,
-    'utf-8'
+    .join('\n')}\n|Total|${totalScore.absT}|${totalScore.compT}|${
+    totalScore.precision
+  }|${totalScore.recall}|${totalScore.tp}|${totalScore.tn}|${totalScore.fp}|${
+    totalScore.fn
+  }|\n||${totalScore.meanAbsT}|${totalScore.meanCompT}||||||\n`;
+  const filePath = resolve(
+    __dirname,
+    `./logs/reports/scores_${abstractionType}.md`
   );
+  writeFileSync(filePath, mdContent, 'utf-8');
+  console.log(`Scores for ${abstractionType} saved at `, filePath);
 });
