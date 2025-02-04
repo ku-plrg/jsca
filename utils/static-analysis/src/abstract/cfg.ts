@@ -14,6 +14,7 @@ import {
 let cfgState: CFGState;
 
 const SKIP_BUILTIN: string[] = ['Math', 'String', 'Number'];
+const IGNORE_TYPEOF = true;
 
 function visit(node: acorn.AnyNode): void {
   switch (node.type) {
@@ -194,6 +195,12 @@ function visit(node: acorn.AnyNode): void {
       }
       break;
     case 'ConditionalExpression':
+      if (
+        node.consequent.type === 'Literal' &&
+        node.consequent.value === 'undefined' &&
+        IGNORE_TYPEOF
+      )
+        break;
       addCond(node.test);
       const thencondprev = condVisitor(node.consequent, true);
       const elsecondprev = condVisitor(node.alternate, false);
