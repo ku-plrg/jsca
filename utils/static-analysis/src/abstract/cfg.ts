@@ -1,5 +1,6 @@
 import * as acorn from 'acorn';
 import { exec } from 'child_process';
+import { existsSync } from 'fs';
 import { writeFile } from 'fs/promises';
 import { promisify } from 'util';
 import {
@@ -555,11 +556,11 @@ export async function generatePNG(
     const execAsync = promisify(exec);
     await execAsync(`dot -Tpng ${tempDotFile} -o ${outputPath}.png`);
 
-    await execAsync(`rm ${tempDotFile}`);
+    if (existsSync(tempDotFile)) await execAsync(`rm ${tempDotFile}`);
 
     console.log(`Successfully generated PNG at ${outputPath}.png`);
-  } catch (error) {
-    console.error('Error generating PNG:', error);
+  } catch (error: any) {
+    console.error('Error generating PNG:');
     throw error;
   }
 }

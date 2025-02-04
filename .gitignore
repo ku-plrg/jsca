@@ -149,5 +149,3 @@ utils/crawlers/*/error-log.txt
 
 # utils/dynamic-analysis
 utils/dynamic-analysis/log.txt
-utils/dynamic-analysis/output.json
-utils/dynamic-analysis/output-func.json
