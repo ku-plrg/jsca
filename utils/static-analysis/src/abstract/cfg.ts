@@ -134,7 +134,10 @@ function visit(node: acorn.AnyNode): void {
       elements.forEach(visitExp);
       break;
     case 'ObjectExpression':
-      node.properties.forEach(visitExp);
+      node.properties
+        .filter((prop) => prop.type === 'Property')
+        .map((prop) => prop.value)
+        .forEach(visitExp);
       break;
     case 'FunctionExpression':
       break;
@@ -202,6 +205,12 @@ function visit(node: acorn.AnyNode): void {
       if (
         node.consequent.type === 'Literal' &&
         node.consequent.value === 'undefined' &&
+        node.test.type === 'BinaryExpression' &&
+        node.test.operator === '===' &&
+        node.test.left.type === 'UnaryExpression' &&
+        node.test.left.operator === 'void' &&
+        node.test.left.argument.type === 'Literal' &&
+        node.test.left.argument.value === 0 &&
         IGNORE_TYPEOF
       )
         break;
