@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { stringifyCFG } from '../compare/cfg-comparator';
+// import { stringifyCFG } from '../compare/cfg-comparator';
 import { AbsFunction, Library } from './types';
 
 function logCFG<T extends AbsFunction>(absfuncs1: T[], lib1: Library) {
@@ -15,8 +15,8 @@ function logCFG<T extends AbsFunction>(absfuncs1: T[], lib1: Library) {
     try {
       if (fun.type === 'cfg') {
         // Write stringified CFG to file
-        const irString = stringifyCFG(fun.nodes);
-        fs.writeFileSync(logFile, irString, 'utf8');
+        // const irString = stringifyCFG(fun.nodes);
+        // fs.writeFileSync(logFile, irString, 'utf8');
       }
     } catch (error) {
       console.error('Failed to write IR log:', error);
