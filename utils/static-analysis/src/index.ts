@@ -17,19 +17,26 @@ const TARGET_ABSTRACTIONS: AbstractionType[] = [
   'CFG',
 ];
 
-const TARGET_CODES: [string, string][] = [
-  ['jquery_3.7.1.js', 'jquery_3.7.1_babel-minify.js'],
-  ['jquery_3.7.1.js', 'jquery_3.7.1_esbuild.js'],
-  ['jquery_3.7.1.js', 'jquery_3.7.1_swc.js'],
-  ['jquery_3.7.1.js', 'jquery_3.7.1_terser.js'],
-  //['jquery_3.7.1.js', 'jquery_3.7.1_uglifyjs.js'],
-];
+// const TARGET_CODES: [string, string][] = [
+//   ['jquery_3.7.1.js', 'jquery_3.7.1_babel-minify.js'],
+//   ['jquery_3.7.1.js', 'jquery_3.7.1_esbuild.js'],
+//   ['jquery_3.7.1.js', 'jquery_3.7.1_swc.js'],
+//   ['jquery_3.7.1.js', 'jquery_3.7.1_terser.js'],
+//['jquery_3.7.1.js', 'jquery_3.7.1_uglifyjs.js'],
+// ];
 // const TARGET_CODES: [string, string][] = [
 //   ['lodash_4.17.21.js', 'lodash_4.17.21_babel-minify.js'],
 //   ['lodash_4.17.21.js', 'lodash_4.17.21_esbuild.js'],
 //   ['lodash_4.17.21.js', 'lodash_4.17.21_swc.js'],
 //   ['lodash_4.17.21.js', 'lodash_4.17.21_terser.js'],
 // ];
+const TARGET_CODES: [string, string][] = [
+  // ['axios_1.7.8.js', 'axios_1.7.8_babel-minify.js'],
+  // ['axios_1.7.8.js', 'axios_1.7.8_esbuild.js'],
+  ['axios_1.7.8.js', 'axios_1.7.8_swc.js'],
+  ['axios_1.7.8.js', 'axios_1.7.8_terser.js'],
+];
+
 /* 하나만 돌리고 싶으면 이 친구를 쓰세요 */
 /* 
 const TARGET_CODES : [string, string][]= [
