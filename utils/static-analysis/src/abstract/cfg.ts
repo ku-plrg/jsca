@@ -191,6 +191,10 @@ function visit(node: acorn.AnyNode): void {
         visitExp(node.property);
       }
       if (node.computed && node.property.type !== 'Identifier') {
+        if (node.property.type === 'Literal') {
+          if (typeof node.property.value === 'string')
+            insertSequence(node.property.value, 'prop');
+        }
         visitExp(node.property);
       }
       break;
