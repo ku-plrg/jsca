@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:all": "npm run build:terser && npm run build:uglify-js && npm run build:esbuild && npm run build:babel-minify && npm run build:swc",
+    "build:all": "npm run build:terser && npm run build:esbuild && npm run build:babel-minify && npm run build:swc",
     "build:terser": "terser $npm_config_filename -o dist/terser/$npm_config_filename --mangle --compress --config-file gatsby.terser.config.json",
     "build:uglify-js": "cross-env OUTPUT_FILE=dist/uglify-js/${npm_config_filename:-index.js} sh -c 'mkdir -p $(dirname $OUTPUT_FILE) && uglifyjs ${npm_config_filename:-input.js} -o $OUTPUT_FILE --mangle'",
     "build:esbuild": "esbuild $npm_config_filename --minify --target=node18 --minify-syntax --outfile=dist/esbuild/$npm_config_filename",
