@@ -43,6 +43,8 @@ export interface CFG extends AbsFunctionBase {
 
 export type AbsFunction = Propstree | Props | CFG | IR;
 
+export type CFGHash = { nodes: Map<number, CFGNode>; hash: string };
+
 export * from './cfg';
 export * from './ir';
 export * from './propstree';

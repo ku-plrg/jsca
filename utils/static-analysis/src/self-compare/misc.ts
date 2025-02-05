@@ -5,8 +5,8 @@ import { mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { sha256 } from 'js-sha256';
 import { resolve } from 'path';
 import extractFunctions from '../function-extractor';
-import logFunctionCode from './function-logger';
-import measureTime from './timer';
+import logFunctionCode from '../utils/function-logger';
+import measureTime from '../utils/timer';
 import {
   AbsFunction,
   AbsType,
@@ -14,7 +14,7 @@ import {
   Function,
   Library,
   RawFunction,
-} from './types';
+} from '../utils/types';
 
 export const getTotalScores = <T extends AbsFunction>(
   results: ComparisonResult<T>[]

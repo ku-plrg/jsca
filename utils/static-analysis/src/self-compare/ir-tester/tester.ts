@@ -1,7 +1,10 @@
 import * as acorn from 'acorn';
 import fs from 'fs';
-import { compile } from '../abstract/ir';
-import { cleanOutput, stringifyIRNode } from '../utils/ir_stringifier';
+import { compile } from '../../abstract/ir';
+import {
+  cleanOutput,
+  stringifyIRNode,
+} from '../../utils/prev-works/ir_stringifier';
 
 const code = fs.readFileSync('test.js', 'utf-8');
 

@@ -1,7 +1,6 @@
 import * as acorn from 'acorn';
 import { writeFile } from 'fs/promises';
-import cfg, { cfgToDot, generatePNG } from '../abstract/cfg';
-import { stringifyCFG } from '../compare/cfg-comparator';
+import cfg, { cfgToDot, generatePNG } from '../../abstract/cfg';
 
 const codeMap = {
   test1: `function foo(a, b) {
@@ -59,8 +58,8 @@ async function CFGtest(code: string, filename: string) {
   await writeFile(`${filename}.dot`, dot, 'utf-8');
   await generatePNG(dot, `${filename}`);
   console.log('CFG generated ', `${filename}.dot`, `${filename}.png`);
-  const cfgString = stringifyCFG(cfgGraph.nodes);
-  await writeFile(`${filename}.txt`, cfgString, 'utf-8');
+  // const cfgString = stringifyCFG(cfgGraph.nodes);
+  // await writeFile(`${filename}.txt`, cfgString, 'utf-8');
   //console.log(cfgString);
 }
 

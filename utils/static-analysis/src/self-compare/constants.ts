@@ -1,7 +1,7 @@
 import { join } from 'path';
-import abstraction from './abstract';
-import comparator from './compare';
-import { ComparePair, RawFunction, ScorerParams } from './utils/types';
+import abstraction from '../abstract';
+import comparator from '../compare';
+import { ComparePair, RawFunction, ScorerParams } from '../utils/types';
 
 export const STATIC_CODES: [RawFunction, RawFunction][] = [
   ['jquery_3.7.1.js', 'jquery_3.7.1_babel-minify.js'],

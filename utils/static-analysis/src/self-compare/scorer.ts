@@ -1,17 +1,17 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { writeFile } from 'fs/promises';
 import path from 'path';
-import { cfgToDot, generatePNG } from './abstract/cfg';
-import logCFG from './utils/cfg-logger';
-import LogIR from './utils/ir-logger';
-import measureTime from './utils/timer';
-import { AbsFunction, Function, Library } from './utils/types';
+import { cfgToDot, generatePNG } from '../abstract/cfg';
+import logCFG from '../utils/cfg-logger';
+import LogIR from '../utils/prev-works/ir-logger';
+import measureTime from '../utils/timer';
+import { AbsFunction, Function, Library } from '../utils/types';
 import {
   CompareContext,
   CompareType,
   ComparisonResult,
   UniqueFuncItem,
-} from './utils/types/score';
+} from '../utils/types/score';
 
 const GENERATE_PNG = false;
 

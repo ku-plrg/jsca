@@ -1,5 +1,4 @@
-import { CFGState, CFGNode } from './types';
-import { IRInst, IRNode } from './types';
+import { CFGNode, CFGState, IRInst, IRNode } from '../types';
 
 interface ConversionState {
   visited: Set<number>;

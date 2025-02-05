@@ -1,4 +1,4 @@
-import { IR, IRInst, IRNode } from './types';
+import { IR, IRInst, IRNode } from '../types';
 
 function flattenSequence(node: IRNode): IRNode[] {
   if (node.type !== IRInst.SEQ) {
