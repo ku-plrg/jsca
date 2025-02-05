@@ -39,6 +39,7 @@ export interface Props extends AbsFunctionBase {
 export interface CFG extends AbsFunctionBase {
   type: 'cfg';
   nodes: Map<number, CFGNode>;
+  literals: string[];
 }
 
 export type AbsFunction = Propstree | Props | CFG | IR;

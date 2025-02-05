@@ -104,13 +104,13 @@ function extractFunctions(code: string): Function[] {
     const body = stripFunctions(node.body);
     if (JSON.stringify(body).toString().length < MAX_FUNCTION_SIZE) return;
     const id = getId(body);
-    if (id)
-      functions.push({
-        id,
-        name: functionName,
-        params: node.params,
-        body,
-      });
+
+    functions.push({
+      id,
+      name: functionName,
+      params: node.params,
+      body,
+    });
   }
 
   walk.simple(ast, {

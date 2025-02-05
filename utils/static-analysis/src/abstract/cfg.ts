@@ -3,18 +3,11 @@ import { exec } from 'child_process';
 import { existsSync } from 'fs';
 import { writeFile } from 'fs/promises';
 import { promisify } from 'util';
-import {
-  CFG,
-  CFGArgument,
-  CFGNode,
-  CFGState,
-  Function,
-  prevId,
-} from '../utils/types';
+import { CFG, CFGNode, CFGState, Function, prevId } from '../utils/types';
 
 let cfgState: CFGState;
 
-const SKIP_BUILTIN: string[] = ['Math', 'String', 'Number'];
+const SKIP_BUILTIN: string[] = ['Math', 'String', 'Number', 'Object'];
 const IGNORE_TYPEOF = true;
 
 function visit(node: acorn.AnyNode): void {
@@ -126,7 +119,18 @@ function visit(node: acorn.AnyNode): void {
       break;
     case 'ClassDeclaration':
     case 'Identifier':
+      convert_mergeable();
+      break;
     case 'Literal':
+      if (typeof node.value === 'string' && !node.value.startsWith('JSCA_')) {
+        cfgState.literals.push(node.value);
+      }
+      if (node.regex) {
+        cfgState.literals.push(node.regex.pattern);
+        cfgState.literals.push(node.regex.flags);
+      }
+      convert_mergeable();
+      break;
     case 'ThisExpression':
       convert_mergeable();
       break;
@@ -135,10 +139,18 @@ function visit(node: acorn.AnyNode): void {
       elements.forEach(visitExp);
       break;
     case 'ObjectExpression':
-      node.properties
-        .filter((prop) => prop.type === 'Property')
-        .map((prop) => prop.value)
-        .forEach(visitExp);
+      const properties = node.properties.filter(
+        (prop) => prop.type === 'Property'
+      );
+      properties.forEach((prop) => {
+        if (prop.key.type === 'Identifier') {
+          insertSequence(prop.key.name, 'prop');
+        }
+        if (prop.key.type === 'Literal' && typeof prop.key.value === 'string') {
+          insertSequence(prop.key.value, 'prop');
+        }
+        visitExp(prop.value);
+      });
       break;
     case 'FunctionExpression':
       break;
@@ -203,18 +215,7 @@ function visit(node: acorn.AnyNode): void {
       }
       break;
     case 'ConditionalExpression':
-      if (
-        node.consequent.type === 'Literal' &&
-        node.consequent.value === 'undefined' &&
-        node.test.type === 'BinaryExpression' &&
-        node.test.operator === '===' &&
-        node.test.left.type === 'UnaryExpression' &&
-        node.test.left.operator === 'void' &&
-        node.test.left.argument.type === 'Literal' &&
-        node.test.left.argument.value === 0 &&
-        IGNORE_TYPEOF
-      )
-        break;
+      if (is_typeof(node)) break;
       addCond(node.test);
       const thencondprev = condVisitor(node.consequent, true);
       const elsecondprev = condVisitor(node.alternate, false);
@@ -264,6 +265,7 @@ function extractCFG(node: acorn.AnyNode): CFGState {
     loopStack: [],
     endId: -1,
     exceptionId: -2,
+    literals: [],
   };
   visit(node);
   connect_end();
@@ -271,6 +273,20 @@ function extractCFG(node: acorn.AnyNode): CFGState {
 }
 
 // utils -------------------------------------------------------------------------------------------
+
+function is_typeof(node: acorn.ConditionalExpression): boolean {
+  return (
+    node.consequent.type === 'Literal' &&
+    node.consequent.value === 'undefined' &&
+    node.test.type === 'BinaryExpression' &&
+    node.test.operator === '===' &&
+    node.test.left.type === 'UnaryExpression' &&
+    node.test.left.operator === 'void' &&
+    node.test.left.argument.type === 'Literal' &&
+    node.test.left.argument.value === 0 &&
+    IGNORE_TYPEOF
+  );
+}
 
 function visitExp(node: acorn.AnyNode) {
   visit(node);
@@ -433,21 +449,6 @@ function connect_test(to: number) {
 }
 
 //-----------------------------------------------------------------------------------------------------
-function cfgBuilder(argument: CFGArgument) {
-  switch (argument.type) {
-    case 'insert_block':
-      break;
-    case 'insert_prop':
-      break;
-    case 'insert_update_prop':
-      break;
-    case 'update_previds':
-      break;
-    case 'update_subgraph':
-      break;
-  }
-}
-
 export function cfgToDot(nodes: Map<number, CFGNode>): string {
   let dotString = 'digraph CFG {\n';
   dotString += '  rankdir=TB;\n';
@@ -631,6 +632,7 @@ function cfg(functions: Function[]): CFG[] {
       name: func.name,
       type: 'cfg',
       nodes: graph.nodes,
+      literals: graph.literals,
     };
   });
 }

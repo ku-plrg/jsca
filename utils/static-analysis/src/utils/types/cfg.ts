@@ -48,6 +48,7 @@ export interface CFGState {
   loopStack: { break: prevId[]; continue: prevId[] }[];
   endId: number;
   exceptionId: number;
+  literals: string[];
 }
 
 export type CFGBuilderInstType =
@@ -56,42 +57,3 @@ export type CFGBuilderInstType =
   | 'insert_update_prop'
   | 'update_previds'
   | 'update_subgraph';
-
-export interface CFGBuilderInst {
-  type: CFGBuilderInstType;
-}
-
-export interface InsertBlock extends CFGBuilderInst {
-  type: 'insert_block';
-}
-
-export interface InsertProp extends CFGBuilderInst {
-  type: 'insert_prop';
-  value: string;
-}
-
-export interface InsertUpdateProp extends CFGBuilderInst {
-  type: 'insert_update_prop';
-  value: string;
-}
-
-export interface UpdatePrevids extends CFGBuilderInst {
-  type: 'update_previds';
-  previds: number[];
-}
-
-export interface UpdateSubgraph extends CFGBuilderInst {
-  type: 'update_subgraph';
-  start: number;
-  then: number[];
-  afterThen: () => void;
-  else: number[];
-  afterElse: () => void;
-}
-
-export type CFGArgument =
-  | InsertBlock
-  | InsertProp
-  | InsertUpdateProp
-  | UpdatePrevids
-  | UpdateSubgraph;

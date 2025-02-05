@@ -1,5 +1,5 @@
 import { createHash } from 'crypto';
-import { CFG, CFGNode } from '../utils/types';
+import { CFG, CFGHash, CFGNode } from '../utils/types';
 
 function toHash(value: string): string {
   return createHash('sha256').update(value).digest('hex');
@@ -85,21 +85,19 @@ function hashNode(
   return createHash('sha256').update(hashParts.join('|')).digest('hex');
 }
 
-function cfgComparator(f1: CFG, f2: CFG): boolean {
-  if (f1.nodes.size !== f2.nodes.size) return false;
-
+function generateCFGHash(f1: CFG): CFGHash {
   const start1 = f1.nodes.get(0);
-  const start2 = f2.nodes.get(0);
 
   if (!start1) throw new Error('Empty CFG: missing exit node in first graph');
-  if (!start2) throw new Error('Empty CFG: missing exit node in second graph');
 
   const cfg_hash1 = hashNode(start1, f1.nodes, new Map());
-  const cfg_hash2 = hashNode(start2, f2.nodes, new Map());
   const hash1 = toHash(cfg_hash1.concat(f1.literals.join('|')));
-  const hash2 = toHash(cfg_hash2.concat(f2.literals.join('|')));
-
-  return hash1 === hash2;
+  return { nodes: f1.nodes, hash: hash1 };
 }
 
-export default cfgComparator;
+function convertHash(c1: CFG[]) {
+  const hashes = c1.map(generateCFGHash);
+  return hashes;
+}
+
+export default convertHash;
