@@ -11,8 +11,6 @@ function libraryChecker(lib: string, code: string): number {
   const codeFunctions = measureTime('extractFunctions in code', () =>
     extractFunctions(code)
   );
-  console.log('libFunctions', libFunctions.value.length);
-  console.log('codeFunctions', codeFunctions.value.length);
   const libCFG = measureTime('makeCFG in library', () =>
     cfg(libFunctions.value)
   );

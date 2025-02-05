@@ -5,11 +5,11 @@ import {
   Library,
   RawFunction,
 } from '../utils/types';
-import { DYNAMIC_PAIR, scorerParams } from './constants';
+import { scorerParams, STATIC_PAIR } from './constants';
 import { rawFunctionToLibrary, writeReport } from './misc';
 import scorer from './scorer';
 
-const TARGET_PAIR = DYNAMIC_PAIR;
+const TARGET_PAIR = STATIC_PAIR;
 const { codes, compareType } = TARGET_PAIR;
 const TARGET_ABS: AbsType[] = [
   // 'IR',
