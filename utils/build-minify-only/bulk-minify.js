@@ -7,9 +7,9 @@ import util from 'util';
 import getLibInfo from '../crawlers/cdn/data/index.js';
 import injectLiteral from './inject-literal.js';
 
-const TARGET_PACKAGE = 'vue'; // available name in https://cdnjs.com/
+const TARGET_PACKAGE = 'backbone.js'; // available name in https://cdnjs.com/
 const TARGET_MINIFIER = 'terser'; // all | swc | esbuild | uglifyjs | terser | babel-minify
-const TARGET_VERSIONS = ['3.5.13']; // undefined for all versions
+const TARGET_VERSIONS = ['1.6.0']; // undefined for all versions
 const INJECT_LITERAL = false;
 
 const execPromise = util.promisify(exec);
@@ -117,7 +117,7 @@ async function fetchVersionAssets(libName, version) {
 
 async function getFilenamesForVersion(lib, version) {
   const versionInfo = await fetchVersionAssets(lib, version);
-  return versionInfo;
+  return versionInfo.filter((file) => file.endsWith('.js'));
 }
 
 bulkBundle();

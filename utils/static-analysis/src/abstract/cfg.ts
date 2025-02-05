@@ -122,13 +122,13 @@ function visit(node: acorn.AnyNode): void {
       convert_mergeable();
       break;
     case 'Literal':
-      if (typeof node.value === 'string' && !node.value.startsWith('JSCA_')) {
-        cfgState.literals.push(node.value);
-      }
-      if (node.regex) {
-        cfgState.literals.push(node.regex.pattern);
-        cfgState.literals.push(node.regex.flags);
-      }
+      // if (typeof node.value === 'string' && !node.value.startsWith('JSCA_')) {
+      //   cfgState.literals.push(node.value);
+      // }
+      // if (node.regex) {
+      //   cfgState.literals.push(node.regex.pattern);
+      //   cfgState.literals.push(node.regex.flags);
+      // }
       convert_mergeable();
       break;
     case 'ThisExpression':
