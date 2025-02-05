@@ -209,12 +209,8 @@ async function FunctionScorer<T extends AbsFunction>(
       .slice(0, 20)
       .map((fn) => `|${TEMPLATE(fn.id, fn.fName, l1)}|`)
       .join('\n')}\n`;
-    const fileDir = './logs/reports';
-    const filePath = path.resolve(
-      __dirname,
-      fileDir,
-      `${logFileName}-${l1}-${l2}.md`
-    );
+    const fileDir = 'src/logs/reports';
+    const filePath = path.join(fileDir, `${logFileName}-${l1}-${l2}.md`);
     mkdirSync(path.resolve(__dirname, fileDir), { recursive: true });
     writeFileSync(filePath, mdContent, 'utf-8');
     console.log('finish compare', lib1.name, lib2.name, filePath);
