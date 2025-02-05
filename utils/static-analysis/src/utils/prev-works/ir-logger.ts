@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
+import { AbsFunction, Library } from '../types';
 import stringifyIR from './ir_stringifier';
-import { AbsFunction, Library } from './types';
 
 function LogIR<T extends AbsFunction>(absfuncs1: T[], lib1: Library) {
   absfuncs1.forEach((fun) => {
