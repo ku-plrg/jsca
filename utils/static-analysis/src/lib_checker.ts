@@ -14,7 +14,7 @@ function getHash(raw: string, logStr: string) {
     cfg(functions)
   );
   const { value: hash, ms: hashMS } = measureTime(`hashCFG in ${logStr}`, () =>
-    convertHash(cfgs)
+    convertHash(cfgs.filter((cfg) => cfg.nodes.size > 5))
   );
   return {
     hash,
