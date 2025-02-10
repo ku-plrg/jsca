@@ -1,6 +1,7 @@
 import { readFileSync, writeFileSync } from 'fs';
 import { libraryChecker } from './lib_checker';
 import measureTime from './utils/timer';
+import { CFGHash } from './utils/types';
 
 const target = [
   'jquery_3.7.1',
@@ -40,12 +41,23 @@ const csvRows: string[] = [];
 csvRows.push(['', ...target].join(','));
 
 measureTime('libraryChecker', () => {
+  const hashCache: Record<string, CFGHash[]> = {};
+
   target.forEach((lib) => {
     const file1 = readFileSync(`./target/initial/_score/${lib}.js`, 'utf-8');
     const row: string[] = [lib];
     target2.forEach((lib2) => {
       const file2 = readFileSync(`./target/initial/_score/${lib2}.js`, 'utf-8');
-      const similarity = (libraryChecker(file1, file2) * 100).toFixed(2) + '%';
+      const similarity =
+        (
+          libraryChecker(
+            file1,
+            lib,
+            file2,
+            hashCache,
+            (hash: CFGHash[]) => (hashCache[lib] = hash)
+          ) * 100
+        ).toFixed(2) + '%';
       row.push(similarity);
       results.push({
         Library1: lib,

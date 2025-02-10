@@ -3,31 +3,40 @@ import compareHash from './compare/hash-comparator';
 import extractFunctions from './function-extractor';
 import convertHash from './utils/cfg_to_hash';
 import measureTime from './utils/timer';
+import { CFGHash } from './utils/types';
 
-function libraryChecker(lib: string, code: string): number {
-  const libFunctions = measureTime('extractFunctions in library', () =>
-    extractFunctions(lib)
+function getHash(raw: string, logStr: string) {
+  const { value: functions, ms: parseMS } = measureTime(
+    `extractFunctions in ${logStr}`,
+    () => extractFunctions(raw)
   );
-  const codeFunctions = measureTime('extractFunctions in code', () =>
-    extractFunctions(code)
+  const { value: cfgs, ms: abstMS } = measureTime(`makeCFG in ${logStr}`, () =>
+    cfg(functions)
   );
-  const libCFG = measureTime('makeCFG in library', () =>
-    cfg(libFunctions.value)
+  const { value: hash, ms: hashMS } = measureTime(`hashCFG in ${logStr}`, () =>
+    convertHash(cfgs)
   );
-  const codeCFG = measureTime('makeCFG in code', () =>
-    cfg(codeFunctions.value)
-  );
-  const libHash = measureTime('hashCFG in library', () =>
-    convertHash(libCFG.value)
-  );
-  const codeHash = measureTime('hashCFG in code', () =>
-    convertHash(codeCFG.value)
-  );
-  const result = measureTime('compare', () =>
-    compareHash(libHash.value, codeHash.value)
-  );
+  return {
+    hash,
+    parseMS,
+    abstMS: abstMS + hashMS,
+  };
+}
+
+function libraryChecker(
+  lib: string,
+  libName: string,
+  code: string,
+  cache: Record<string, CFGHash[]>,
+  cacheLib: (hash: CFGHash[]) => void
+): number {
+  const libHash = cache[libName] || getHash(lib, 'library');
+  if (!cache[libName]) cacheLib(libHash);
+  const codeHash = getHash(code, 'code').hash;
+
+  const result = measureTime('compare', () => compareHash(libHash, codeHash));
 
   return result.value;
 }
 
-export { libraryChecker };
+export { getHash, libraryChecker };

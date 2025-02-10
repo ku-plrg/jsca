@@ -79,13 +79,24 @@ function getId(node: acorn.Node): string {
 }
 
 function extractFunctions(code: string): Function[] {
-  const ast: acorn.Node = acorn.parse(code, {
-    ecmaVersion: 'latest', // Support the ES6
-    sourceType: 'script', // Treat the code as a script (not a module)
-    locations: true, // Include location information
-    ranges: true, // Include range information
-    allowReserved: true, // Allow reserved words
-  });
+  let ast: acorn.Node;
+  try {
+    ast = acorn.parse(code, {
+      ecmaVersion: 'latest', // Support the ES6
+      sourceType: 'script', // Treat the code as a script (not a module)
+      locations: true, // Include location information
+      ranges: true, // Include range information
+      allowReserved: true, // Allow reserved words
+    });
+  } catch (e) {
+    ast = acorn.parse(code, {
+      ecmaVersion: 'latest', // Support the ES6
+      sourceType: 'module', // Treat the code as a script (not a module)
+      locations: true, // Include location information
+      ranges: true, // Include range information
+      allowReserved: true, // Allow reserved words
+    });
+  }
 
   const functions: Function[] = [];
   let anonymousCounter: number = 0;

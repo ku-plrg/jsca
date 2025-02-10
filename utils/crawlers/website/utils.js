@@ -56,7 +56,7 @@ async function downloadFileFallback(url, filePath) {
   const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
   await page.goto(url, { ignoreHTTPSErrors: true });
-  const content = await page.content();
+  const content = await page.evaluate(() => document.body.innerText);
   await browser.close();
   fs.writeFileSync(filePath, content, 'utf8');
 }
@@ -133,6 +133,12 @@ function guardFolderSync(dirPath) {
   if (!fs.existsSync(dirPath)) fs.mkdirSync(dirPath, { recursive: true });
 }
 
+function encodeFileNameOnly(path) {
+  const parts = path.split('/');
+  const fileName = encodeURIComponent(parts.pop());
+  return [...parts, fileName].join('/');
+}
+
 async function downloadScripts(
   targetUrl,
   headless = true,
@@ -169,7 +175,9 @@ async function downloadScripts(
   const errorUrls = [];
   for (const fileUrl of jsFiles) {
     try {
-      const filePath = truncateFileName(fileUrl.replace(/https?:\/\//, ''));
+      const filePath = truncateFileName(
+        encodeFileNameOnly(fileUrl.replace(/https?:\/\//, ''))
+      );
       const fullFilePath = path.join(domainFolder, filePath);
       guardFolderSync(path.dirname(fullFilePath));
       await downloadFile(fileUrl, fullFilePath);
