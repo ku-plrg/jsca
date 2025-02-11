@@ -43,6 +43,7 @@ function logError(msg) {
 const MAX_LENGTH = 230;
 
 function truncateFileName(fileName) {
+  if (fileName.endsWith('/')) fileName = fileName.slice(0, -1);
   const ext = fileName.endsWith('.js') ? '.js' : '';
   const baseName = fileName.slice(0, -ext.length - 1);
 

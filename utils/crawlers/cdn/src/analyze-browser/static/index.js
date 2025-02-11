@@ -11,6 +11,17 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const filename = join(__dirname, '../../../data/libs-hash.json');
 
+const parseVersionString = (version) => {
+  const [major, minor, patch = '0'] = version.split('.');
+  const [patchVersion, patchSuffix = '0'] = patch.split('-');
+  return [
+    parseInt(major),
+    parseInt(minor),
+    parseInt(patchVersion),
+    patchSuffix,
+  ];
+};
+
 const allLibs = {};
 (async () => {
   const csv = fs.readFileSync(join(__dirname, '../ground.csv'), 'utf-8');
@@ -32,7 +43,9 @@ const allLibs = {};
       const [libName, fileName] = libAndFileName.split('----');
       console.log(`Processing ${libAndFileName} ...`);
       allLibs[libAndFileName] = { versions: [], hashes: {}, hashCnt: [] };
-      for (const version of libVersions) {
+      for (const version of libVersions.filter(
+        (v) => parseVersionString(v)[3] === '0' // no pre-release versions
+      )) {
         try {
           const cdnUrl = cdnTemplate(libName, version, fileName);
           const response = await axios.get(cdnUrl).catch((e) => {
