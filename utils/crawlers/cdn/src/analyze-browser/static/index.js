@@ -2,7 +2,7 @@ import axios from 'axios';
 import fs from 'fs';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { getCdnPaths } from '../cdn-paths.js';
+import { cdnTemplate, getCdnPaths } from '../cdn-paths.js';
 import { getHash } from './hasher-bundle.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -53,7 +53,9 @@ const allLibs = {};
     allLibs[libName] = { src: {}, hashes: {}, hashCnt: [] };
     for (const libVersionInfo of libVersionInfos) {
       allLibs[libName].src[libVersionInfo.version] = libVersionInfo.src;
-      const response = await axios.get(libVersionInfo.src);
+      const response = await axios.get(
+        cdnTemplate(libName, libVersionInfo.version, libVersionInfo.src)
+      );
       const file = response.data;
       const hashes = getHash(file, `${libName}@${libVersionInfo.version}`);
       allLibs[libName].hashCnt.push(hashes.length);

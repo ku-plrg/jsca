@@ -2,7 +2,7 @@ import axios from 'axios';
 import getLibInfo from '../../data/index.js';
 import { fetchVersionAssets } from '../library-info/fetch-cdn-api.js';
 
-const cdnTemplate = (libName, version, filename) => {
+export const cdnTemplate = (libName, version, filename) => {
   return `https://cdnjs.cloudflare.com/ajax/libs/${libName}/${version}/${filename}`;
 };
 
@@ -50,7 +50,7 @@ export const getCdnPath = async (lib) => {
         if (isValidCdnScript)
           return {
             version,
-            src: cdnTemplate(lib, version, fileName),
+            src: fileName,
           };
       } catch (error) {}
     }
@@ -69,7 +69,7 @@ export const getCdnPath = async (lib) => {
       if (isValidCdnScript)
         return {
           version,
-          src: cdnTemplate(lib, version, heuristicFileName),
+          src: heuristicFileName,
         };
     } catch (error) {}
 
