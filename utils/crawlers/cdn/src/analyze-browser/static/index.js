@@ -1,90 +1,79 @@
 import axios from 'axios';
 import fs from 'fs';
-import { dirname } from 'path';
+import Papa from 'papaparse';
+import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
-import { cdnTemplate, getCdnPaths } from '../cdn-paths.js';
+import getLibInfo from '../../../data/index.js';
+import { cdnTemplate } from '../cdn-paths.js';
 import { getHash } from './hasher-bundle.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const filename = 'data/libs-hash.json';
-
-const targets = [
-  'jquery',
-  // 'lodash.js',
-  // 'moment.js',
-  //   'zepto',
-  //   'd3',
-  //   'axios',
-  //   'angular',
-  //   'antd',
-  //   'amplifyjs',
-  //   'backbone.js',
-  //   'bootstrap',
-  //   'core-js',
-  //   'camanjs',
-  //   'dc',
-  //   'fastify',
-  //   'snap.svg',
-  //   'smartcrop',
-  //   'save-svg-as-png', // all properties in versions are same :(
-  //   'sql.js', // all files in cdnjs are not for browser impl :(
-  //   'driver.js',
-  //   'kube',
-  //   'formjs',
-  //   'tocas-ui',
-  //   'nprogress',
-  //   'nedb',
-  //   'underscore.js',
-  //   'ionic',
-  //   'hammer.js',
-  //   'google-closure-library',
-];
+const filename = join(__dirname, '../../../data/libs-hash.json');
 
 const allLibs = {};
 (async () => {
-  if (Object.keys(allLibs).length > 0)
-    console.log(`skip ${Object.keys(allLibs).join(', ')}`);
-  const libraries = await getCdnPaths(
-    targets.filter((t) => !Object.keys(allLibs).includes(t))
-  ); // Record<string,{version:string, src:string, idx:number}[]>
-  for (const [libName, libVersionInfos] of Object.entries(libraries)) {
-    console.log(`Processing ${libName}...`);
-    allLibs[libName] = { src: {}, hashes: {}, hashCnt: [] };
-    for (const libVersionInfo of libVersionInfos) {
-      allLibs[libName].src[libVersionInfo.version] = libVersionInfo.src;
-      const response = await axios.get(
-        cdnTemplate(libName, libVersionInfo.version, libVersionInfo.src)
-      );
-      const file = response.data;
-      const hashes = getHash(file, `${libName}@${libVersionInfo.version}`);
-      allLibs[libName].hashCnt.push(hashes.length);
-      hashes.forEach(([hash, length]) => {
-        const prevHash = allLibs[libName].hashes[length]?.[hash];
-        if (!prevHash) {
-          if (!allLibs[libName].hashes[length])
-            allLibs[libName].hashes[length] = {
-              [hash]: [[libVersionInfo.idx, libVersionInfo.idx]],
-            };
-          else
-            allLibs[libName].hashes[length][hash] = [
-              [libVersionInfo.idx, libVersionInfo.idx],
-            ];
-        } else if (
-          prevHash[prevHash.length - 1][1] ===
-          libVersionInfo.idx - 1
-        ) {
-          allLibs[libName].hashes[length][hash][prevHash.length - 1][1] =
-            libVersionInfo.idx;
-        } else if (prevHash[prevHash.length - 1][1] < libVersionInfo.idx) {
-          allLibs[libName].hashes[length][hash].push([
-            libVersionInfo.idx,
-            libVersionInfo.idx,
-          ]);
+  const csv = fs.readFileSync(join(__dirname, '../ground.csv'), 'utf-8');
+  const parsedCSV = Papa.parse(csv, { header: true });
+  const libraries = {};
+  // const libraries = await getCdnPaths(
+  //   targets.filter((t) => !Object.keys(allLibs).includes(t))
+  // ); // Record<string,{version:string, src:string, idx:number}[]>
+  parsedCSV.data.forEach((data) => {
+    const cdnName = data['cdn name'];
+    if (cdnName === '') return;
+    const lib = getLibInfo(cdnName);
+    if (!lib) return;
+    libraries[`${cdnName}----${data.file}`] = lib.versions;
+  });
+  try {
+    for (const [libAndFileName, libVersions] of Object.entries(libraries)) {
+      let idx = 0;
+      const [libName, fileName] = libAndFileName.split('----');
+      console.log(`Processing ${libAndFileName} ...`);
+      allLibs[libAndFileName] = { versions: [], hashes: {}, hashCnt: [] };
+      for (const version of libVersions) {
+        try {
+          const cdnUrl = cdnTemplate(libName, version, fileName);
+          const response = await axios.get(cdnUrl).catch((e) => {
+            if (e.response.status === 404) throw new Error(`${cdnUrl} is 404`);
+          });
+          allLibs[libAndFileName].versions.push(version);
+          const file = response.data;
+          const hashes = Array.from(
+            new Set(
+              getHash(file, `${libAndFileName}@${version}`).filter(
+                ([_, length]) => length > 5
+              )
+            )
+          );
+          allLibs[libAndFileName].hashCnt.push(hashes.length);
+          hashes.forEach(([hash, length]) => {
+            const prevHash = allLibs[libAndFileName].hashes[length]?.[hash];
+            if (!prevHash) {
+              if (!allLibs[libAndFileName].hashes[length])
+                allLibs[libAndFileName].hashes[length] = {
+                  [hash]: [[idx, idx]],
+                };
+              else allLibs[libAndFileName].hashes[length][hash] = [[idx, idx]];
+            } else if (prevHash[prevHash.length - 1][1] === idx - 1) {
+              allLibs[libAndFileName].hashes[length][hash][
+                prevHash.length - 1
+              ][1] = idx;
+            } else if (prevHash[prevHash.length - 1][1] < idx) {
+              allLibs[libAndFileName].hashes[length][hash].push([idx, idx]);
+            }
+          });
+          idx++;
+        } catch (e) {
+          console.error('[ERROR]', e.message);
         }
-      });
+      }
     }
+  } catch (e) {
+    console.error('error', e.message);
+    console.log('write', filename, 'before I die..');
+    fs.writeFileSync(filename, JSON.stringify(allLibs, null, 2));
   }
-
   fs.writeFileSync(filename, JSON.stringify(allLibs, null, 2));
 })();
