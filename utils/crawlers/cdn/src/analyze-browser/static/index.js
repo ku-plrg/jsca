@@ -53,13 +53,7 @@ const allLibs = {};
           });
           allLibs[libAndFileName].versions.push(version);
           const file = response.data;
-          const hashes = Array.from(
-            new Set(
-              getHash(file, `${libAndFileName}@${version}`).filter(
-                ([_, length]) => length > 5
-              )
-            )
-          );
+          const hashes = getHash(file, `${libAndFileName}@${version}`);
           allLibs[libAndFileName].hashCnt.push(hashes.length);
           hashes.forEach(([hash, length]) => {
             const prevHash = allLibs[libAndFileName].hashes[length]?.[hash];

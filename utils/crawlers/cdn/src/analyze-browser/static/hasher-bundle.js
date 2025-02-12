@@ -7970,6 +7970,15 @@ function getHash(raw, logStr) {
   const { value: hash } = timer_default(`hashCFG in ${logStr}`, () =>
     cfg_to_hash_default(cfgs)
   );
-  return hash.map((h) => [h.hash, h.nodes.size]);
+  return [
+    ...new Set(
+      hash
+        .filter((h) => h.nodes.size > 5)
+        .map((h) => `${h.hash}, ${h.nodes.size}`)
+    ),
+  ].map((hashLength) => {
+    const [hash, length] = hashLength.split(', ');
+    return [hash, parseFloat(length)];
+  });
 }
 export { getHash };
