@@ -321,8 +321,9 @@ const evaluate = async (url) => {
       const scores = matches.map((m, idx) => m / libHashCnt[idx]);
       const maxIdx = getMaxIdx(scores);
       if (detected && scores[maxIdx] > 0.35) {
+        const maxScore = scores[maxIdx];
         const maxVersion = versions[maxIdx];
-        libVersions[lib] = { scores, maxVersion };
+        libVersions[lib] = { scores, maxVersion, maxScore };
       }
     }
   );
@@ -352,8 +353,11 @@ const evaluateAll = async () => {
 
     Object.entries(libraries).forEach(([lib, data]) => {
       const fileName = lib.split('----')[1]; // Get only the file name after ----
-      const score = (Math.max(...data.scores) * 100).toFixed(2);
-      row.push(`(${fileName}.${data.maxVersion},${score})`);
+      row.push(
+        `"(${fileName}.${data.maxVersion},${(data.maxScore * 100).toFixed(
+          2
+        )}%)"`
+      );
     });
 
     csv += row.join(',') + '\n';
