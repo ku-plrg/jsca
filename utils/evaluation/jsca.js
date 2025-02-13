@@ -37,7 +37,7 @@ const TARGET_URLS = [
   'linkedin.com',
   'nytimes.com',
   'ru.wikipedia.org',
-  'yandex.ru',
+  //'yandex.ru',
   'spotify.com',
   'espncricinfo.com',
   'mayoclinic.org',
@@ -193,13 +193,13 @@ const TARGET_URLS = [
   'reverso.net',
   'paypal.com',
   'amazon.com.br',
-  'uptodown.com',
+  // 'uptodown.com',
   'europa.eu',
   'amazon.com.mx',
   'dailymotion.com',
   'interia.pl',
   'sv.wikipedia.org',
-  'fazenda.gov.br',
+  // 'fazenda.gov.br',
   'quillbot.com',
   'akakce.com',
   'marmiton.org',
@@ -241,7 +241,7 @@ const TARGET_URLS = [
   'caixa.gov.br',
   'blibli.com',
   'irs.gov',
-  'ap.gov.in',
+  // 'ap.gov.in',
   'programme-tv.net',
   'sikayetvar.com',
   'ssstik.io',
@@ -318,7 +318,7 @@ const evaluate = async (url) => {
           });
         }
       });
-      const scores = matches.map((m, idx) => m / libHashCnt[idx]);
+      const scores = matches.map((m, idx) => libHashCnt[idx] === 0 ? 0 : m / libHashCnt[idx]);
       const maxIdx = getMaxIdx(scores);
       if (detected && scores[maxIdx] > 0.35) {
         const maxScore = scores[maxIdx];
@@ -352,9 +352,8 @@ const evaluateAll = async () => {
     const row = [url];
 
     Object.entries(libraries).forEach(([lib, data]) => {
-      const fileName = lib.split('----')[1]; // Get only the file name after ----
       row.push(
-        `"(${fileName}.${data.maxVersion},${(data.maxScore * 100).toFixed(
+        `"(${lib}.${data.maxVersion},${(data.maxScore * 100).toFixed(
           2
         )}%)"`
       );

@@ -280,7 +280,7 @@ const detect = () => {
   function filterList(lib_match_list) {
     let newlist = [];
     for (let lib_info of lib_match_list) {
-      if (lib_info['files'][0]['bases'][0]['matched'] > 1)
+      if (lib_info['files'][0]['bases'][0]['matched'] > 1 && lib_info['score'] >= 50)
         newlist.push(lib_info);
     }
     return newlist;

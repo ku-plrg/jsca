@@ -1,5 +1,4 @@
 import puppeteer from 'puppeteer';
-import { default as jsca } from './scripts/jsca.js';
 import { default as ldc } from './scripts/ldc.js';
 import { default as ptdetector } from './scripts/PTdetector.js';
 import { getFileStream } from './utils.js';
@@ -10,7 +9,7 @@ const callDetectOnBrowser = (targetUrl, detectFunc) =>
     try {
       let completed = false;
       const page = await browser.newPage();
-      await page.goto(targetUrl, {
+      await page.goto('https://'+targetUrl, {
         waitUntil: 'networkidle2',
         timeout: 120000,
       });
@@ -282,7 +281,7 @@ const targetUrls = [
 
 const detectScripts = [
   { name: 'ldc', func: ldc.toString() },
-  { name: 'jsca', func: jsca.toString() },
+  // { name: 'jsca', func: jsca.toString() },
   { name: 'ptdetector', func: ptdetector.toString() },
 ];
 
