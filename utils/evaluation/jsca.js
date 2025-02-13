@@ -6,8 +6,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const TARGET_URLS = [
-  'en.wikipedia.org',
   'youtube.com',
+  'en.wikipedia.org',
   'instagram.com',
   'facebook.com',
   'reddit.com',
@@ -280,8 +280,15 @@ const libHashes = JSON.parse(
   )
 );
 
-const getMaxIdx = (arr) =>
-  arr.reduce((maxIdx, val, idx, arr) => (val > arr[maxIdx] ? idx : maxIdx), 0);
+const getMaxIdxs = (arr) => {
+  const maxVal = Math.max(...arr);
+  return arr.reduce((maxIdxs, val, idx) => {
+    if (val === maxVal) {
+      maxIdxs.push(idx);
+    }
+    return maxIdxs;
+  }, []);
+};
 
 const evaluate = async (url) => {
   console.time(`evaluation-${url}`);
@@ -318,12 +325,14 @@ const evaluate = async (url) => {
           });
         }
       });
-      const scores = matches.map((m, idx) => libHashCnt[idx] === 0 ? 0 : m / libHashCnt[idx]);
-      const maxIdx = getMaxIdx(scores);
-      if (detected && scores[maxIdx] > 0.35) {
-        const maxScore = scores[maxIdx];
-        const maxVersion = versions[maxIdx];
-        libVersions[lib] = { scores, maxVersion, maxScore };
+      const scores = matches.map((m, idx) =>
+        libHashCnt[idx] === 0 ? 0 : m / libHashCnt[idx]
+      );
+      const maxIdxs = getMaxIdxs(scores);
+      if (detected && maxIdxs.some((idx) => scores[idx] > 0.35)) {
+        const maxScore = scores[maxIdxs[0]];
+        const maxVersions = maxIdxs.map((idx) => versions[idx]);
+        libVersions[lib] = { scores, maxVersions, maxScore };
       }
     }
   );
@@ -353,9 +362,7 @@ const evaluateAll = async () => {
 
     Object.entries(libraries).forEach(([lib, data]) => {
       row.push(
-        `"(${lib}.${data.maxVersion},${(data.maxScore * 100).toFixed(
-          2
-        )}%)"`
+        `"(${lib}.${data.maxVersion},${(data.maxScore * 100).toFixed(2)}%)"`
       );
     });
 

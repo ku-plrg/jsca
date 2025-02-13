@@ -1,0 +1,2442 @@
+{
+  "youtube.com": [
+    {
+      "libraryId": "@polymer/polymer",
+      "score": 59.051923875728136
+    },
+    {
+      "libraryId": "hammerjs",
+      "score": 29.8802244626795
+    }
+  ],
+  "en.wikipedia.org": [
+    {
+      "libraryId": "jquery",
+      "score": 64.70272650265612
+    }
+  ],
+  "instagram.com": [
+    {
+      "libraryId": "lodash",
+      "score": 64.7400983367192
+    },
+    {
+      "libraryId": "react",
+      "score": 3.988482058733479
+    }
+  ],
+  "facebook.com": [
+    {
+      "libraryId": "react",
+      "score": 8.357529371875883
+    }
+  ],
+  "reddit.com": [],
+  "whatsapp.com": [
+    {
+      "libraryId": "react",
+      "score": 8.357529371875883
+    }
+  ],
+  "pinterest.com": [
+    {
+      "libraryId": "core-js",
+      "score": 58.409741486312114
+    },
+    {
+      "libraryId": "react",
+      "score": 22.325407703881048
+    },
+    {
+      "libraryId": "lodash",
+      "score": 30.841218243465725
+    },
+    {
+      "libraryId": "core-js",
+      "score": 10.042893435117156
+    }
+  ],
+  "play.google.com": [],
+  "apple.com": [
+    {
+      "libraryId": "preact",
+      "score": 71.04145291448738
+    },
+    {
+      "libraryId": "handlebars",
+      "score": 177.3574115680938
+    }
+  ],
+  "imdb.com": [
+    {
+      "libraryId": "react",
+      "score": 29.421170307899846
+    },
+    {
+      "libraryId": "lodash",
+      "score": 60.208862653916206
+    },
+    {
+      "libraryId": "react",
+      "score": 53.6317053709335
+    },
+    {
+      "libraryId": "lodash",
+      "score": 30.70941766023951
+    },
+    {
+      "libraryId": "core-js",
+      "score": 13.377402232467405
+    },
+    {
+      "libraryId": "lodash",
+      "score": 15.279873954024138
+    }
+  ],
+  "amazon.com": [
+    {
+      "libraryId": "core-js",
+      "score": 12.298835015213964
+    }
+  ],
+  "es.wikipedia.org": [
+    {
+      "libraryId": "jquery",
+      "score": 64.70272650265606
+    },
+    {
+      "libraryId": "moment-timezone",
+      "score": 28.141276768331462
+    },
+    {
+      "libraryId": "moment",
+      "score": 12.022858636756782
+    }
+  ],
+  "tiktok.com": [
+    {
+      "libraryId": "react",
+      "score": 93.76993513649408
+    },
+    {
+      "libraryId": "lodash",
+      "score": 31.751018036832743
+    },
+    {
+      "libraryId": "core-js",
+      "score": 8.684508950631214
+    },
+    {
+      "libraryId": "lodash",
+      "score": 15.107130633035172
+    },
+    {
+      "libraryId": "core-js",
+      "score": 11.52433748898324
+    }
+  ],
+  "microsoft.com": [
+    {
+      "libraryId": "jquery",
+      "score": 79.21896861020925
+    }
+  ],
+  "x.com": [
+    {
+      "libraryId": "core-js",
+      "score": 28.819184932741514
+    },
+    {
+      "libraryId": "react",
+      "score": 21.8910614304658
+    },
+    {
+      "libraryId": "core-js",
+      "score": 3.18727926443254
+    }
+  ],
+  "de.wikipedia.org": [
+    {
+      "libraryId": "jquery",
+      "score": 64.70272650265606
+    },
+    {
+      "libraryId": "moment-timezone",
+      "score": 28.141276768331462
+    },
+    {
+      "libraryId": "moment",
+      "score": 11.814367492758233
+    }
+  ],
+  "twitter.com": [
+    {
+      "libraryId": "core-js",
+      "score": 28.819184932741514
+    },
+    {
+      "libraryId": "react",
+      "score": 21.8910614304658
+    },
+    {
+      "libraryId": "core-js",
+      "score": 3.18727926443254
+    }
+  ],
+  "fr.wikipedia.org": [
+    {
+      "libraryId": "jquery",
+      "score": 64.70272650265612
+    },
+    {
+      "libraryId": "moment-timezone",
+      "score": 28.141276768331462
+    },
+    {
+      "libraryId": "moment",
+      "score": 12.030961949567656
+    }
+  ],
+  "fandom.com": [
+    {
+      "libraryId": "jquery",
+      "score": 95.9866935216178
+    },
+    {
+      "libraryId": "handlebars",
+      "score": 22.006898871644974
+    },
+    {
+      "libraryId": "preact",
+      "score": 81.79970972957592
+    }
+  ],
+  "canva.com": [],
+  "ja.wikipedia.org": [
+    {
+      "libraryId": "jquery",
+      "score": 64.70272650265612
+    }
+  ],
+  "netflix.com": [],
+  "yahoo.co.jp": [],
+  "translate.google.com": [],
+  "espn.com": [
+    {
+      "libraryId": "jquery",
+      "score": 97.07594777119695
+    },
+    {
+      "libraryId": "backbone",
+      "score": 116.88161009658577
+    },
+    {
+      "libraryId": "moment-timezone",
+      "score": 32.28418310301416
+    },
+    {
+      "libraryId": "lodash",
+      "score": 31.577352592036775
+    },
+    {
+      "libraryId": "moment",
+      "score": 6.95885508776401
+    },
+    {
+      "libraryId": "core-js",
+      "score": 62.86810903753127
+    },
+    {
+      "libraryId": "lodash",
+      "score": 54.48558200545573
+    },
+    {
+      "libraryId": "react",
+      "score": 38.34655561339329
+    },
+    {
+      "libraryId": "react",
+      "score": 94.4096082822927
+    },
+    {
+      "libraryId": "lodash",
+      "score": 39.96196844431808
+    },
+    {
+      "libraryId": "moment",
+      "score": 11.189962772586245
+    },
+    {
+      "libraryId": "lodash",
+      "score": 17.121748638556177
+    },
+    {
+      "libraryId": "core-js",
+      "score": 12.694932372835527
+    },
+    {
+      "libraryId": "lodash",
+      "score": 5.807075994674258
+    },
+    {
+      "libraryId": "lodash",
+      "score": 6.9695799587154275
+    }
+  ],
+  "openai.com": [],
+  "it.wikipedia.org": [
+    {
+      "libraryId": "jquery",
+      "score": 64.70272650265612
+    }
+  ],
+  "globo.com": [],
+  "linkedin.com": [
+    {
+      "libraryId": "lodash",
+      "score": 12.652502077362387
+    }
+  ],
+  "nytimes.com": [
+    {
+      "libraryId": "lodash",
+      "score": 3.8594780408043
+    },
+    {
+      "libraryId": "preact",
+      "score": 44.27538005538754
+    }
+  ],
+  "ru.wikipedia.org": [
+    {
+      "libraryId": "jquery",
+      "score": 64.70272650265612
+    }
+  ],
+  "yandex.ru": [
+    {
+      "libraryId": "core-js",
+      "score": 3.1316299126118854
+    },
+    {
+      "libraryId": "react",
+      "score": 47.50876391660562
+    },
+    {
+      "libraryId": "core-js",
+      "score": 9.717594378691963
+    },
+    {
+      "libraryId": "core-js",
+      "score": 26.900705097658182
+    },
+    {
+      "libraryId": "core-js",
+      "score": 3.5347819923936146
+    }
+  ],
+  "spotify.com": [
+    {
+      "libraryId": "react",
+      "score": 30.375030339109845
+    },
+    {
+      "libraryId": "core-js",
+      "score": 5.111533392370125
+    }
+  ],
+  "espncricinfo.com": [
+    {
+      "libraryId": "react",
+      "score": 94.07199142721578
+    },
+    {
+      "libraryId": "core-js",
+      "score": 5.264638464169671
+    },
+    {
+      "libraryId": "preact",
+      "score": 82.07361070726496
+    }
+  ],
+  "mayoclinic.org": [
+    {
+      "libraryId": "react",
+      "score": 29.421170307899846
+    },
+    {
+      "libraryId": "moment",
+      "score": 9.909180392206393
+    }
+  ],
+  "cricbuzz.com": [],
+  "quora.com": [],
+  "pt.wikipedia.org": [
+    {
+      "libraryId": "jquery",
+      "score": 64.70272650265606
+    },
+    {
+      "libraryId": "moment-timezone",
+      "score": 28.141276768331462
+    },
+    {
+      "libraryId": "moment",
+      "score": 11.81518077631428
+    }
+  ],
+  "indeed.com": [],
+  "amazon.in": [
+    {
+      "libraryId": "core-js",
+      "score": 12.298835015213964
+    },
+    {
+      "libraryId": "react",
+      "score": 63.78774268383389
+    },
+    {
+      "libraryId": "lodash",
+      "score": 22.892738120775558
+    },
+    {
+      "libraryId": "core-js",
+      "score": 15.34194911106551
+    }
+  ],
+  "ilovepdf.com": [
+    {
+      "libraryId": "jquery",
+      "score": 79.91131835204179
+    },
+    {
+      "libraryId": "bootstrap",
+      "score": 29.933039971260715
+    }
+  ],
+  "bbc.co.uk": [
+    {
+      "libraryId": "requirejs",
+      "score": 13.70501973130712
+    },
+    {
+      "libraryId": "lodash",
+      "score": 30.845771780416143
+    },
+    {
+      "libraryId": "react",
+      "score": 30.124926738172164
+    },
+    {
+      "libraryId": "lodash",
+      "score": 12.84855488911365
+    },
+    {
+      "libraryId": "react",
+      "score": 30.036018694575926
+    },
+    {
+      "libraryId": "lodash",
+      "score": 43.65386159451998
+    },
+    {
+      "libraryId": "lodash",
+      "score": 6.3149824470187275
+    },
+    {
+      "libraryId": "ifvisible.js",
+      "score": 12.769726498522822
+    }
+  ],
+  "nih.gov": [],
+  "detik.com": [],
+  "clevelandclinic.org": [],
+  "amazon.co.jp": [
+    {
+      "libraryId": "core-js",
+      "score": 12.298835015213964
+    }
+  ],
+  "adobe.com": [],
+  "roblox.com": [
+    {
+      "libraryId": "jquery",
+      "score": 109.23035081468731
+    },
+    {
+      "libraryId": "bootstrap",
+      "score": 100.1433146377527
+    },
+    {
+      "libraryId": "underscore",
+      "score": 97.73198429438845
+    },
+    {
+      "libraryId": "angular",
+      "score": 64.11477268272459
+    }
+  ],
+  "rakuten.co.jp": [
+    {
+      "libraryId": "core-js",
+      "score": 69.87852513357679
+    },
+    {
+      "libraryId": "react",
+      "score": 30.596092891301097
+    },
+    {
+      "libraryId": "lodash",
+      "score": 12.256032857958516
+    },
+    {
+      "libraryId": "jquery",
+      "score": 25.20098451575083
+    },
+    {
+      "libraryId": "jquery-ui",
+      "score": 17.702093610060494
+    },
+    {
+      "libraryId": "react",
+      "score": 80.23047601043038
+    },
+    {
+      "libraryId": "core-js",
+      "score": 20.925919321976313
+    },
+    {
+      "libraryId": "core-js",
+      "score": 7.485436815918707
+    }
+  ],
+  "amazon.de": [
+    {
+      "libraryId": "core-js",
+      "score": 12.298835015213964
+    }
+  ],
+  "bbc.com": [
+    {
+      "libraryId": "requirejs",
+      "score": 13.70501973130712
+    },
+    {
+      "libraryId": "lodash",
+      "score": 30.845771780416143
+    },
+    {
+      "libraryId": "react",
+      "score": 30.124926738172164
+    },
+    {
+      "libraryId": "lodash",
+      "score": 12.84855488911365
+    },
+    {
+      "libraryId": "react",
+      "score": 30.036018694575926
+    },
+    {
+      "libraryId": "lodash",
+      "score": 43.65386159451998
+    },
+    {
+      "libraryId": "lodash",
+      "score": 6.3149824470187275
+    },
+    {
+      "libraryId": "ifvisible.js",
+      "score": 12.769726498522822
+    }
+  ],
+  "github.com": [],
+  "ikea.com": [
+    {
+      "libraryId": "lodash",
+      "score": 6.6578044155883855
+    },
+    {
+      "libraryId": "lodash",
+      "score": 6.6578044155883855
+    },
+    {
+      "libraryId": "lodash",
+      "score": 6.6578044155883855
+    }
+  ],
+  "pl.wikipedia.org": [
+    {
+      "libraryId": "jquery",
+      "score": 64.70272650265612
+    }
+  ],
+  "zh.wikipedia.org": [
+    {
+      "libraryId": "jquery",
+      "score": 64.70272650265616
+    },
+    {
+      "libraryId": "moment-timezone",
+      "score": 28.141276768331462
+    },
+    {
+      "libraryId": "moment",
+      "score": 12.437483597533417
+    }
+  ],
+  "speedtest.net": [
+    {
+      "libraryId": "moment",
+      "score": 384.31096687174204
+    },
+    {
+      "libraryId": "core-js",
+      "score": 139.90961188107502
+    },
+    {
+      "libraryId": "backbone",
+      "score": 125.44806468805187
+    },
+    {
+      "libraryId": "lodash",
+      "score": 113.78668183926419
+    },
+    {
+      "libraryId": "jquery",
+      "score": 106.4880411666722
+    },
+    {
+      "libraryId": "react",
+      "score": 93.01932210366725
+    },
+    {
+      "libraryId": "highcharts",
+      "score": 79.65487842003857
+    },
+    {
+      "libraryId": "handlebars",
+      "score": 22.389992027735953
+    },
+    {
+      "libraryId": "core-js",
+      "score": 10.25150068218824
+    }
+  ],
+  "uol.com.br": [],
+  "steampowered.com": [],
+  "indiatimes.com": [],
+  "samsung.com": [],
+  "chatgpt.com": [
+    {
+      "libraryId": "lodash",
+      "score": 31.235664300276735
+    },
+    {
+      "libraryId": "react",
+      "score": 8.372405888862762
+    },
+    {
+      "libraryId": "core-js",
+      "score": 20.543710302644193
+    },
+    {
+      "libraryId": "lodash",
+      "score": 14.012468912757756
+    }
+  ],
+  "yelp.com": [],
+  "healthline.com": [],
+  "tripadvisor.com": [],
+  "tr.wikipedia.org": [
+    {
+      "libraryId": "jquery",
+      "score": 64.70272650265612
+    }
+  ],
+  "id.wikipedia.org": [
+    {
+      "libraryId": "jquery",
+      "score": 64.70272650265612
+    }
+  ],
+  "primevideo.com": [
+    {
+      "libraryId": "core-js",
+      "score": 10.734782716607649
+    },
+    {
+      "libraryId": "core-js",
+      "score": 7.37112132875121
+    },
+    {
+      "libraryId": "core-js",
+      "score": 9.944234588919606
+    },
+    {
+      "libraryId": "core-js",
+      "score": 11.668401580566208
+    },
+    {
+      "libraryId": "react",
+      "score": 63.39733488127762
+    },
+    {
+      "libraryId": "core-js",
+      "score": 37.64913457006881
+    },
+    {
+      "libraryId": "core-js",
+      "score": 39.57736894726468
+    },
+    {
+      "libraryId": "react",
+      "score": 35.01716743028186
+    },
+    {
+      "libraryId": "core-js",
+      "score": 22.840413922320362
+    },
+    {
+      "libraryId": "react",
+      "score": 21.65836220049518
+    }
+  ],
+  "flipkart.com": [
+    {
+      "libraryId": "react",
+      "score": 20.41355418920213
+    },
+    {
+      "libraryId": "lodash",
+      "score": 76.19406174465635
+    },
+    {
+      "libraryId": "lodash",
+      "score": 3.556468119896171
+    }
+  ],
+  "investing.com": [
+    {
+      "libraryId": "react",
+      "score": 29.421170307899846
+    },
+    {
+      "libraryId": "lodash",
+      "score": 42.270273522234625
+    },
+    {
+      "libraryId": "highcharts",
+      "score": 37.11860005109261
+    },
+    {
+      "libraryId": "jquery",
+      "score": 105.95792790731856
+    },
+    {
+      "libraryId": "core-js",
+      "score": 4.618149867062692
+    }
+  ],
+  "mercadolivre.com.br": [],
+  "cookpad.com": [],
+  "poki.com": [
+    {
+      "libraryId": "preact",
+      "score": 53.11345452377474
+    },
+    {
+      "libraryId": "preact",
+      "score": 134.26443972939825
+    }
+  ],
+  "booking.com": [],
+  "support.google.com": [],
+  "wise.com": [
+    {
+      "libraryId": "react",
+      "score": 30.036018694575926
+    }
+  ],
+  "trendyol.com": [
+    {
+      "libraryId": "react",
+      "score": 61.00512573473802
+    }
+  ],
+  "ar.wikipedia.org": [
+    {
+      "libraryId": "jquery-ui",
+      "score": 99.12611235249615
+    },
+    {
+      "libraryId": "jquery",
+      "score": 64.55071548778908
+    }
+  ],
+  "webmd.com": [
+    {
+      "libraryId": "lodash",
+      "score": 9.945594496506247
+    },
+    {
+      "libraryId": "lodash",
+      "score": 43.43304761926571
+    },
+    {
+      "libraryId": "core-js",
+      "score": 4.618149867062692
+    },
+    {
+      "libraryId": "core-js",
+      "score": 20.009224295771283
+    }
+  ],
+  "365scores.com": [],
+  "medlineplus.gov": [
+    {
+      "libraryId": "jquery",
+      "score": 105.77728097258849
+    }
+  ],
+  "amazon.co.uk": [
+    {
+      "libraryId": "core-js",
+      "score": 12.298835015213964
+    }
+  ],
+  "weather.com": [
+    {
+      "libraryId": "core-js",
+      "score": 36.42607049992989
+    },
+    {
+      "libraryId": "lodash",
+      "score": 7.119591142056995
+    },
+    {
+      "libraryId": "core-js",
+      "score": 4.184803751473879
+    },
+    {
+      "libraryId": "lodash",
+      "score": 9.75715629998324
+    },
+    {
+      "libraryId": "core-js",
+      "score": 3.4130436874527943
+    }
+  ],
+  "accuweather.com": [],
+  "walmart.com": [
+    {
+      "libraryId": "react",
+      "score": 30.375030339109845
+    }
+  ],
+  "ebay.com": [
+    {
+      "libraryId": "lodash",
+      "score": 70.18341591806531
+    },
+    {
+      "libraryId": "jquery",
+      "score": 94.48240976978313
+    },
+    {
+      "libraryId": "core-js",
+      "score": 148.66967610016744
+    },
+    {
+      "libraryId": "react",
+      "score": 67.97547053856664
+    }
+  ],
+  "hindustantimes.com": [
+    {
+      "libraryId": "requirejs",
+      "score": 101.39847241665956
+    },
+    {
+      "libraryId": "jquery",
+      "score": 85.67170475780442
+    },
+    {
+      "libraryId": "jquery-ui",
+      "score": 278.6119788945905
+    }
+  ],
+  "merriam-webster.com": [],
+  "allegro.pl": [],
+  "nfl.com": [
+    {
+      "libraryId": "requirejs",
+      "score": 71.59854779013753
+    },
+    {
+      "libraryId": "react",
+      "score": 22.393999979241137
+    },
+    {
+      "libraryId": "jquery",
+      "score": 105.7772809725885
+    },
+    {
+      "libraryId": "react",
+      "score": 5.211268683022095
+    },
+    {
+      "libraryId": "react",
+      "score": 3.0962149366118963
+    },
+    {
+      "libraryId": "react",
+      "score": 3.0962149366118963
+    },
+    {
+      "libraryId": "react",
+      "score": 3.0962149366118963
+    },
+    {
+      "libraryId": "react",
+      "score": 3.0962149366118963
+    },
+    {
+      "libraryId": "react",
+      "score": 3.128203294479278
+    },
+    {
+      "libraryId": "react",
+      "score": 3.0962149366118963
+    },
+    {
+      "libraryId": "react",
+      "score": 3.0962149366118963
+    },
+    {
+      "libraryId": "react",
+      "score": 3.0962149366118963
+    },
+    {
+      "libraryId": "react",
+      "score": 3.0962149366118963
+    },
+    {
+      "libraryId": "lodash",
+      "score": 9.566403774366643
+    }
+  ],
+  "www.nhs.uk": [
+    {
+      "libraryId": "preact",
+      "score": 61.312457109845205
+    },
+    {
+      "libraryId": "core-js",
+      "score": 45.75578598808617
+    }
+  ],
+  "www.gov.uk": [
+    {
+      "libraryId": "preact",
+      "score": 81.17307105420713
+    },
+    {
+      "libraryId": "core-js",
+      "score": 7.839075753222271
+    }
+  ],
+  "nl.wikipedia.org": [
+    {
+      "libraryId": "jquery",
+      "score": 64.70272650265612
+    }
+  ],
+  "moneycontrol.com": [
+    {
+      "libraryId": "bootstrap",
+      "score": 136.22519128365028
+    }
+  ],
+  "allrecipes.com": [],
+  "infobae.com": [],
+  "cambridge.org": [
+    {
+      "libraryId": "jquery",
+      "score": 94.4824097697832
+    },
+    {
+      "libraryId": "jquery-ui",
+      "score": 94.33321877111311
+    },
+    {
+      "libraryId": "lodash",
+      "score": 9.566403774366643
+    },
+    {
+      "libraryId": "preact",
+      "score": 102.95287509406812
+    }
+  ],
+  "amazon.fr": [
+    {
+      "libraryId": "core-js",
+      "score": 12.298835015213964
+    }
+  ],
+  "britannica.com": [],
+  "hurriyet.com.tr": [],
+  "finance.yahoo.com": [],
+  "sahibinden.com": [],
+  "etsy.com": [
+    {
+      "libraryId": "jquery",
+      "score": 163.96294906505582
+    },
+    {
+      "libraryId": "preact",
+      "score": 95.27777551156241
+    },
+    {
+      "libraryId": "underscore",
+      "score": 94.13523788587958
+    }
+  ],
+  "nike.com": [
+    {
+      "libraryId": "react",
+      "score": 64.14426680174283
+    },
+    {
+      "libraryId": "lodash",
+      "score": 18.21146115846419
+    },
+    {
+      "libraryId": "core-js",
+      "score": 7.998056578221936
+    },
+    {
+      "libraryId": "lodash",
+      "score": 62.07489529424287
+    }
+  ],
+  "freepik.com": [
+    {
+      "libraryId": "react",
+      "score": 30.036018694575926
+    }
+  ],
+  "shopee.co.id": [
+    {
+      "libraryId": "core-js",
+      "score": 24.641082669358234
+    },
+    {
+      "libraryId": "lodash",
+      "score": 16.753454560719707
+    },
+    {
+      "libraryId": "core-js",
+      "score": 4.618149867062692
+    }
+  ],
+  "www.gov.br": [
+    {
+      "libraryId": "flot-charts",
+      "score": 36.765116041896505
+    },
+    {
+      "libraryId": "jquery-ui",
+      "score": 126.5917976907776
+    },
+    {
+      "libraryId": "preact",
+      "score": 29.562681186825362
+    }
+  ],
+  "namu.wiki": [],
+  "wiktionary.org": [],
+  "smallpdf.com": [
+    {
+      "libraryId": "react",
+      "score": 49.01510165706439
+    },
+    {
+      "libraryId": "core-js",
+      "score": 16.528497164970947
+    }
+  ],
+  "scribd.com": [
+    {
+      "libraryId": "react",
+      "score": 94.4096082822927
+    },
+    {
+      "libraryId": "lodash",
+      "score": 81.47896526404449
+    },
+    {
+      "libraryId": "react",
+      "score": 67.6811518058178
+    },
+    {
+      "libraryId": "lodash",
+      "score": 3.1916673261359834
+    },
+    {
+      "libraryId": "lodash",
+      "score": 6.3149824470187275
+    },
+    {
+      "libraryId": "core-js",
+      "score": 4.618149867062692
+    }
+  ],
+  "amazon.it": [
+    {
+      "libraryId": "core-js",
+      "score": 12.298835015213964
+    }
+  ],
+  "rottentomatoes.com": [
+    {
+      "libraryId": "jquery",
+      "score": 61.70582615742657
+    },
+    {
+      "libraryId": "lodash",
+      "score": 10.347777055671306
+    }
+  ],
+  "savefrom.net": [
+    {
+      "libraryId": "jquery",
+      "score": 105.77728097258849
+    },
+    {
+      "libraryId": "react",
+      "score": 65.60579656943578
+    },
+    {
+      "libraryId": "core-js",
+      "score": 16.57214884843939
+    }
+  ],
+  "medicalnewstoday.com": [
+    {
+      "libraryId": "react",
+      "score": 94.75797428750978
+    },
+    {
+      "libraryId": "react",
+      "score": 79.75833494742291
+    },
+    {
+      "libraryId": "preact",
+      "score": 96.96520605984705
+    }
+  ],
+  "mail.yahoo.com": [],
+  "gsmarena.com": [
+    {
+      "libraryId": "preact",
+      "score": 24.74383963692748
+    }
+  ],
+  "kompas.com": [],
+  "mercadolibre.com.mx": [],
+  "trustpilot.com": [
+    {
+      "libraryId": "react",
+      "score": 30.036018694575926
+    }
+  ],
+  "tokopedia.com": [
+    {
+      "libraryId": "react",
+      "score": 79.58157983251452
+    },
+    {
+      "libraryId": "lodash",
+      "score": 24.173561490017725
+    },
+    {
+      "libraryId": "core-js",
+      "score": 4.618149867062692
+    },
+    {
+      "libraryId": "core-js",
+      "score": 20.009224295771283
+    }
+  ],
+  "tradingview.com": [
+    {
+      "libraryId": "moment",
+      "score": 12.650010521020974
+    },
+    {
+      "libraryId": "react",
+      "score": 21.879424752686436
+    },
+    {
+      "libraryId": "lodash",
+      "score": 10.194124766901396
+    },
+    {
+      "libraryId": "lodash",
+      "score": 3.021532591310667
+    }
+  ],
+  "nba.com": [
+    {
+      "libraryId": "react",
+      "score": 30.375030339109845
+    },
+    {
+      "libraryId": "preact",
+      "score": 82.07361070726496
+    },
+    {
+      "libraryId": "lodash",
+      "score": 29.46605697320959
+    }
+  ],
+  "byjus.com": [
+    {
+      "libraryId": "bootstrap",
+      "score": 101.3426390460699
+    },
+    {
+      "libraryId": "jquery",
+      "score": 81.05921374600669
+    },
+    {
+      "libraryId": "core-js",
+      "score": 4.618149867062692
+    }
+  ],
+  "milliyet.com.tr": [],
+  "discord.com": [
+    {
+      "libraryId": "lodash",
+      "score": 46.91186423156551
+    },
+    {
+      "libraryId": "core-js",
+      "score": 5.845890506494713
+    },
+    {
+      "libraryId": "underscore",
+      "score": 5.677906840019578
+    },
+    {
+      "libraryId": "moment",
+      "score": 283.6933124472464
+    },
+    {
+      "libraryId": "lodash",
+      "score": 72.60913935515087
+    },
+    {
+      "libraryId": "core-js",
+      "score": 70.4347706799115
+    },
+    {
+      "libraryId": "react",
+      "score": 21.362919466369323
+    },
+    {
+      "libraryId": "jquery",
+      "score": 85.67170475780442
+    }
+  ],
+  "hi.wikipedia.org": [
+    {
+      "libraryId": "jquery",
+      "score": 64.70272650265612
+    }
+  ],
+  "chromewebstore.google.com": [],
+  "turkiye.gov.tr": [
+    {
+      "libraryId": "jquery",
+      "score": 90.33299698268203
+    }
+  ],
+  "deepl.com": [
+    {
+      "libraryId": "react",
+      "score": 30.036018694575926
+    }
+  ],
+  "cnn.com": [
+    {
+      "libraryId": "lodash",
+      "score": 6.3149824470187275
+    },
+    {
+      "libraryId": "core-js",
+      "score": 55.4923488003205
+    },
+    {
+      "libraryId": "moment",
+      "score": 380.15865551617225
+    },
+    {
+      "libraryId": "jquery",
+      "score": 104.33793324089015
+    },
+    {
+      "libraryId": "core-js",
+      "score": 66.89107122280589
+    },
+    {
+      "libraryId": "lodash",
+      "score": 16.061087655805338
+    },
+    {
+      "libraryId": "jquery",
+      "score": 94.48240976978315
+    },
+    {
+      "libraryId": "preact",
+      "score": 49.316739010747284
+    },
+    {
+      "libraryId": "lodash",
+      "score": 12.904706973368553
+    }
+  ],
+  "homedepot.com": [],
+  "aliexpress.com": [
+    {
+      "libraryId": "react",
+      "score": 57.96888907020896
+    },
+    {
+      "libraryId": "core-js",
+      "score": 8.611056669911953
+    },
+    {
+      "libraryId": "react",
+      "score": 35.83015607402407
+    },
+    {
+      "libraryId": "core-js",
+      "score": 4.05941380156503
+    },
+    {
+      "libraryId": "core-js",
+      "score": 4.241401640109808
+    },
+    {
+      "libraryId": "lodash",
+      "score": 14.191379145914295
+    },
+    {
+      "libraryId": "lodash",
+      "score": 62.84621403262796
+    }
+  ],
+  "mercadolibre.com.ar": [],
+  "msdmanuals.com": [
+    {
+      "libraryId": "react",
+      "score": 29.421170307899846
+    }
+  ],
+  "vk.com": [
+    {
+      "libraryId": "react",
+      "score": 30.375030339109845
+    },
+    {
+      "libraryId": "core-js",
+      "score": 9.67253128841667
+    },
+    {
+      "libraryId": "lodash",
+      "score": 4.045831634215373
+    },
+    {
+      "libraryId": "lodash",
+      "score": 8.379292179588512
+    }
+  ],
+  "kumparan.com": [],
+  "softonic.com": [],
+  "skysports.com": [
+    {
+      "libraryId": "core-js",
+      "score": 36.42607049992989
+    },
+    {
+      "libraryId": "core-js",
+      "score": 3.4130436874527943
+    }
+  ],
+  "xe.com": [
+    {
+      "libraryId": "react",
+      "score": 30.036018694575926
+    },
+    {
+      "libraryId": "lodash",
+      "score": 26.993085872280364
+    },
+    {
+      "libraryId": "core-js",
+      "score": 4.618149867062692
+    },
+    {
+      "libraryId": "core-js",
+      "score": 11.08741883649693
+    },
+    {
+      "libraryId": "preact",
+      "score": 102.95287509406812
+    }
+  ],
+  "msn.com": [
+    {
+      "libraryId": "lodash",
+      "score": 14.450002291231886
+    }
+  ],
+  "justdial.com": [],
+  "crazygames.com": [
+    {
+      "libraryId": "react",
+      "score": 30.036018694575926
+    },
+    {
+      "libraryId": "preact",
+      "score": 41.266533193294016
+    },
+    {
+      "libraryId": "core-js",
+      "score": 36.42607049992989
+    },
+    {
+      "libraryId": "core-js",
+      "score": 3.4130436874527943
+    }
+  ],
+  "shutterstock.com": [
+    {
+      "libraryId": "react",
+      "score": 30.036018694575926
+    }
+  ],
+  "1mg.com": [
+    {
+      "libraryId": "jquery-ui",
+      "score": 250.2731446379382
+    },
+    {
+      "libraryId": "jquery",
+      "score": 103.5467434417072
+    },
+    {
+      "libraryId": "react",
+      "score": 85.81590561399142
+    },
+    {
+      "libraryId": "lodash",
+      "score": 40.73647381328642
+    },
+    {
+      "libraryId": "core-js",
+      "score": 12.327948982840518
+    },
+    {
+      "libraryId": "moment",
+      "score": 11.299044349523616
+    },
+    {
+      "libraryId": "core-js",
+      "score": 4.618149867062692
+    },
+    {
+      "libraryId": "core-js",
+      "score": 14.486937407033201
+    }
+  ],
+  "marca.com": [],
+  "amazon.es": [],
+  "uidai.gov.in": [],
+  "alodokter.com": [
+    {
+      "libraryId": "jquery",
+      "score": 85.70018025547529
+    },
+    {
+      "libraryId": "@polymer/polymer",
+      "score": 45.98185276487861
+    },
+    {
+      "libraryId": "core-js",
+      "score": 4.618149867062692
+    }
+  ],
+  "playstation.com": [
+    {
+      "libraryId": "jquery",
+      "score": 104.50429285551147
+    },
+    {
+      "libraryId": "preact",
+      "score": 87.67506831239288
+    },
+    {
+      "libraryId": "lodash",
+      "score": 25.04823242543941
+    },
+    {
+      "libraryId": "react",
+      "score": 21.879424752686436
+    },
+    {
+      "libraryId": "core-js",
+      "score": 7.006150331311623
+    },
+    {
+      "libraryId": "preact",
+      "score": 78.88740795902378
+    },
+    {
+      "libraryId": "lodash",
+      "score": 24.522056771713725
+    },
+    {
+      "libraryId": "lodash",
+      "score": 64.66059457667974
+    },
+    {
+      "libraryId": "preact",
+      "score": 80.24315334185131
+    },
+    {
+      "libraryId": "lodash",
+      "score": 37.57404046041834
+    },
+    {
+      "libraryId": "lodash",
+      "score": 62.2898093726695
+    },
+    {
+      "libraryId": "gsap",
+      "score": 57.71934266355781
+    },
+    {
+      "libraryId": "lodash",
+      "score": 5.2883872968055625
+    },
+    {
+      "libraryId": "core-js",
+      "score": 4.618149867062692
+    }
+  ],
+  "theguardian.com": [
+    {
+      "libraryId": "core-js",
+      "score": 36.42607049992989
+    },
+    {
+      "libraryId": "core-js",
+      "score": 3.4130436874527943
+    },
+    {
+      "libraryId": "core-js",
+      "score": 8.893912897845132
+    }
+  ],
+  "t.me": [],
+  "goal.com": [
+    {
+      "libraryId": "core-js",
+      "score": 36.42607049992989
+    },
+    {
+      "libraryId": "core-js",
+      "score": 3.4130436874527943
+    },
+    {
+      "libraryId": "react",
+      "score": 21.879424752686436
+    },
+    {
+      "libraryId": "lodash",
+      "score": 12.624388187321177
+    },
+    {
+      "libraryId": "preact",
+      "score": 56.21213118709098
+    },
+    {
+      "libraryId": "lodash",
+      "score": 31.51830297607352
+    },
+    {
+      "libraryId": "react",
+      "score": 7.205153640967896
+    },
+    {
+      "libraryId": "lodash",
+      "score": 9.19492665716741
+    }
+  ],
+  "yahoo.com": [],
+  "uk.wikipedia.org": [
+    {
+      "libraryId": "jquery",
+      "score": 64.70272650265612
+    }
+  ],
+  "forbes.com": [
+    {
+      "libraryId": "preact",
+      "score": 72.78556835367877
+    }
+  ],
+  "usatoday.com": [],
+  "eksisozluk.com": [],
+  "az24.vn": [],
+  "epfindia.gov.in": [
+    {
+      "libraryId": "jquery",
+      "score": 94.48240976978322
+    },
+    {
+      "libraryId": "flexslider",
+      "score": 73.8869164022188
+    },
+    {
+      "libraryId": "jquery-ui",
+      "score": 182.19962680718632
+    }
+  ],
+  "target.com": [
+    {
+      "libraryId": "lodash",
+      "score": 6.931540399165383
+    },
+    {
+      "libraryId": "lodash",
+      "score": 5.005425921209206
+    },
+    {
+      "libraryId": "react",
+      "score": 13.061712330376862
+    },
+    {
+      "libraryId": "lodash",
+      "score": 60.208862653916206
+    },
+    {
+      "libraryId": "lodash",
+      "score": 60.208862653916206
+    },
+    {
+      "libraryId": "lodash",
+      "score": 5.005425921209206
+    },
+    {
+      "libraryId": "lodash",
+      "score": 11.833909055801252
+    },
+    {
+      "libraryId": "lodash",
+      "score": 11.833909055801252
+    },
+    {
+      "libraryId": "react",
+      "score": 13.061712330376862
+    },
+    {
+      "libraryId": "react",
+      "score": 30.036018694575926
+    },
+    {
+      "libraryId": "react",
+      "score": 13.061712330376862
+    },
+    {
+      "libraryId": "react",
+      "score": 13.061712330376862
+    },
+    {
+      "libraryId": "react",
+      "score": 13.061712330376862
+    },
+    {
+      "libraryId": "react",
+      "score": 13.061712330376862
+    },
+    {
+      "libraryId": "core-js",
+      "score": 77.66741587594277
+    },
+    {
+      "libraryId": "react",
+      "score": 13.061712330376862
+    },
+    {
+      "libraryId": "react",
+      "score": 13.06171233037686
+    },
+    {
+      "libraryId": "lodash",
+      "score": 87.46369956999035
+    },
+    {
+      "libraryId": "react",
+      "score": 13.061712330376862
+    },
+    {
+      "libraryId": "react",
+      "score": 13.061712330376862
+    }
+  ],
+  "coinmarketcap.com": [
+    {
+      "libraryId": "react",
+      "score": 29.421170307899846
+    },
+    {
+      "libraryId": "core-js",
+      "score": 23.91790577245296
+    },
+    {
+      "libraryId": "lodash",
+      "score": 22.318750938061264
+    },
+    {
+      "libraryId": "lodash",
+      "score": 3.7505710450210694
+    },
+    {
+      "libraryId": "lodash",
+      "score": 28.470129194031898
+    },
+    {
+      "libraryId": "fastclick",
+      "score": 17.67863769628975
+    }
+  ],
+  "heylink.me": [
+    {
+      "libraryId": "jquery",
+      "score": 85.67170475780442
+    },
+    {
+      "libraryId": "core-js",
+      "score": 4.618149867062692
+    },
+    {
+      "libraryId": "core-js",
+      "score": 20.009224295771283
+    }
+  ],
+  "ndtv.com": [],
+  "rae.es": [],
+  "allocine.fr": [
+    {
+      "libraryId": "preact",
+      "score": 104.56452978306406
+    }
+  ],
+  "liputan6.com": [],
+  "timeanddate.com": [
+    {
+      "libraryId": "preact",
+      "score": 134.26443972939828
+    }
+  ],
+  "telegram.org": [],
+  "conectate.com.do": [],
+  "sarkariresult.com": [],
+  "zara.com": [
+    {
+      "libraryId": "react",
+      "score": 67.17355848221557
+    }
+  ],
+  "vi.wikipedia.org": [
+    {
+      "libraryId": "jquery-ui",
+      "score": 99.1261123524962
+    },
+    {
+      "libraryId": "jquery",
+      "score": 64.55071548778909
+    }
+  ],
+  "ca.wikipedia.org": [
+    {
+      "libraryId": "jquery",
+      "score": 64.70272650265612
+    },
+    {
+      "libraryId": "core-js",
+      "score": 10.238504608334305
+    }
+  ],
+  "twitch.tv": [
+    {
+      "libraryId": "core-js",
+      "score": 7.606756858454332
+    },
+    {
+      "libraryId": "lodash",
+      "score": 30.67770410237967
+    },
+    {
+      "libraryId": "react",
+      "score": 30.375030339109845
+    }
+  ],
+  "istockphoto.com": [
+    {
+      "libraryId": "react",
+      "score": 5.878968452722862
+    },
+    {
+      "libraryId": "jquery",
+      "score": 174.81334479548855
+    },
+    {
+      "libraryId": "angular",
+      "score": 139.7996816590965
+    },
+    {
+      "libraryId": "react",
+      "score": 30.375030339109845
+    },
+    {
+      "libraryId": "react",
+      "score": 7.979214307017003
+    }
+  ],
+  "filmweb.pl": [
+    {
+      "libraryId": "handlebars",
+      "score": 74.83084466997065
+    },
+    {
+      "libraryId": "preact",
+      "score": 104.56452978306406
+    }
+  ],
+  "remove.bg": [],
+  "wp.pl": [
+    {
+      "libraryId": "react",
+      "score": 94.4096082822927
+    },
+    {
+      "libraryId": "preact",
+      "score": 48.83054230740376
+    }
+  ],
+  "proxysite.com": [],
+  "news18.com": [],
+  "ca.gov": [
+    {
+      "libraryId": "bootstrap",
+      "score": 41.31235948709268
+    }
+  ],
+  "indianexpress.com": [],
+  "hepsiburada.com": [],
+  "tribunnews.com": [],
+  "reverso.net": [],
+  "paypal.com": [
+    {
+      "libraryId": "preact",
+      "score": 59.73439347898026
+    },
+    {
+      "libraryId": "react",
+      "score": 22.23873859520909
+    }
+  ],
+  "amazon.com.br": [
+    {
+      "libraryId": "core-js",
+      "score": 12.298835015213964
+    }
+  ],
+  "uptodown.com": [],
+  "europa.eu": [
+    {
+      "libraryId": "jquery",
+      "score": 94.48240976978315
+    },
+    {
+      "libraryId": "moment",
+      "score": 10.658895918401539
+    },
+    {
+      "libraryId": "jquery",
+      "score": 94.48240976978315
+    },
+    {
+      "libraryId": "moment",
+      "score": 10.658895918401539
+    }
+  ],
+  "amazon.com.mx": [
+    {
+      "libraryId": "core-js",
+      "score": 12.298835015213964
+    }
+  ],
+  "dailymotion.com": [],
+  "interia.pl": [
+    {
+      "libraryId": "core-js",
+      "score": 48.943871983237635
+    },
+    {
+      "libraryId": "core-js",
+      "score": 13.814305495466906
+    },
+    {
+      "libraryId": "core-js",
+      "score": 3.6332380314920316
+    }
+  ],
+  "sv.wikipedia.org": [
+    {
+      "libraryId": "jquery",
+      "score": 64.70272650265608
+    }
+  ],
+  "fazenda.gov.br": [],
+  "quillbot.com": [
+    {
+      "libraryId": "react",
+      "score": 33.177623463250804
+    },
+    {
+      "libraryId": "react",
+      "score": 64.14426680174283
+    },
+    {
+      "libraryId": "react",
+      "score": 32.93171596572874
+    },
+    {
+      "libraryId": "lodash",
+      "score": 15.9448490919516
+    }
+  ],
+  "akakce.com": [],
+  "marmiton.org": [
+    {
+      "libraryId": "core-js",
+      "score": 15.14312282595021
+    },
+    {
+      "libraryId": "preact",
+      "score": 104.56452978306406
+    },
+    {
+      "libraryId": "@angular/core",
+      "score": 22.628624311373642
+    },
+    {
+      "libraryId": "lodash",
+      "score": 12.34554691489705
+    }
+  ],
+  "sabah.com.tr": [],
+  "groww.in": [
+    {
+      "libraryId": "react",
+      "score": 87.56526680527968
+    },
+    {
+      "libraryId": "lodash",
+      "score": 8.40484058703483
+    },
+    {
+      "libraryId": "core-js",
+      "score": 8.337951479802408
+    }
+  ],
+  "jagran.com": [
+    {
+      "libraryId": "react",
+      "score": 30.375030339109845
+    }
+  ],
+  "foxnews.com": [
+    {
+      "libraryId": "jquery",
+      "score": 106.18092962527442
+    },
+    {
+      "libraryId": "jquery",
+      "score": 109.07478750235626
+    },
+    {
+      "libraryId": "lodash",
+      "score": 18.27186132812787
+    },
+    {
+      "libraryId": "lodash",
+      "score": 15.8711151549704
+    },
+    {
+      "libraryId": "jquery",
+      "score": 106.1809296252745
+    },
+    {
+      "libraryId": "jquery",
+      "score": 106.18092962527442
+    }
+  ],
+  "nintendo.com": [
+    {
+      "libraryId": "jquery",
+      "score": 112.6548127923156
+    },
+    {
+      "libraryId": "vue",
+      "score": 244.65519556748637
+    },
+    {
+      "libraryId": "core-js",
+      "score": 13.424379434469255
+    },
+    {
+      "libraryId": "handlebars",
+      "score": 23.13478691814694
+    },
+    {
+      "libraryId": "bootstrap",
+      "score": 85.09986226656558
+    },
+    {
+      "libraryId": "vue",
+      "score": 155.7536699845526
+    },
+    {
+      "libraryId": "core-js",
+      "score": 6.09425587434123
+    },
+    {
+      "libraryId": "moment",
+      "score": 396.8834776474891
+    },
+    {
+      "libraryId": "swfobject",
+      "score": 58.659620076492104
+    },
+    {
+      "libraryId": "core-js",
+      "score": 27.986930318578217
+    },
+    {
+      "libraryId": "core-js",
+      "score": 22.014242863382744
+    },
+    {
+      "libraryId": "core-js",
+      "score": 24.05401272055879
+    },
+    {
+      "libraryId": "core-js",
+      "score": 24.05401272055879
+    },
+    {
+      "libraryId": "core-js",
+      "score": 24.05401272055879
+    },
+    {
+      "libraryId": "moment",
+      "score": 401.2866004361198
+    },
+    {
+      "libraryId": "vue",
+      "score": 245.58541433008165
+    },
+    {
+      "libraryId": "core-js",
+      "score": 130.95011111259524
+    },
+    {
+      "libraryId": "jquery",
+      "score": 107.30929522631754
+    },
+    {
+      "libraryId": "moment-timezone",
+      "score": 75.15665142684664
+    }
+  ],
+  "olx.pl": [
+    {
+      "libraryId": "lodash",
+      "score": 3.0165198463027263
+    },
+    {
+      "libraryId": "lodash",
+      "score": 55.64899266847663
+    },
+    {
+      "libraryId": "react",
+      "score": 11.853158962803708
+    },
+    {
+      "libraryId": "lodash",
+      "score": 12.262111329320932
+    }
+  ],
+  "tabelog.com": [
+    {
+      "libraryId": "jquery",
+      "score": 90.27743410653599
+    },
+    {
+      "libraryId": "jquery",
+      "score": 94.34956406645138
+    },
+    {
+      "libraryId": "handlebars",
+      "score": 83.43881292682384
+    },
+    {
+      "libraryId": "jquery-ui",
+      "score": 63.61709271991451
+    },
+    {
+      "libraryId": "underscore",
+      "score": 61.15768502029075
+    },
+    {
+      "libraryId": "backbone",
+      "score": 51.32049056182255
+    },
+    {
+      "libraryId": "lodash",
+      "score": 17.846946250378878
+    },
+    {
+      "libraryId": "core-js",
+      "score": 4.618149867062692
+    }
+  ],
+  "lequipe.fr": [
+    {
+      "libraryId": "core-js",
+      "score": 4.1221809298910745
+    },
+    {
+      "libraryId": "vue",
+      "score": 90.49705607709843
+    },
+    {
+      "libraryId": "core-js",
+      "score": 60.47704857906209
+    },
+    {
+      "libraryId": "lodash",
+      "score": 8.888295960079171
+    },
+    {
+      "libraryId": "preact",
+      "score": 104.56452978306406
+    }
+  ],
+  "google.com": [],
+  "giallozafferano.it": [],
+  "kinopoisk.ru": [
+    {
+      "libraryId": "core-js",
+      "score": 3.1316299126118854
+    },
+    {
+      "libraryId": "react",
+      "score": 47.50876391660562
+    },
+    {
+      "libraryId": "core-js",
+      "score": 9.717594378691963
+    },
+    {
+      "libraryId": "core-js",
+      "score": 26.900705097658182
+    },
+    {
+      "libraryId": "core-js",
+      "score": 3.539399339674016
+    }
+  ],
+  "zillow.com": [],
+  "memorial.com.tr": [
+    {
+      "libraryId": "jquery",
+      "score": 90.61009311804607
+    },
+    {
+      "libraryId": "core-js",
+      "score": 4.618149867062692
+    }
+  ],
+  "genius.com": [],
+  "transfermarkt.com.tr": [
+    {
+      "libraryId": "core-js",
+      "score": 17.227971143191677
+    },
+    {
+      "libraryId": "core-js",
+      "score": 31.488173660071205
+    },
+    {
+      "libraryId": "jquery",
+      "score": 121.04517365473555
+    }
+  ],
+  "cnnbrasil.com.br": [],
+  "people.com": [
+    {
+      "libraryId": "jquery",
+      "score": 105.77728097258849
+    }
+  ],
+  "mi.com": [
+    {
+      "libraryId": "react",
+      "score": 66.05626792237764
+    },
+    {
+      "libraryId": "moment",
+      "score": 9.203033553586502
+    },
+    {
+      "libraryId": "lodash",
+      "score": 12.350148224568471
+    }
+  ],
+  "altibbi.com": [
+    {
+      "libraryId": "jquery",
+      "score": 64.70272650265608
+    },
+    {
+      "libraryId": "bootstrap",
+      "score": 100.610547229548
+    },
+    {
+      "libraryId": "lodash",
+      "score": 62.52767316137671
+    }
+  ],
+  "shein.com": [
+    {
+      "libraryId": "lodash",
+      "score": 20.775468612276928
+    },
+    {
+      "libraryId": "core-js",
+      "score": 7.229679026677452
+    },
+    {
+      "libraryId": "core-js",
+      "score": 12.287344236582756
+    },
+    {
+      "libraryId": "core-js",
+      "score": 4.618149867062692
+    }
+  ],
+  "halodoc.com": [],
+  "uefa.com": [
+    {
+      "libraryId": "preact",
+      "score": 65.60360913422505
+    },
+    {
+      "libraryId": "core-js",
+      "score": 42.210357171253186
+    },
+    {
+      "libraryId": "lodash",
+      "score": 13.97120016741425
+    },
+    {
+      "libraryId": "lodash",
+      "score": 9.566403774366643
+    }
+  ],
+  "sanook.com": [],
+  "leboncoin.fr": [],
+  "investopedia.com": [
+    {
+      "libraryId": "jquery",
+      "score": 105.7772809725885
+    },
+    {
+      "libraryId": "lodash",
+      "score": 7.105819564710922
+    }
+  ],
+  "as.com": [
+    {
+      "libraryId": "core-js",
+      "score": 17.227971143191677
+    },
+    {
+      "libraryId": "preact",
+      "score": 104.56452978306406
+    },
+    {
+      "libraryId": "core-js",
+      "score": 3.3938902932254273
+    }
+  ],
+  "hm.com": [
+    {
+      "libraryId": "react",
+      "score": 30.036018694575926
+    },
+    {
+      "libraryId": "lodash",
+      "score": 3.719847737038618
+    }
+  ],
+  "tuasaude.com": [],
+  "pixabay.com": [],
+  "pantip.com": [
+    {
+      "libraryId": "react",
+      "score": 83.37155875570534
+    },
+    {
+      "libraryId": "lodash",
+      "score": 23.15261038071883
+    },
+    {
+      "libraryId": "lodash",
+      "score": 65.44377909013812
+    }
+  ],
+  "cbssports.com": [],
+  "flashscore.com.br": [
+    {
+      "libraryId": "lodash",
+      "score": 10.569859878178644
+    },
+    {
+      "libraryId": "react",
+      "score": 8.087617119318528
+    },
+    {
+      "libraryId": "react",
+      "score": 3.703841564956974
+    },
+    {
+      "libraryId": "lodash",
+      "score": 3.00398070726662
+    }
+  ],
+  "disneyplus.com": [
+    {
+      "libraryId": "core-js",
+      "score": 6.286147840033046
+    },
+    {
+      "libraryId": "core-js",
+      "score": 136.5766237149179
+    }
+  ],
+  "makemytrip.com": [],
+  "usps.com": [
+    {
+      "libraryId": "requirejs",
+      "score": 101.39847241665956
+    },
+    {
+      "libraryId": "jquery",
+      "score": 94.48240976978315
+    },
+    {
+      "libraryId": "jquery",
+      "score": 85.67170475780442
+    },
+    {
+      "libraryId": "bootstrap",
+      "score": 175.0748330304675
+    },
+    {
+      "libraryId": "core-js",
+      "score": 4.618149867062692
+    }
+  ],
+  "caixa.gov.br": [
+    {
+      "libraryId": "jquery",
+      "score": 94.48240976978315
+    },
+    {
+      "libraryId": "jquery-ui",
+      "score": 236.3052581637579
+    },
+    {
+      "libraryId": "core-js",
+      "score": 20.009224295771283
+    }
+  ],
+  "blibli.com": [
+    {
+      "libraryId": "vue",
+      "score": 119.68300597347562
+    },
+    {
+      "libraryId": "core-js",
+      "score": 4.618149867062692
+    },
+    {
+      "libraryId": "jquery",
+      "score": 30.99786723349874
+    }
+  ],
+  "irs.gov": [
+    {
+      "libraryId": "jquery",
+      "score": 94.4824097697832
+    },
+    {
+      "libraryId": "underscore",
+      "score": 87.12251072239084
+    },
+    {
+      "libraryId": "jquery-ui",
+      "score": 12.805164128501687
+    },
+    {
+      "libraryId": "bootstrap",
+      "score": 136.65910606304308
+    },
+    {
+      "libraryId": "jquery",
+      "score": 105.7772809725885
+    }
+  ],
+  "ap.gov.in": [],
+  "programme-tv.net": [
+    {
+      "libraryId": "core-js",
+      "score": 36.42607049992989
+    },
+    {
+      "libraryId": "core-js",
+      "score": 3.4130436874527943
+    }
+  ],
+  "sikayetvar.com": [],
+  "ssstik.io": []
+}

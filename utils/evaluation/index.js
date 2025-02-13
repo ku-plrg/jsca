@@ -5,11 +5,11 @@ import { getFileStream } from './utils.js';
 
 const callDetectOnBrowser = (targetUrl, detectFunc) =>
   new Promise(async (res) => {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({ headless: false });
     try {
       let completed = false;
       const page = await browser.newPage();
-      await page.goto('https://'+targetUrl, {
+      await page.goto('https://' + targetUrl, {
         waitUntil: 'networkidle2',
         timeout: 120000,
       });
@@ -303,7 +303,7 @@ const evaluate = async () => {
         results[detectScript.name] = [];
       }
     }
-    appendCsvRow([targetUrl, results.ldc, results.ptdetector, results.jsca]);
+    appendCsvRow([targetUrl, results.ldc, results.ptdetector]);
   }
 };
 

@@ -12,8 +12,8 @@ const getFileStream = (csvFilePath, headers) => {
   };
 
   const appendCsvRow = (rows) => {
-    const [r1, r2, r3, r4] = rows;
-    const formattedRow = `${r1},"${r2}","${r3}","${r4}"\n`;
+    const [r1, r2, r3] = rows;
+    const formattedRow = `${r1},"${r2}","${r3}"\n`;
     writeStream.write(formattedRow);
   };
 
