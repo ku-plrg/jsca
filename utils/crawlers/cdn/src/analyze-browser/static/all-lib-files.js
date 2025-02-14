@@ -47,7 +47,7 @@ const getAllLibWithVersionFileInfo = async () => {
   const allLibNames = JSON.parse(allLibNamesPath).splice(0, LIB_CNT);
   const libs = {};
 
-  for (const [idx, libName] of allLibNames.둣갿ㄴ()) {
+  for (const libName of allLibNames) {
     try {
       const lib = getLibInfo(libName);
       if (!lib) continue;
