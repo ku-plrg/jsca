@@ -94,11 +94,17 @@ const allLibs = {};
 (async () => {
   const libWithVersionFileInfo = await getAllLibWithVersionFileInfo();
   try {
+    let prevLib = '';
     for (const [libAndFileName, libVersions] of Object.entries(
       libWithVersionFileInfo
     )) {
       let idx = 0;
       const [libName, fileName] = libAndFileName.split('----');
+      if (prevLib !== libName) {
+        console.timeEnd(`Hash-${prevLib}`);
+        prevLib = libName;
+        console.timeStart(`Hash-${libName}`);
+      }
       console.log(`Processing ${libAndFileName} ...`);
       allLibs[libAndFileName] = { versions: [], hashes: {}, hashCnt: [] };
       for (const version of libVersions) {
@@ -109,8 +115,8 @@ const allLibs = {};
           });
           const file = response.data;
           const hashes = getHash(file, `${libAndFileName}@${version}`);
-          if(hashes.length < 20) continue;
-          
+          if (hashes.length < 20) continue;
+
           allLibs[libAndFileName].versions.push(version);
           allLibs[libAndFileName].hashCnt.push(hashes.length);
           hashes.forEach(([hash, length]) => {
@@ -137,6 +143,7 @@ const allLibs = {};
         }
       }
     }
+    console.timeEnd(`Hash-${prevLib}`);
   } catch (e) {
     console.error('error', e.message);
     console.log('write', filename, 'before I die..');
