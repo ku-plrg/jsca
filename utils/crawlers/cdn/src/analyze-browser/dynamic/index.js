@@ -3,7 +3,7 @@ import fs from 'fs';
 import { dirname } from 'path';
 import puppeteer from 'puppeteer';
 import { fileURLToPath } from 'url';
-import prevAllTrees from '../../../data/allTree.json' assert { type: 'json' };
+import prevAllTrees from '../../../data/allTree.json' with { type: 'json' };
 import { getCdnPaths } from '../cdn-paths.js';
 import { getCompressedTree } from './compressor.js';
 import extractTree from './tree-extractor.js';
