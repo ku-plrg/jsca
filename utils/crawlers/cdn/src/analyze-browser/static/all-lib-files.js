@@ -107,9 +107,11 @@ const allLibs = {};
           const response = await axios.get(cdnUrl).catch((e) => {
             if (e.response.status === 404) throw new Error(`${cdnUrl} is 404`);
           });
-          allLibs[libAndFileName].versions.push(version);
           const file = response.data;
           const hashes = getHash(file, `${libAndFileName}@${version}`);
+          if(hashes.length < 20) continue;
+          
+          allLibs[libAndFileName].versions.push(version);
           allLibs[libAndFileName].hashCnt.push(hashes.length);
           hashes.forEach(([hash, length]) => {
             const prevHash = allLibs[libAndFileName].hashes[length]?.[hash];
