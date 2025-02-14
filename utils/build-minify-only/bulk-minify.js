@@ -7,10 +7,10 @@ import util from 'util';
 import getLibInfo from '../crawlers/cdn/data/index.js';
 import injectLiteral from './inject-literal.js';
 
-const TARGET_PACKAGE = 'backbone.js'; // available name in https://cdnjs.com/
-const TARGET_MINIFIER = 'terser'; // all | swc | esbuild | uglifyjs | terser | babel-minify
-const TARGET_VERSIONS = ['1.6.0']; // undefined for all versions
-const INJECT_LITERAL = false;
+const TARGET_PACKAGE = 'react'; // available name in https://cdnjs.com/
+const TARGET_MINIFIER = 'all'; // all | swc | esbuild | uglifyjs | terser | babel-minify
+const TARGET_VERSIONS = ['18.3.0']; // undefined for all versions
+const INJECT_LITERAL = true;
 
 const execPromise = util.promisify(exec);
 
@@ -41,35 +41,32 @@ const fetchAndRunMinifier = async (url, filename) => {
   return { status: 'success' };
 };
 
+const API_TEMPLATE = (libName, version) =>
+  `https://api.cdnjs.com/libraries/${libName}/${version}?fields=files`;
+
 const bulkBundle = async () => {
   const packageInfo = getLibInfo(TARGET_PACKAGE);
   if (!packageInfo) {
     throw new Error(`No library info found for ${TARGET_PACKAGE}`);
   }
 
-  const { versions, allFiles } = packageInfo;
+  const { versions } = packageInfo;
   const targetVersions = TARGET_VERSIONS.length ? TARGET_VERSIONS : versions;
 
   for (const version of targetVersions) {
     try {
       console.log(`Processing ${TARGET_PACKAGE}@${version}...`);
+      const fetchedAllFiles = await getFilenamesForVersion(
+        TARGET_PACKAGE,
+        version
+      );
 
-      let errCnt = 0;
-      for (const file of allFiles) {
+      for (const file of fetchedAllFiles) {
         const res = await fetchAndRunMinifier(
           cdnTemplate(TARGET_PACKAGE, version, file),
           file
         );
         if (res.status === 'failed') errCnt++;
-      }
-      if (errCnt > allFiles.length / 2) {
-        const fetchedAllFiles = await getFilenamesForVersion(
-          TARGET_PACKAGE,
-          version
-        );
-        for (const file of fetchedAllFiles) {
-          fetchAndRunMinifier(cdnTemplate(TARGET_PACKAGE, version, file), file);
-        }
       }
 
       const distFolder = path.resolve('dist');
@@ -91,7 +88,7 @@ const bulkBundle = async () => {
           recursive: true,
         });
 
-        for (const file of allFiles) {
+        for (const file of fetchedAllFiles) {
           if (fs.existsSync(path.resolve(file))) {
             await fsExtra.move(
               path.resolve(file),
@@ -110,7 +107,7 @@ const bulkBundle = async () => {
 };
 
 async function fetchVersionAssets(libName, version) {
-  const url = `https://api.cdnjs.com/libraries/${libName}/${version}`;
+  const url = `https://api.cdnjs.com/libraries/${libName}/${version}?fields=files`;
   const response = await axios.get(url);
   return response.data.files || [];
 }
