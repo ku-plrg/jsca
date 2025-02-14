@@ -101,9 +101,9 @@ const allLibs = {};
       let idx = 0;
       const [libName, fileName] = libAndFileName.split('----');
       if (prevLib !== libName) {
-        console.timeEnd(`Hash-${prevLib}`);
+        if (prevLib !== '') console.timeEnd(`Hash-${prevLib}`);
         prevLib = libName;
-        console.timeStart(`Hash-${libName}`);
+        console.time(`Hash-${libName}`);
       }
       console.log(`Processing ${libAndFileName} ...`);
       allLibs[libAndFileName] = { versions: [], hashes: {}, hashCnt: [] };
