@@ -3,8 +3,6 @@ import * as walk from 'acorn-walk';
 import { simple } from 'acorn-walk';
 import { Function } from './utils/types';
 
-const MAX_FUNCTION_SIZE = 0;
-
 function stripFunctions(node: acorn.AnyNode): acorn.AnyNode {
   if (!node) return node;
 
@@ -17,10 +15,7 @@ function stripFunctions(node: acorn.AnyNode): acorn.AnyNode {
       loc: node.loc,
     };
   }
-  if (
-    node.type === 'FunctionExpression' &&
-    JSON.stringify(node.body).toString().length > MAX_FUNCTION_SIZE
-  ) {
+  if (node.type === 'FunctionExpression') {
     return {
       type: 'Literal',
       value: '',
@@ -113,7 +108,6 @@ function extractFunctions(code: string): Function[] {
   function recordFunction(node: acorn.Function): void {
     const functionName = getUniqueFunctionName(node);
     const body = stripFunctions(node.body);
-    if (JSON.stringify(body).toString().length < MAX_FUNCTION_SIZE) return;
     const id = getId(body);
 
     functions.push({
@@ -126,12 +120,10 @@ function extractFunctions(code: string): Function[] {
 
   walk.simple(ast, {
     FunctionDeclaration(node: acorn.Function) {
-      if (JSON.stringify(node.body).toString().length > MAX_FUNCTION_SIZE)
-        recordFunction(node);
+      recordFunction(node);
     },
     FunctionExpression(node: acorn.Function) {
-      if (JSON.stringify(node.body).toString().length > MAX_FUNCTION_SIZE)
-        recordFunction(node);
+      recordFunction(node);
     },
   });
 
