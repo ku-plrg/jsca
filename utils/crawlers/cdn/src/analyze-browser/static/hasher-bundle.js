@@ -7735,7 +7735,6 @@ base.MethodDefinition =
     };
 
 // src/function-extractor.ts
-var MAX_FUNCTION_SIZE = 0;
 function stripFunctions(node) {
   if (!node) return node;
   if (node.type === 'FunctionDeclaration') {
@@ -7746,10 +7745,7 @@ function stripFunctions(node) {
       loc: node.loc,
     };
   }
-  if (
-    node.type === 'FunctionExpression' &&
-    JSON.stringify(node.body).toString().length > MAX_FUNCTION_SIZE
-  ) {
+  if (node.type === 'FunctionExpression') {
     return {
       type: 'Literal',
       value: '',
@@ -7842,7 +7838,6 @@ function extractFunctions(code) {
   function recordFunction(node) {
     const functionName = getUniqueFunctionName(node);
     const body = stripFunctions(node.body);
-    if (JSON.stringify(body).toString().length < MAX_FUNCTION_SIZE) return;
     const id = getId(body);
     functions.push({
       id,
@@ -7853,12 +7848,10 @@ function extractFunctions(code) {
   }
   simple(ast, {
     FunctionDeclaration(node) {
-      if (JSON.stringify(node.body).toString().length > MAX_FUNCTION_SIZE)
-        recordFunction(node);
+      recordFunction(node);
     },
     FunctionExpression(node) {
-      if (JSON.stringify(node.body).toString().length > MAX_FUNCTION_SIZE)
-        recordFunction(node);
+      recordFunction(node);
     },
   });
   return functions;
