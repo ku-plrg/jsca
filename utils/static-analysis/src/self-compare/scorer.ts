@@ -13,7 +13,7 @@ import {
   UniqueFuncItem,
 } from '../utils/types/score';
 
-const GENERATE_PNG = false;
+const GENERATE_PNG = true;
 
 async function log(funcs: { func: AbsFunction[]; lib: Library }[]) {
   if (funcs[0].func[0].type === 'ir') {

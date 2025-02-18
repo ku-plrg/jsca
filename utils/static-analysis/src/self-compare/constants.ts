@@ -4,10 +4,7 @@ import comparator from '../compare';
 import { ComparePair, RawFunction, ScorerParams } from '../utils/types';
 
 export const STATIC_CODES: [RawFunction, RawFunction][] = [
-  ['jquery_3.7.1.js', 'jquery_3.7.1_babel-minify.js'],
-  ['jquery_3.7.1.js', 'jquery_3.7.1_esbuild.js'],
-  ['jquery_3.7.1.js', 'jquery_3.7.1_swc.js'],
-  ['jquery_3.7.1.js', 'jquery_3.7.1_terser.js'],
+  ['riot_2.6.6.js', 'jquery_3.7.1_babel-minify.js'],
 ].map(([s1, s2]) => [
   { name: s1, type: 'js', path: join(__dirname, '../target/initial', s1) },
   { name: s2, type: 'js', path: join(__dirname, '../target/initial', s2) },

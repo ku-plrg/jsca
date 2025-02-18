@@ -1,5 +1,5 @@
 import axios from 'axios';
-import fs from 'fs';
+import fs, { readFileSync } from 'fs';
 import Papa from 'papaparse';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
@@ -10,8 +10,9 @@ import { getHash } from './hasher-bundle.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const hashFilename = join(__dirname, '../../../data/hash.json');
-const libFilename = join(__dirname, '../../../data/libs.json');
+const hashFilename = join(__dirname, '../../../data/hash-2.json');
+const libFilename = join(__dirname, '../../../data/libs-2.json');
+const allLibsFileVersionsJson = JSON.parse(readFileSync(join(__dirname, '../../../data/all-libs-file-versions.json'), 'utf-8'));
 
 const parseVersionString = (version) => {
   const [major, minor, patch = '0'] = version.split('.');
@@ -28,6 +29,7 @@ const allLibs = {};
 const allHashes = {};
 
 (async () => {
+  console.time('index2')
   const csv = fs.readFileSync(join(__dirname, '../ground.csv'), 'utf-8');
   const parsedCSV = Papa.parse(csv, { header: true });
   const libraries = {};
@@ -52,24 +54,25 @@ const allHashes = {};
       console.log(`Processing ${libName} ...`);
       allLibs[libName] = { id: libIdx, versions: [], hashCnt: [] };
       for (const version of versions) {
-        const hashes = new Set();
+        const hashes = [];
         for (const fileName of files) {
           try {
+            if(!allLibsFileVersionsJson[`${libName}----${fileName}`]?.includes(version)) continue
             const cdnUrl = cdnTemplate(libName, version, fileName);
             const response = await axios.get(cdnUrl).catch((e) => {
               if (e.response.status === 404)
                 throw new Error(`${cdnUrl} is 404`);
             });
-            hashes.add(
-              getHash(response.data, `${libName}/${fileName}@${version}`)
+            hashes.push(
+              ...getHash(response.data, `${libName}/${fileName}@${version}`)
             );
           } catch (e) {
             console.error('[ERROR]', e.message);
           }
         }
         const uniqueHashes = Array.from(
-          new Map([...hashes].map((hash) => [hash[0], hash])).values()
-        ).flat();
+          new Map(hashes.map((hash) => [hash[0], hash])).values()
+        );
         if (uniqueHashes.length === 0) continue;
         allLibs[libName].versions.push(version);
         allLibs[libName].hashCnt.push(uniqueHashes.length);
@@ -102,8 +105,6 @@ const allHashes = {};
             };
           }
         });
-        console.log(JSON.stringify(allHashes, null, 2));
-        console.log(JSON.stringify(allLibs, null, 2));
         versionIdx++;
       }
       libIdx++;
@@ -117,4 +118,5 @@ const allHashes = {};
   }
   fs.writeFileSync(hashFilename, JSON.stringify(allHashes, null, 2));
   fs.writeFileSync(libFilename, JSON.stringify(allLibs, null, 2));
+  console.timeEnd('index2')
 })();
