@@ -7377,6 +7377,12 @@ ${
 `;
         }
         break;
+      case 'loop':
+        if (node.next !== void 0) {
+          dotString += `  node${newId} -> node${node.next + 2};
+`;
+        }
+        break;
       default:
     }
   }
@@ -7396,7 +7402,56 @@ async function generatePNG(dotContent, outputPath) {
     throw error;
   }
 }
+async function main() {
+  const code2 = `
+function example() {
+  Symbol('JSCA_194_211');
+  // babel-minify (2)
+  for (_.a; _.b && _.c; _.d);
+}
+  `;
+  const code3 = `
+function example() {
+  Symbol('JSCA_194_211');
+  // original (3)
+    for (_.a; _.b; _.d) {
+      if (_.c) {
+        break;
+      }
+    }
+}
+  `;
+  const code4 = `
+function example() {
+  Symbol('JSCA_194_211');
+  // custom code (4)
+  for (_.a; ; _.d) {
+    if(_.b || _.c) break;
+  }
+}
 
+  `;
+  for await (const c of [
+    [code2, 'cfg2'],
+    [code3, 'cfg3'],
+    [code4, 'cfg4'],
+  ]) {
+    const [code, filename] = c;
+    try {
+      const ast = parse3(code, { ecmaVersion: 2020 });
+      const functionBody = ast.body[0].body;
+      const graph = extractCFG(functionBody);
+      const dotContent = cfgToDot(graph.nodes);
+      await writeFile(`${filename}.dot`, dotContent, 'utf8');
+      await generatePNG(dotContent, `${filename}`);
+    } catch (error) {
+      console.error('Error in main:', error);
+    }
+  }
+}
+if (__require.main === module) {
+  main().catch(console.error);
+}
 function cfg(functions) {
   return functions.map((func) => {
     const ast = func.body;
@@ -7404,6 +7459,7 @@ function cfg(functions) {
     return {
       id: func.id,
       name: func.name,
+      func: ast,
       type: 'cfg',
       nodes: graph.nodes,
       literals: graph.literals,
@@ -7927,12 +7983,12 @@ function hashNode(node, state, hashMap, visited = /* @__PURE__ */ new Set()) {
   hashMap.set(node.id, hashParts.join('|'));
   return createHash('sha256').update(hashParts.join('|')).digest('hex');
 }
-function generateCFGHash(f1) {
-  const start1 = f1.nodes.get(0);
-  if (!start1) throw new Error('Empty CFG: missing exit node in first graph');
-  const cfg_hash1 = hashNode(start1, f1.nodes, /* @__PURE__ */ new Map());
-  const hash1 = toHash(cfg_hash1.concat(f1.literals.join('|')));
-  return { nodes: f1.nodes, hash: hash1 };
+function generateCFGHash(f) {
+  const start = f.nodes.get(0);
+  if (!start) throw new Error('Empty CFG: missing exit node in first graph');
+  const cfg_hash = hashNode(start, f.nodes, /* @__PURE__ */ new Map());
+  const hash = toHash(cfg_hash.concat(f.literals.join('|')));
+  return { nodes: f.nodes, hash, func: f.func };
 }
 function convertHash(c1) {
   const hashes = c1.map(generateCFGHash);
@@ -7963,15 +8019,6 @@ function getHash(raw, logStr) {
   const { value: hash } = timer_default(`hashCFG in ${logStr}`, () =>
     cfg_to_hash_default(cfgs)
   );
-  return [
-    ...new Set(
-      hash
-        .filter((h) => h.nodes.size > 5)
-        .map((h) => `${h.hash}, ${h.nodes.size}`)
-    ),
-  ].map((hashLength) => {
-    const [hash, length] = hashLength.split(', ');
-    return [hash, parseFloat(length)];
-  });
+  return hash.map((h) => [h.hash, h.nodes.size, h.func]);
 }
 export { getHash };
