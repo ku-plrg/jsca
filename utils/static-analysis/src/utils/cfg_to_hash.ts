@@ -85,14 +85,14 @@ function hashNode(
   return createHash('sha256').update(hashParts.join('|')).digest('hex');
 }
 
-function generateCFGHash(f1: CFG): CFGHash {
-  const start1 = f1.nodes.get(0);
+function generateCFGHash(f: CFG): CFGHash {
+  const start = f.nodes.get(0);
 
-  if (!start1) throw new Error('Empty CFG: missing exit node in first graph');
+  if (!start) throw new Error('Empty CFG: missing exit node in first graph');
 
-  const cfg_hash1 = hashNode(start1, f1.nodes, new Map());
-  const hash1 = toHash(cfg_hash1.concat(f1.literals.join('|')));
-  return { nodes: f1.nodes, hash: hash1 };
+  const cfg_hash = hashNode(start, f.nodes, new Map());
+  const hash = toHash(cfg_hash.concat(f.literals.join('|')));
+  return { nodes: f.nodes, hash: hash, func: f.func };
 }
 
 function convertHash(c1: CFG[]) {

@@ -38,13 +38,18 @@ export interface Props extends AbsFunctionBase {
 
 export interface CFG extends AbsFunctionBase {
   type: 'cfg';
+  func: acorn.AnyNode;
   nodes: Map<number, CFGNode>;
   literals: string[];
 }
 
 export type AbsFunction = Propstree | Props | CFG | IR;
 
-export type CFGHash = { nodes: Map<number, CFGNode>; hash: string };
+export type CFGHash = {
+  nodes: Map<number, CFGNode>;
+  hash: string;
+  func: acorn.AnyNode;
+};
 
 export * from './cfg';
 export * from './ir';

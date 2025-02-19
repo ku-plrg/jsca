@@ -630,6 +630,7 @@ function cfg(functions: Function[]): CFG[] {
     return {
       id: func.id,
       name: func.name,
+      func: ast,
       type: 'cfg',
       nodes: graph.nodes,
       literals: graph.literals,
