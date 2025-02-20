@@ -145,6 +145,7 @@ async function downloadScripts(
   headless = true,
   rootFolder = 'data'
 ) {
+  console.time(`Download-${targetUrl}`);
   const browser = await puppeteer.launch({ headless });
   const page = await browser.newPage();
 
@@ -197,6 +198,7 @@ async function downloadScripts(
       } files:\n
           -${errorUrls.join('\n-')}`
     );
+  console.timeEnd(`Download-${targetUrl}`);
 }
 
 export { chunkArray, downloadScripts, processChunks };
