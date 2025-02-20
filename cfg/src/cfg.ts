@@ -551,7 +551,14 @@ function emptysubgrpah(type: string): Subgraph {
 }
 
 function isSubgraphEmpty(subgraph: SubgraphNormal): boolean {
-  return subgraph.next.size === 1 && [...subgraph.next][0][0] === subgraph.root;
+  const node = cfgState.nodes.get(subgraph.root);
+  if (!node) throw new Error('Node not found');
+  return (
+    subgraph.next.size === 1 &&
+    [...subgraph.next][0][0] === subgraph.root &&
+    node.type === 'block' &&
+    !node.sequences
+  );
 }
 function visitWithmerge(node: ESTree.Expression) {
   const Subgraph = createNormalSubgraph(node);
@@ -573,20 +580,17 @@ function is_typeof(node: ESTree.ConditionalExpression): boolean {
   );
 }
 
-function mergeSubgraph(subgraph: Subgraph): void {
+function mergeSubgraph(subgraph: SubgraphNormal): void {
   console.log('mergeSubgraph', subgraph);
-  console.log('cfgState.prevIds', cfgState.prevIds);
+  if (isSubgraphEmpty(subgraph)) return;
   switch (subgraph.type) {
     case 'normal':
       const nextArray = Array.from(subgraph.next);
       connect(subgraph.root);
       cfgState.prevIds = nextArray;
       break;
-    case 'cond':
-      throw new Error('Not reachable');
   }
 }
-
 function connect_end() {
   connect(cfgState.endId);
   cfgState.prevIds = [];
@@ -774,34 +778,50 @@ export async function generatePNG(
 
 // Example usage
 async function main() {
+  const code0 = `
+function example() {
+ _.a && _.b
+ _.d
+}`;
+  const code1 = `
+function example() {
+  if (_.a) {
+    _.b;
+  }
+  _.d
+}`;
   const code2 = `
 function example() {
  _.a && b
  _.d
-}
-  `;
+}`;
   const code3 = `
 function example() {
   if (_.a) {
     b;
-  } 
+  }
   _.d
-}
-  `;
+}`;
   const code4 = `
 function example() {
-  Symbol('JSCA_194_211');
-  // custom code (4)
-  for (_.a; ; _.d) {
-    if(_.b || _.c) break;
+ a && _.b
+ _.d
+}`;
+  const code5 = `
+function example() {
+  if (a) {
+    _.b;
   }
-}
-
+  _.d}
   `;
 
   for await (const c of [
+    [code0, 'cfg0'],
+    [code1, 'cfg1'],
     [code2, 'cfg2'],
     [code3, 'cfg3'],
+    [code4, 'cfg4'],
+    [code5, 'cfg5'],
   ]) {
     const [code, filename] = c;
     try {
