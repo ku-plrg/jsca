@@ -14,7 +14,7 @@ export type SubgraphBase = {
 
 export interface SubgraphNormal extends SubgraphBase {
   type: 'normal';
-  next: Set<number>;
+  next: PrevId[];
 }
 export interface SubgraphCond extends SubgraphBase {
   type: 'cond';
