@@ -7,6 +7,7 @@ import { promisify } from 'util';
 import {
   CFG,
   CFGNode,
+  CFGNodeBlock,
   CFGState,
   Function,
   PrevId,
@@ -54,7 +55,10 @@ function visit(node: ESTree.Node): void {
       cfgState.prevIds = [];
       break;
     case 'IfStatement':
+      const prevprevIds = cfgState.prevIds;
       const ifSubgraph = createCondSubgraph(node.test);
+      cfgState.prevIds = prevprevIds;
+      console.log('ifSubgraph', ifSubgraph);
       connect(ifSubgraph.root);
       cfgState.prevIds = ifSubgraph.truthy;
       visit(node.consequent);
@@ -76,27 +80,29 @@ function visit(node: ESTree.Node): void {
       node.finalizer && visit(node.finalizer);
       break;
     case 'WhileStatement':
-      // const whileLoop = addLoop();
-      // addCond(node.test);
-      // const whileprevIds = [...cfgState.prevIds];
-      // cfgState.prevIds = cfgState.prevIds.filter(([, context]) => context);
-      // const whileLoopstack = loopVisitor(node.body);
-      // endLoop(whileLoopstack, whileLoop.id, whileprevIds);
+      const whileLoop = addLoop();
+      const testSubgraph = createCondSubgraph(node.test);
+      connect(testSubgraph.root, [[whileLoop.id]]);
+      const whileprevIds = [...cfgState.prevIds];
+      cfgState.prevIds = testSubgraph.truthy;
+      //cfgState.prevIds = cfgState.prevIds.filter(([, context]) => context);
+      const whileLoopstack = loopVisitor(node.body);
+      endLoop(whileLoopstack, whileLoop.id, whileprevIds);
       break;
     case 'DoWhileStatement':
       break;
     case 'ForStatement':
-      // node.init &&
-      //   node.init.type !== 'VariableDeclaration' &&
-      //   createNormalSubgraph(node.init);
-      // node.init && node.init.type === 'VariableDeclaration' && visit(node.init);
-      // const forLoop = addLoop();
-      // node.test && addCond(node.test);
-      // const forprevIds = [...cfgState.prevIds];
-      // cfgState.prevIds = cfgState.prevIds.filter(([, context]) => context);
-      // const forLoopstack = loopVisitor(node.body);
-      // node.update && createNormalSubgraph(node.update);
-      // endLoop(forLoopstack, forLoop.id, forprevIds);
+      node.init &&
+        node.init.type !== 'VariableDeclaration' &&
+        createNormalSubgraph(node.init);
+      node.init && node.init.type === 'VariableDeclaration' && visit(node.init);
+      const forLoop = addLoop();
+      node.test && createCondSubgraph(node.test);
+      const forprevIds = [...cfgState.prevIds];
+      cfgState.prevIds = cfgState.prevIds.filter(([, context]) => context);
+      const forLoopstack = loopVisitor(node.body);
+      node.update && createNormalSubgraph(node.update);
+      endLoop(forLoopstack, forLoop.id, forprevIds);
       break;
     case 'ForInStatement':
     case 'ForOfStatement':
@@ -170,11 +176,11 @@ function createNormalSubgraph(node: ESTree.Expression): SubgraphNormal {
       break;
     case 'UnaryExpression':
       if (node.operator === '!') {
-        const Unarysubgraph = createCondSubgraph(node.argument);
+        const unarysubgraph = createCondSubgraph(node.argument);
         return {
           type: 'normal',
-          root: Unarysubgraph.root,
-          next: new Set([...Unarysubgraph.falsy, ...Unarysubgraph.truthy]),
+          root: unarysubgraph.root,
+          next: new Set([...unarysubgraph.falsy, ...unarysubgraph.truthy]),
         };
       } else visitWithmerge(node.argument);
     case 'UpdateExpression':
@@ -276,36 +282,45 @@ function createNormalSubgraph(node: ESTree.Expression): SubgraphNormal {
       return emptysubgrpah('normal') as SubgraphNormal;
 
     case 'ConditionalExpression':
-      // if (is_typeof(node)) break;
-      // const LogicalSubgraph = createCondSubgraph(node.left);
-      // connect(LogicalSubgraph.root);
-      // let rightSubgraph: SubgraphNormal;
-      // if (node.operator === '&&' || node.operator === '??') {
-      //   cfgState.prevIds = LogicalSubgraph.truthy;
-      //   rightSubgraph = createNormalSubgraph(node.right);
-      //   mergeSubgraph(rightSubgraph);
-      //   LogicalSubgraph.falsy.forEach((prevId) =>
-      //     rightSubgraph.next.add(prevId)
-      //   );
-      //   return {
-      //     type: 'normal',
-      //     root: LogicalSubgraph.root,
-      //     next: rightSubgraph.next,
-      //   };
-      // } else {
-      //   cfgState.prevIds = LogicalSubgraph.falsy;
-      //   rightSubgraph = createNormalSubgraph(node.right);
-      //   mergeSubgraph(rightSubgraph);
-      //   LogicalSubgraph.truthy.forEach((prevId) =>
-      //     rightSubgraph.next.add(prevId)
-      //   );
-      //   return {
-      //     type: 'normal',
-      //     root: LogicalSubgraph.root,
-      //     next: rightSubgraph.next,
-      //   };
-      // }
-      break;
+      const prevprevIds = cfgState.prevIds;
+      const testSubgraph = createCondSubgraph(node.test);
+      cfgState.prevIds = prevprevIds;
+      const consequentSubgraph = createNormalSubgraph(node.consequent);
+      const alternateSubgraph = createNormalSubgraph(node.alternate);
+      const isConsSubgraphEmpty = isSubgraphEmpty(consequentSubgraph);
+      const isAltSubgraphEmpty = isSubgraphEmpty(alternateSubgraph);
+      if (isConsSubgraphEmpty && isAltSubgraphEmpty) {
+        return {
+          type: 'normal',
+          root: testSubgraph.root,
+          next: new Set([...testSubgraph.truthy, ...testSubgraph.falsy]),
+        };
+      } else if (isConsSubgraphEmpty) {
+        connect(alternateSubgraph.root, testSubgraph.falsy);
+        return {
+          type: 'normal',
+          root: testSubgraph.root,
+          next: new Set([...testSubgraph.truthy, ...alternateSubgraph.next]),
+        };
+      } else if (isAltSubgraphEmpty) {
+        connect(consequentSubgraph.root, testSubgraph.truthy);
+        return {
+          type: 'normal',
+          root: testSubgraph.root,
+          next: new Set([...testSubgraph.falsy, ...consequentSubgraph.next]),
+        };
+      } else {
+        connect(consequentSubgraph.root, testSubgraph.truthy);
+        connect(alternateSubgraph.root, testSubgraph.falsy);
+        return {
+          type: 'normal',
+          root: testSubgraph.root,
+          next: new Set([
+            ...consequentSubgraph.next,
+            ...alternateSubgraph.next,
+          ]),
+        };
+      }
     case 'CallExpression':
       createNormalSubgraph(node.callee);
       //insertSequence(`callexpr_${node.arguments.length}`, 'prop');
@@ -318,9 +333,18 @@ function createNormalSubgraph(node: ESTree.Expression): SubgraphNormal {
     case 'SequenceExpression':
       const last = node.expressions.at(-1);
       if (!last) throw new Error('Sequence expression is empty');
-      node.expressions.slice(0, -1).forEach(createNormalSubgraph);
+      let firstRoot: number;
+      node.expressions.slice(0, -1).forEach((expr) => {
+        const ns = createNormalSubgraph(expr);
+        if (firstRoot === undefined) firstRoot = ns.root;
+        connect(ns.root);
+      });
       visit(last);
-      break;
+      return {
+        type: 'normal',
+        root: firstRoot,
+        next: new Set([[0]]),
+      };
     default:
       Object.keys(node).forEach((key) => {
         const value = (node as any)[key];
@@ -381,6 +405,15 @@ function createCondSubgraph(node: ESTree.Expression): SubgraphCond {
     case 'FunctionExpression':
       break;
     case 'UnaryExpression':
+      if (node.operator === '!') {
+        const unarySubgraph = createCondSubgraph(node.argument);
+        return {
+          type: 'cond',
+          root: unarySubgraph.root,
+          truthy: unarySubgraph.falsy,
+          falsy: unarySubgraph.truthy,
+        };
+      } else return createCondSubgraph(node.argument);
     case 'UpdateExpression':
     case 'BinaryExpression':
       break;
@@ -398,27 +431,22 @@ function createCondSubgraph(node: ESTree.Expression): SubgraphCond {
     case 'LogicalExpression':
       const LogicalSubgraph = createCondSubgraph(node.left);
       connect(LogicalSubgraph.root);
-      let rightSubgraph: SubgraphNormal;
+      let rightSubgraph = createCondSubgraph(node.right);
       if (node.operator === '&&' || node.operator === '??') {
-        rightSubgraph = createNormalSubgraph(node.right);
-        mergeSubgraph(rightSubgraph);
+        connect(rightSubgraph.root, LogicalSubgraph.truthy);
         return {
           type: 'cond',
           root: LogicalSubgraph.root,
-          truthy: [...rightSubgraph.next],
-          falsy: LogicalSubgraph.falsy,
+          truthy: [...rightSubgraph.truthy],
+          falsy: [...rightSubgraph.falsy, ...LogicalSubgraph.falsy],
         };
       } else {
-        rightSubgraph = createNormalSubgraph(node.right);
-        mergeSubgraph(rightSubgraph);
-        LogicalSubgraph.truthy.forEach((prevId) =>
-          rightSubgraph.next.add(prevId)
-        );
+        connect(rightSubgraph.root, LogicalSubgraph.falsy);
         return {
           type: 'cond',
           root: LogicalSubgraph.root,
-          truthy: LogicalSubgraph.truthy,
-          falsy: [...rightSubgraph.next],
+          truthy: [...LogicalSubgraph.truthy, ...rightSubgraph.truthy],
+          falsy: [...rightSubgraph.falsy],
         };
       }
     case 'MemberExpression':
@@ -470,7 +498,19 @@ function createCondSubgraph(node: ESTree.Expression): SubgraphCond {
       return emptysubgrpah('cond') as SubgraphCond;
 
     case 'ConditionalExpression':
-      break;
+      const prevprevIds = cfgState.prevIds;
+      const testSubgraph = createCondSubgraph(node.test);
+      cfgState.prevIds = prevprevIds;
+      const consequentSubgraph = createCondSubgraph(node.consequent);
+      const alternateSubgraph = createCondSubgraph(node.alternate);
+      connect(consequentSubgraph.root, testSubgraph.truthy);
+      connect(alternateSubgraph.root, testSubgraph.falsy);
+      return {
+        type: 'cond',
+        root: testSubgraph.root,
+        truthy: [...consequentSubgraph.truthy, ...alternateSubgraph.truthy],
+        falsy: [...consequentSubgraph.truthy, ...alternateSubgraph.falsy],
+      };
     case 'CallExpression':
       createNormalSubgraph(node.callee);
       //insertSequence(`callexpr_${node.arguments.length}`, 'prop');
@@ -484,8 +524,7 @@ function createCondSubgraph(node: ESTree.Expression): SubgraphCond {
       const last = node.expressions.at(-1);
       if (!last) throw new Error('Sequence expression is empty');
       node.expressions.slice(0, -1).forEach(createNormalSubgraph);
-      visit(last);
-      break;
+      return createCondSubgraph(last);
     default:
       Object.keys(node).forEach((key) => {
         const value = (node as any)[key];
@@ -560,6 +599,7 @@ function isSubgraphEmpty(subgraph: SubgraphNormal): boolean {
     !node.sequences
   );
 }
+
 function visitWithmerge(node: ESTree.Expression) {
   const Subgraph = createNormalSubgraph(node);
   convert_mergeable();
@@ -605,7 +645,7 @@ function convert_mergeable() {
   });
 }
 
-function addLoop(): CFGNode {
+function addLoop(): CFGNodeBlock {
   const loop = createNode();
   connect(loop.id);
   cfgState.prevIds = [[loop.id]];
@@ -654,10 +694,10 @@ function insertSequence(
 }
 
 // helper functions -------------------------------------------------------------------------------------------
-function createNode(): CFGNode {
+function createNode(): CFGNodeBlock {
   const id = cfgState.currentId++;
 
-  const node: CFGNode = {
+  const node: CFGNodeBlock = {
     id: id,
     type: 'block',
   };
@@ -780,48 +820,36 @@ export async function generatePNG(
 async function main() {
   const code0 = `
 function example() {
- _.a && _.b
- _.d
+_.init; 
+while(_.cond1&&_.cond2) {_.body};
+ _.after;
 }`;
   const code1 = `
 function example() {
-  if (_.a) {
-    _.b;
-  }
-  _.d
+  for(_.init;_.cond1&&_.cond2;_.body) {};
+  _.after;
 }`;
   const code2 = `
 function example() {
- _.a && b
- _.d
+ while(_.init, _.cond1) {
+  if(!_.cond2) break;
+  _.body;
+ }
+  _.after;
 }`;
   const code3 = `
 function example() {
-  if (_.a) {
-    b;
+  for(_.init;_.cond1;_.body) {
+    if(!_.cond2) break;
   }
-  _.d
+  _.after;
 }`;
-  const code4 = `
-function example() {
- a && _.b
- _.d
-}`;
-  const code5 = `
-function example() {
-  if (a) {
-    _.b;
-  }
-  _.d}
-  `;
 
   for await (const c of [
     [code0, 'cfg0'],
     [code1, 'cfg1'],
     [code2, 'cfg2'],
     [code3, 'cfg3'],
-    [code4, 'cfg4'],
-    [code5, 'cfg5'],
   ]) {
     const [code, filename] = c;
     try {
