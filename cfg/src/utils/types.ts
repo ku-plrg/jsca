@@ -5,7 +5,12 @@ export interface Function {
   body: ESTree.Node;
 }
 
-export type CFGHash = { nodes: number; hash: string };
+export type CFGHash = {
+  id?: string;
+  nodes: number;
+  hash: string;
+  body: ESTree.Node;
+};
 
 export type SubgraphBase = {
   type: 'normal' | 'cond';
@@ -24,6 +29,7 @@ export interface SubgraphCond extends SubgraphBase {
 
 export interface CFG {
   id?: string;
+  body: ESTree.Node;
   graph: Map<number, CFGNode>;
   literals: Set<string>;
 }
@@ -46,6 +52,7 @@ export interface CFGNodeBlock extends CFGNodeBase {
   type: 'block';
   sequences?: CFGSequence[];
   next?: CFGNext;
+  loop?: boolean;
 }
 
 export interface CFGSequence {

@@ -1,5 +1,5 @@
 import { readFileSync } from 'fs';
-import extractFunctions from './meriyah';
+import extractFunctions from './function';
 import extractFunctions2 from './utils/temp/acorn';
 
 function measureTime<T>(label: string, fn: () => T): { value: T; ms: number } {

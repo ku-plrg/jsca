@@ -5,6 +5,7 @@
     "acorn": "^8.14.0",
     "acorn-walk": "^8.3.4",
     "escodegen": "^2.1.0",
-    "meriyah": "^6.0.5"
+    "meriyah": "^6.0.5",
+    "rapidhash-js": "^1.0.4"
   }
 }

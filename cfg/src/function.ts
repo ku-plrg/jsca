@@ -3,7 +3,7 @@ import { walk } from './utils/temp/walker';
 import { Function } from './utils/types';
 
 const FUNC_ID = true;
-const functions: Function[] = [];
+let functions: Function[] = [];
 
 function recordFunction(
   node:
@@ -101,6 +101,7 @@ function getId(node: ESTree.Node): string {
 }
 
 function extractFunctions(code: string): Function[] {
+  functions = [];
   let ast: ESTree.Program;
   try {
     ast = parse(code, {
