@@ -9,16 +9,15 @@ export type CFGHash = { nodes: number; hash: string };
 
 export type SubgraphBase = {
   type: 'normal' | 'cond';
+  root: CFGNodeBlock;
 };
 
 export interface SubgraphNormal extends SubgraphBase {
   type: 'normal';
-  root: number;
-  next: Set<PrevId>;
+  next: Set<number>;
 }
 export interface SubgraphCond extends SubgraphBase {
   type: 'cond';
-  root: number;
   truthy: PrevId[];
   falsy: PrevId[];
 }
@@ -68,7 +67,7 @@ export type CFGNext = CFGJump | CFGCond;
 export type CFGNode = CFGNodeStart | CFGNodeExit | CFGNodeBlock;
 export type Subgraph = SubgraphNormal | SubgraphCond;
 
-export type PrevId = [number, boolean?, boolean?];
+export type PrevId = [number, boolean?];
 export interface CFGState {
   currentId: number;
   prevIds: PrevId[];
