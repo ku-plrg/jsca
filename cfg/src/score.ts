@@ -2,16 +2,19 @@ import { readFileSync } from 'fs';
 import cfg from './cfg';
 import extractFunctions from './function';
 import convertHash from './hash';
+import measuretime from './time';
 import { CFGHash } from './utils/types';
 
 const code1 = readFileSync('./score/jquery_3.7.1.js', 'utf-8');
 const code2 = readFileSync('./score/jquery_3.7.1_terser.js', 'utf-8');
 
 function getHash(raw: string): CFGHash[] {
-  const functions = extractFunctions(raw);
-  const cfgs = cfg(functions);
-  const hash = convertHash(cfgs);
-  return hash;
+  const functions = measuretime('extractFunctions', () =>
+    extractFunctions(raw)
+  );
+  const cfgs = measuretime('makeCFG', () => cfg(functions.value));
+  const hash = measuretime('hashCFG', () => convertHash(cfgs.value));
+  return hash.value;
 }
 
 const hash1 = getHash(code1);
@@ -45,7 +48,7 @@ function calculateSimilarity(hash1: CFGHash[], hash2: CFGHash[]) {
       }
     });
   });
-  console.log(JSON.stringify(FN, null, 2));
+  console.log('TP:', FN.length);
 }
 
 calculateSimilarity(hash1, hash2);
