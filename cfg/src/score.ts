@@ -48,7 +48,8 @@ function calculateSimilarity(hash1: CFGHash[], hash2: CFGHash[]) {
       }
     });
   });
-  console.log('TP:', FN.length);
+  //   console.log(JSON.stringify(FN, null, 2));
+  console.log('FN:', FN.length);
 }
 
-calculateSimilarity(hash1, hash2);
+measuretime('compare', () => calculateSimilarity(hash1, hash2));

@@ -121,12 +121,6 @@ function visit(node: ESTree.Node): void {
         (cfgState.prevIds = updateSubgraph.next));
       endLoop(forLoopstack, forLoop.id, forSubgraph?.falsy || []);
       break;
-    case 'ForInStatement':
-    case 'ForOfStatement':
-    case 'FunctionDeclaration':
-    case 'VariableDeclaration':
-    case 'ClassDeclaration':
-      break;
     case 'Identifier':
     case 'Literal':
     case 'ThisExpression':
@@ -166,7 +160,7 @@ function visit(node: ESTree.Node): void {
 function createNormalSubgraph(node: ESTree.Expression): SubgraphNormal {
   switch (node.type) {
     case 'Identifier':
-      return emptysubgrpah('normal') as SubgraphNormal;
+      return emptySubgraph('normal') as SubgraphNormal;
     case 'Literal':
       // if (typeof node.value === 'string' && !node.value.startsWith('JSCA_')) {
       //   cfgState.literals.push(node.value);
@@ -177,33 +171,35 @@ function createNormalSubgraph(node: ESTree.Expression): SubgraphNormal {
             (node as RegExpLiteral).regex.flags
         );
       }
-      return emptysubgrpah('normal') as SubgraphNormal;
+      return emptySubgraph('normal') as SubgraphNormal;
 
     case 'ThisExpression':
-      return emptysubgrpah('normal') as SubgraphNormal;
+      return emptySubgraph('normal') as SubgraphNormal;
 
     case 'ArrayExpression': {
       const elements = node.elements.filter((el) => el !== null);
-
       if (elements.length === 0) {
-        return emptysubgrpah('normal') as SubgraphNormal;
+        return emptySubgraph('normal') as SubgraphNormal;
       }
-      const initialSubgraph = createNormalSubgraph(elements[0]);
-      const finalSubgraph = elements
-        .slice(1)
-        .reduce((prevSubgraph, element) => {
-          const nextSubgraph = createNormalSubgraph(element);
-          connect(nextSubgraph.root.id, prevSubgraph.next);
-          return nextSubgraph;
-        }, initialSubgraph);
-      return {
-        type: 'normal',
-        root: initialSubgraph.root,
-        next: finalSubgraph.next,
-      };
+      for (const ele of elements) {
+        const subgraph = createNormalSubgraph(ele);
+        if (!isSubgraphEmpty(subgraph)) {
+          return elements
+            .slice(elements.indexOf(ele) + 1)
+            .reduce(
+              (prevSubgraph, expression) =>
+                returnNormalSubgraph(
+                  expression,
+                  prevSubgraph.root,
+                  prevSubgraph.next
+                ),
+              subgraph
+            );
+        }
+      }
+      return emptySubgraph('normal') as SubgraphNormal;
     }
-
-    case 'ObjectExpression':
+    case 'ObjectExpression': {
       const properties = node.properties
         .filter((prop) => prop.type === 'Property')
         .filter(
@@ -212,32 +208,44 @@ function createNormalSubgraph(node: ESTree.Expression): SubgraphNormal {
               prop.value.type
             )
         );
+      if (properties.length === 0)
+        return emptySubgraph('normal') as SubgraphNormal;
 
-      if (properties.length === 0) {
-        return emptysubgrpah('normal') as SubgraphNormal;
+      for (const prop of properties) {
+        const subgraph = createNormalSubgraph(prop.value as ESTree.Expression);
+        if (!isSubgraphEmpty(subgraph)) {
+          return properties
+            .slice(properties.indexOf(prop) + 1)
+            .reduce((prevSubgraph, currentProp) => {
+              let sequence = null;
+              if (currentProp.key.type === 'Identifier') {
+                sequence = insertSequence(
+                  currentProp.key.name,
+                  'prop',
+                  prevSubgraph.next
+                );
+              } else if (
+                currentProp.key.type === 'Literal' &&
+                typeof currentProp.key.value === 'string'
+              ) {
+                sequence = insertSequence(
+                  currentProp.key.value,
+                  'prop',
+                  prevSubgraph.next
+                );
+              }
+
+              return returnNormalSubgraph(
+                currentProp.value as ESTree.Expression,
+                prevSubgraph.root,
+                sequence ?? prevSubgraph.next
+              );
+            }, subgraph);
+        }
       }
-      const initialSubgraph = createNormalSubgraph(
-        properties[0].value as ESTree.Expression
-      );
-      const finalSubgraph = properties.reduce((prevSubgraph, prop) => {
-        let sequence = null;
-        if (prop.key.type === 'Identifier') {
-          sequence = insertSequence(prop.key.name, 'prop', prevSubgraph.next);
-        }
-        if (prop.key.type === 'Literal' && typeof prop.key.value === 'string') {
-          sequence = insertSequence(prop.key.value, 'prop', prevSubgraph.next);
-        }
-        const nextSubgraph = createNormalSubgraph(
-          prop.value as ESTree.Expression
-        );
-        connect(nextSubgraph.root.id, sequence ?? prevSubgraph.next);
-        return nextSubgraph;
-      }, initialSubgraph);
-      return {
-        type: 'normal',
-        root: initialSubgraph.root,
-        next: finalSubgraph.next,
-      };
+
+      return emptySubgraph('normal') as SubgraphNormal;
+    }
 
     case 'FunctionExpression':
       break;
@@ -245,24 +253,24 @@ function createNormalSubgraph(node: ESTree.Expression): SubgraphNormal {
       return createNormalSubgraph(node.argument);
     case 'UpdateExpression':
       return createNormalSubgraph(node.argument);
-    case 'BinaryExpression':
+    case 'BinaryExpression': {
       let { left, right } = node;
       if (left.type === 'PrivateIdentifier') {
         left = { type: 'Literal', value: left.name };
       }
       const leftSubgraph = createNormalSubgraph(left);
-      const rightSubgraph = createNormalSubgraph(right);
-      connect(rightSubgraph.root.id, leftSubgraph.next);
-      return {
-        type: 'normal',
-        root: leftSubgraph.root,
-        next: rightSubgraph.next,
-      };
+      const rightSubgraph = isSubgraphEmpty(leftSubgraph)
+        ? createNormalSubgraph(right)
+        : returnNormalSubgraph(right, leftSubgraph.root, leftSubgraph.next);
+      return rightSubgraph;
+    }
     case 'AssignmentExpression': {
       const { left, right } = node;
       const leftSubgraph = createNormalSubgraph(left);
-      const rightSubgraph = createNormalSubgraph(right);
-      connect(rightSubgraph.root.id, leftSubgraph.next);
+      const isEmpty = isSubgraphEmpty(leftSubgraph);
+      const rightSubgraph = isEmpty
+        ? createNormalSubgraph(right)
+        : returnNormalSubgraph(right, leftSubgraph.root, leftSubgraph.next);
       const sequence =
         left.type === 'MemberExpression' &&
         left.property.type === 'Identifier' &&
@@ -276,7 +284,7 @@ function createNormalSubgraph(node: ESTree.Expression): SubgraphNormal {
 
       return {
         type: 'normal',
-        root: leftSubgraph.root,
+        root: isEmpty ? rightSubgraph.root : leftSubgraph.root,
         next: sequence ?? rightSubgraph.next,
       };
     }
@@ -302,7 +310,7 @@ function createNormalSubgraph(node: ESTree.Expression): SubgraphNormal {
         node.object.type === 'Identifier' &&
         SKIP_BUILTIN.includes(node.object.name)
       ) {
-        break;
+        return emptySubgraph('normal') as SubgraphNormal;
       }
       const objectSubgraph = createNormalSubgraph(node.object);
       let msequence;
@@ -312,11 +320,16 @@ function createNormalSubgraph(node: ESTree.Expression): SubgraphNormal {
           'prop',
           objectSubgraph.next
         );
-        return returnNormalSubgraph(
-          node.property,
-          objectSubgraph.root,
-          msequence ?? objectSubgraph.next
-        );
+        const isEmpty = isSubgraphEmpty(objectSubgraph);
+        if (!isEmpty) {
+          return returnNormalSubgraph(
+            node.property,
+            objectSubgraph.root,
+            msequence ?? objectSubgraph.next
+          );
+        } else {
+          return createNormalSubgraph(node.property);
+        }
       }
       if (node.computed && node.property.type !== 'Identifier') {
         if (node.property.type === 'Literal') {
@@ -329,133 +342,91 @@ function createNormalSubgraph(node: ESTree.Expression): SubgraphNormal {
           }
         }
         if (node.property.type !== 'PrivateIdentifier') {
-          return returnNormalSubgraph(
-            node.property,
-            objectSubgraph.root,
-            msequence ?? objectSubgraph.next
-          );
+          const isEmpty = isSubgraphEmpty(objectSubgraph);
+          if (!isEmpty) {
+            return returnNormalSubgraph(
+              node.property,
+              objectSubgraph.root,
+              msequence ?? objectSubgraph.next
+            );
+          } else {
+            return createNormalSubgraph(node.property);
+          }
         }
       }
-      return emptysubgrpah('normal') as SubgraphNormal;
-
-    case 'ConditionalExpression':
+      return emptySubgraph('normal') as SubgraphNormal;
+    case 'ConditionalExpression': {
       if (is_typeof(node)) {
-        return emptysubgrpah('normal') as SubgraphNormal;
+        return emptySubgraph('normal') as SubgraphNormal;
       }
+
       const testSubgraph = createCondSubgraph(node.test);
       const consequentSubgraph = createNormalSubgraph(node.consequent);
       const alternateSubgraph = createNormalSubgraph(node.alternate);
-      const isConsSubgraphEmpty = isSubgraphEmpty(consequentSubgraph);
-      const isAltSubgraphEmpty = isSubgraphEmpty(alternateSubgraph);
-      if (isConsSubgraphEmpty && isAltSubgraphEmpty) {
-        return {
-          type: 'normal',
-          root: testSubgraph.root,
-          next: testSubgraph.truthy.concat(testSubgraph.falsy),
-        };
-      } else if (isConsSubgraphEmpty) {
-        connect(alternateSubgraph.root.id, testSubgraph.falsy);
-        return {
-          type: 'normal',
-          root: testSubgraph.root,
-          next: testSubgraph.truthy.concat(alternateSubgraph.next),
-        };
-      } else if (isAltSubgraphEmpty) {
+      const getNext = (
+        subgraph: SubgraphNormal,
+        testBranch: PrevId[]
+      ): PrevId[] => (isSubgraphEmpty(subgraph) ? testBranch : subgraph.next);
+      if (!isSubgraphEmpty(consequentSubgraph))
         connect(consequentSubgraph.root.id, testSubgraph.truthy);
-        return {
-          type: 'normal',
-          root: testSubgraph.root,
-          next: testSubgraph.falsy.concat(consequentSubgraph.next),
-        };
-      } else {
-        connect(consequentSubgraph.root.id, testSubgraph.truthy);
+      if (!isSubgraphEmpty(alternateSubgraph))
         connect(alternateSubgraph.root.id, testSubgraph.falsy);
-        return {
-          type: 'normal',
-          root: testSubgraph.root,
-          next: consequentSubgraph.next.concat(alternateSubgraph.next),
-        };
-      }
-    case 'CallExpression':
-    case 'CallExpression': {
-      const calleeSubgraph = createNormalSubgraph(node.callee);
-      if (node.arguments.length === 0) {
-        return {
-          type: 'normal',
-          root: calleeSubgraph.root,
-          next: calleeSubgraph.next,
-        };
-      }
-      const finalSubgraph = node.arguments.reduce((prevSubgraph, arg) => {
-        const argSubgraph = createNormalSubgraph(arg);
-        connect(argSubgraph.root.id, prevSubgraph.next);
-        prevSubgraph.next = argSubgraph.next;
-        return prevSubgraph;
-      }, calleeSubgraph);
       return {
         type: 'normal',
-        root: calleeSubgraph.root,
-        next: finalSubgraph.next,
+        root: testSubgraph.root,
+        next: getNext(consequentSubgraph, testSubgraph.truthy).concat(
+          getNext(alternateSubgraph, testSubgraph.falsy)
+        ),
       };
     }
-    case 'NewExpression':
-      const calleeSubgraph = createNormalSubgraph(node.callee);
-      if (node.arguments.length === 0) {
-        return {
-          type: 'normal',
-          root: calleeSubgraph.root,
-          next: calleeSubgraph.next,
-        };
-      }
-      const newfinalSubgraph = node.arguments.reduce((prevSubgraph, arg) => {
-        const argSubgraph = createNormalSubgraph(arg);
-        connect(argSubgraph.root.id, prevSubgraph.next);
-        prevSubgraph.next = argSubgraph.next;
-        return prevSubgraph;
-      }, calleeSubgraph);
-      return {
-        type: 'normal',
-        root: calleeSubgraph.root,
-        next: newfinalSubgraph.next,
-      };
-    case 'SequenceExpression':
-      const sequenceinitialSubgraph = createNormalSubgraph(node.expressions[0]);
-      const sequencefinalSubgraph = node.expressions
-        .slice(1)
-        .reduce((prevSubgraph, expression) => {
-          const expressionSubgraph = createNormalSubgraph(expression);
-          connect(expressionSubgraph.root.id, prevSubgraph.next);
-          return expressionSubgraph;
-        }, sequenceinitialSubgraph);
-      return {
-        type: 'normal',
-        root: sequenceinitialSubgraph.root,
-        next: sequencefinalSubgraph.next,
-      };
-    default:
-      Object.keys(node).forEach((key) => {
-        const value = (node as any)[key];
-        if (value && typeof value === 'object') {
-          if (Array.isArray(value)) {
-            for (let i = 0; i < value.length; i++) {
-              if (value[i] && typeof value[i] === 'object') {
-                visit(value[i]);
-              }
-            }
-          } else {
-            visit(value);
-          }
+    case 'CallExpression':
+    case 'NewExpression': {
+      const allExpressions = [node.callee, ...node.arguments];
+      for (const expr of allExpressions) {
+        const subgraph = createNormalSubgraph(expr);
+        if (!isSubgraphEmpty(subgraph)) {
+          return allExpressions
+            .slice(allExpressions.indexOf(expr) + 1)
+            .reduce(
+              (prevSubgraph, expression) =>
+                returnNormalSubgraph(
+                  expression,
+                  prevSubgraph.root,
+                  prevSubgraph.next
+                ),
+              subgraph
+            );
         }
-      });
-      break;
+      }
+      return emptySubgraph('normal') as SubgraphNormal;
+    }
+    case 'SequenceExpression': {
+      for (const expr of node.expressions) {
+        const subgraph = createNormalSubgraph(expr);
+        if (!isSubgraphEmpty(subgraph)) {
+          return node.expressions
+            .slice(node.expressions.indexOf(expr) + 1)
+            .reduce(
+              (prevSubgraph, expression) =>
+                returnNormalSubgraph(
+                  expression,
+                  prevSubgraph.root,
+                  prevSubgraph.next
+                ),
+              subgraph
+            );
+        }
+      }
+      return emptySubgraph('normal') as SubgraphNormal;
+    }
   }
-  return emptysubgrpah('normal') as SubgraphNormal;
+  return emptySubgraph('normal') as SubgraphNormal;
 }
 
 function createCondSubgraph(node: ESTree.Expression): SubgraphCond {
   switch (node.type) {
     case 'Identifier':
-      return emptysubgrpah('cond') as SubgraphCond;
+      return emptySubgraph('cond') as SubgraphCond;
     case 'Literal':
       // if (typeof node.value === 'string' && !node.value.startsWith('JSCA_')) {
       //   cfgState.literals.push(node.value);
@@ -466,36 +437,40 @@ function createCondSubgraph(node: ESTree.Expression): SubgraphCond {
             (node as RegExpLiteral).regex.flags
         );
       }
-      return emptysubgrpah('cond') as SubgraphCond;
+      return emptySubgraph('cond') as SubgraphCond;
     case 'ThisExpression':
       break;
-    case 'ArrayExpression':
     case 'ArrayExpression': {
       const elements = node.elements.filter((el) => el !== null);
-      if (elements.length === 0) {
-        return emptysubgrpah('cond') as SubgraphCond;
+
+      if (elements.length === 0) return emptySubgraph('cond') as SubgraphCond;
+
+      for (const el of elements) {
+        const subgraph = createNormalSubgraph(el);
+        if (!isSubgraphEmpty(subgraph)) {
+          const finalSubgraph = elements
+            .slice(elements.indexOf(el) + 1)
+            .reduce(
+              (prevSubgraph, expression) =>
+                returnNormalSubgraph(
+                  expression,
+                  prevSubgraph.root,
+                  prevSubgraph.next
+                ),
+              subgraph
+            );
+
+          return {
+            type: 'cond',
+            root: subgraph.root,
+            truthy: normalToCond(finalSubgraph.next, true),
+            falsy: normalToCond(finalSubgraph.next, false),
+          };
+        }
       }
-      if (elements.length === 1) {
-        return createCondSubgraph(elements[0]);
-      }
-      const initialSubgraph = createNormalSubgraph(elements[0]);
-      const finalSubgraph = elements
-        .slice(1, -1)
-        .reduce((prevSubgraph, element) => {
-          const nextSubgraph = createNormalSubgraph(element);
-          connect(nextSubgraph.root.id, prevSubgraph.next);
-          return nextSubgraph;
-        }, initialSubgraph);
-      const lastSubgraph = createCondSubgraph(elements.at(-1)!);
-      connect(lastSubgraph.root.id, finalSubgraph.next);
-      return {
-        type: 'cond',
-        root: initialSubgraph.root,
-        truthy: lastSubgraph.truthy,
-        falsy: lastSubgraph.falsy,
-      };
+      return emptySubgraph('cond') as SubgraphCond;
     }
-    case 'ObjectExpression':
+    case 'ObjectExpression': {
       const properties = node.properties
         .filter((prop) => prop.type === 'Property')
         .filter(
@@ -504,48 +479,50 @@ function createCondSubgraph(node: ESTree.Expression): SubgraphCond {
               prop.value.type
             )
         );
-      if (properties.length === 0) {
-        return emptysubgrpah('cond') as SubgraphCond;
+      if (properties.length === 0) return emptySubgraph('cond') as SubgraphCond;
+
+      for (const prop of properties) {
+        const subgraph = createNormalSubgraph(prop.value as ESTree.Expression);
+        if (!isSubgraphEmpty(subgraph)) {
+          const finalSubgraph = properties
+            .slice(properties.indexOf(prop) + 1)
+            .reduce((prevSubgraph, currentProp) => {
+              let sequence = null;
+              if (currentProp.key.type === 'Identifier') {
+                sequence = insertSequence(
+                  currentProp.key.name,
+                  'prop',
+                  prevSubgraph.next
+                );
+              } else if (
+                currentProp.key.type === 'Literal' &&
+                typeof currentProp.key.value === 'string'
+              ) {
+                sequence = insertSequence(
+                  currentProp.key.value,
+                  'prop',
+                  prevSubgraph.next
+                );
+              }
+              return returnNormalSubgraph(
+                currentProp.value as ESTree.Expression,
+                prevSubgraph.root,
+                sequence ?? prevSubgraph.next
+              );
+            }, subgraph);
+
+          return {
+            type: 'cond',
+            root: subgraph.root,
+            truthy: normalToCond(finalSubgraph.next, true),
+            falsy: normalToCond(finalSubgraph.next, false),
+          };
+        }
       }
-      if (properties.length === 1) {
-        return createCondSubgraph(properties[0].value as ESTree.Expression);
-      }
-      const objinitialSubgraph = createNormalSubgraph(
-        properties[0].value as ESTree.Expression
-      );
-      const objfinalSubgraph = properties
-        .slice(1, -1)
-        .reduce((prevSubgraph, prop) => {
-          let sequence = null;
-          if (prop.key.type === 'Identifier') {
-            sequence = insertSequence(prop.key.name, 'prop', prevSubgraph.next);
-          }
-          if (
-            prop.key.type === 'Literal' &&
-            typeof prop.key.value === 'string'
-          ) {
-            sequence = insertSequence(
-              prop.key.value,
-              'prop',
-              prevSubgraph.next
-            );
-          }
-          const nextSubgraph = createNormalSubgraph(
-            prop.value as ESTree.Expression
-          );
-          connect(nextSubgraph.root.id, sequence ?? prevSubgraph.next);
-          return nextSubgraph;
-        }, objinitialSubgraph);
-      const lastPropSubgraph = createCondSubgraph(
-        properties.at(-1)!.value as ESTree.Expression
-      );
-      connect(lastPropSubgraph.root.id, objfinalSubgraph.next);
-      return {
-        type: 'cond',
-        root: objinitialSubgraph.root,
-        truthy: lastPropSubgraph.truthy,
-        falsy: lastPropSubgraph.falsy,
-      };
+
+      return emptySubgraph('cond') as SubgraphCond;
+    }
+
     case 'FunctionExpression':
       break;
     case 'UnaryExpression':
@@ -560,14 +537,16 @@ function createCondSubgraph(node: ESTree.Expression): SubgraphCond {
       } else return createCondSubgraph(node.argument);
     case 'UpdateExpression':
       return createCondSubgraph(node.argument);
-    case 'BinaryExpression':
+    case 'BinaryExpression': {
       let { left, right } = node;
       if (left.type === 'PrivateIdentifier') {
         left = { type: 'Literal', value: left.name };
       }
       const leftSubgraph = createNormalSubgraph(left);
-      const binrightSubgraph = createCondSubgraph(right);
-      connect(binrightSubgraph.root.id, leftSubgraph.next);
+      const isEmpty = isSubgraphEmpty(leftSubgraph);
+      const rightSubgraph = isEmpty
+        ? createNormalSubgraph(right)
+        : returnNormalSubgraph(right, leftSubgraph.root, leftSubgraph.next);
       if (
         node.operator === '!=' ||
         node.operator === '!==' ||
@@ -576,38 +555,47 @@ function createCondSubgraph(node: ESTree.Expression): SubgraphCond {
       ) {
         return {
           type: 'cond',
-          root: leftSubgraph.root,
-          truthy: binrightSubgraph.falsy,
-          falsy: binrightSubgraph.truthy,
+          root: isEmpty ? rightSubgraph.root : leftSubgraph.root,
+          truthy: normalToCond(rightSubgraph.next, false),
+          falsy: normalToCond(rightSubgraph.next, true),
         };
       } else {
         return {
           type: 'cond',
-          root: leftSubgraph.root,
-          truthy: binrightSubgraph.truthy,
-          falsy: binrightSubgraph.falsy,
+          root: isEmpty ? rightSubgraph.root : leftSubgraph.root,
+          truthy: normalToCond(rightSubgraph.next, true),
+          falsy: normalToCond(rightSubgraph.next, false),
         };
       }
-    case 'AssignmentExpression':
-      const assleftSubgraph = createNormalSubgraph(node.left);
-      const assrightSubgrpah = createNormalSubgraph(node.right);
-      connect(assrightSubgrpah.root.id, assleftSubgraph.next);
-      const asssequence =
+    }
+    case 'AssignmentExpression': {
+      const leftSubgraph = createNormalSubgraph(node.left);
+      const isEmpty = isSubgraphEmpty(leftSubgraph);
+      const rightSubgraph = isEmpty
+        ? createNormalSubgraph(node.right)
+        : returnNormalSubgraph(
+            node.right,
+            leftSubgraph.root,
+            leftSubgraph.next
+          );
+      const sequence =
         node.left.type === 'MemberExpression' &&
         node.left.property.type === 'Identifier' &&
         !node.left.computed
           ? insertSequence(
               node.left.property.name,
               'update_prop',
-              assrightSubgrpah.next
+              rightSubgraph.next
             )
           : null;
-      return returnCondSubgraph(
-        node.left,
-        assleftSubgraph.root,
-        asssequence ?? assrightSubgrpah.next
-      );
-
+      const next = sequence ?? rightSubgraph.next;
+      return {
+        type: 'cond',
+        root: isEmpty ? rightSubgraph.root : leftSubgraph.root,
+        truthy: normalToCond(next, true),
+        falsy: normalToCond(next, false),
+      };
+    }
     case 'LogicalExpression':
       const LogicalSubgraph = createCondSubgraph(node.left);
       const rightSubgraph = createCondSubgraph(node.right);
@@ -668,7 +656,7 @@ function createCondSubgraph(node: ESTree.Expression): SubgraphCond {
           );
         }
       }
-      return emptysubgrpah('cond') as SubgraphCond;
+      return emptySubgraph('cond') as SubgraphCond;
 
     case 'ConditionalExpression':
       const testSubgraph = createCondSubgraph(node.test);
@@ -685,97 +673,61 @@ function createCondSubgraph(node: ESTree.Expression): SubgraphCond {
       };
 
     case 'CallExpression':
-      if (node.arguments.length === 0) {
-        const calleeSubgraph = createCondSubgraph(node.callee);
-        return {
-          type: 'cond',
-          root: calleeSubgraph.root,
-          truthy: calleeSubgraph.truthy,
-          falsy: calleeSubgraph.falsy,
-        };
-      }
-      const calleeSubgraph = createNormalSubgraph(node.callee);
-      const calllast = node.arguments.at(-1);
-      if (!calllast) throw new Error('Call expression is empty');
-      const callinitialSubgraph = node.arguments
-        .slice(0, -1)
-        .reduce((prevSubgraph, arg) => {
-          const argSubgraph = createNormalSubgraph(arg);
-          connect(argSubgraph.root.id, prevSubgraph.next);
-          return argSubgraph;
-        }, calleeSubgraph);
-      const callfinalSubgraph = createCondSubgraph(calllast);
-      connect(callfinalSubgraph.root.id, callinitialSubgraph.next);
-      return {
-        type: 'cond',
-        root: calleeSubgraph.root,
-        truthy: callfinalSubgraph.truthy,
-        falsy: callfinalSubgraph.falsy,
-      };
-
-    case 'NewExpression':
-      if (node.arguments.length === 0) {
-        const calleeSubgraph = createCondSubgraph(node.callee);
-        return {
-          type: 'cond',
-          root: calleeSubgraph.root,
-          truthy: calleeSubgraph.truthy,
-          falsy: calleeSubgraph.falsy,
-        };
-      }
-      const newcalleeSubgraph = createNormalSubgraph(node.callee);
-      const newlast = node.arguments.at(-1);
-      if (!newlast) throw new Error('New expression is empty');
-      const newinitialSubgraph = node.arguments
-        .slice(0, -1)
-        .reduce((prevSubgraph, arg) => {
-          const argSubgraph = createNormalSubgraph(arg);
-          connect(argSubgraph.root.id, prevSubgraph.next);
-          return argSubgraph;
-        }, newcalleeSubgraph);
-      const newfinalSubgraph = createCondSubgraph(newlast);
-      connect(newfinalSubgraph.root.id, newinitialSubgraph.next);
-      return {
-        type: 'cond',
-        root: newcalleeSubgraph.root,
-        truthy: newfinalSubgraph.truthy,
-        falsy: newfinalSubgraph.falsy,
-      };
-    case 'SequenceExpression':
-      const seqinitialSubgraph = createNormalSubgraph(node.expressions[0]);
-      const seqfinalSubgraph = node.expressions
-        .slice(1, -1)
-        .reduce((prevSubgraph, expression) => {
-          const expressionSubgraph = createNormalSubgraph(expression);
-          connect(expressionSubgraph.root.id, prevSubgraph.next);
-          return expressionSubgraph;
-        }, seqinitialSubgraph);
-      const seqlastSubgraph = createCondSubgraph(node.expressions.at(-1)!);
-      connect(seqlastSubgraph.root.id, seqfinalSubgraph.next);
-      return {
-        type: 'cond',
-        root: seqinitialSubgraph.root,
-        truthy: seqlastSubgraph.truthy,
-        falsy: seqlastSubgraph.falsy,
-      };
-    default:
-      Object.keys(node).forEach((key) => {
-        const value = (node as any)[key];
-        if (value && typeof value === 'object') {
-          if (Array.isArray(value)) {
-            for (let i = 0; i < value.length; i++) {
-              if (value[i] && typeof value[i] === 'object') {
-                visit(value[i]);
-              }
-            }
-          } else {
-            visit(value);
-          }
+    case 'NewExpression': {
+      const allExpressions = [node.callee, ...node.arguments];
+      for (const expr of allExpressions) {
+        const subgraph = createNormalSubgraph(expr);
+        if (!isSubgraphEmpty(subgraph)) {
+          const finalSubgraph = allExpressions
+            .slice(allExpressions.indexOf(expr) + 1)
+            .reduce((prevSubgraph, expression) => {
+              return returnNormalSubgraph(
+                expression,
+                prevSubgraph.root,
+                prevSubgraph.next
+              );
+            }, subgraph);
+          return {
+            type: 'cond',
+            root: subgraph.root,
+            truthy: normalToCond(finalSubgraph.next, true),
+            falsy: normalToCond(finalSubgraph.next, false),
+          };
         }
-      });
-      break;
+      }
+      return emptySubgraph('cond') as SubgraphCond;
+    }
+
+    case 'SequenceExpression': {
+      for (const expr of node.expressions.slice(0, -1)) {
+        const subgraph = createNormalSubgraph(expr);
+        if (!isSubgraphEmpty(subgraph)) {
+          const finalSubgraph = node.expressions
+            .slice(node.expressions.indexOf(expr) + 1, -1)
+            .reduce(
+              (prevSubgraph, currExpr) =>
+                returnNormalSubgraph(
+                  currExpr,
+                  prevSubgraph.root,
+                  prevSubgraph.next
+                ),
+              subgraph
+            );
+          const lastSubgraph = createCondSubgraph(node.expressions.at(-1)!);
+          if (!isSubgraphEmpty(finalSubgraph))
+            connect(lastSubgraph.root.id, finalSubgraph.next);
+          return {
+            type: 'cond',
+            root: finalSubgraph.root,
+            truthy: lastSubgraph.truthy,
+            falsy: lastSubgraph.falsy,
+          };
+        }
+      }
+      return createCondSubgraph(node.expressions.at(-1)!);
+    }
   }
-  return emptysubgrpah('cond') as SubgraphCond;
+  return emptySubgraph('cond') as SubgraphCond;
 }
 
 function extractCFG(node: ESTree.Node): CFGState {
@@ -842,7 +794,13 @@ function returnCondSubgraph(
   return makeCondSubgraph(root, subgraph.next);
 }
 
-function emptysubgrpah(type: string): Subgraph {
+function normalToCond(next: PrevId[], context: boolean): PrevId[] {
+  return next
+    .map(([id, ctx]): PrevId => [id, ctx === undefined ? context : ctx])
+    .filter(([id, ctx]) => ctx === context);
+}
+
+function emptySubgraph(type: string): Subgraph {
   const node = createNode();
   if (type === 'normal') {
     return {
@@ -959,16 +917,6 @@ function connect(to: number, from: PrevId[] = cfgState.prevIds): void {
       case 'block':
         if (context === undefined) {
           node.next = { type: 'jump', jump: to };
-          // if (from.length === 1) {
-          //   const toNode = cfgState.nodes.get(to);
-          //   if (!toNode) throw new Error('Node not found');
-          //   if (toNode.type === 'block' && toNode.next === undefined) {
-          //     node.sequences = node.sequences || [];
-          //     node.sequences.push(...(toNode.sequences ?? []));
-          //     cfgState.prevIds = [[from[0][0]]];
-          //     return;
-          //   }
-          // }
         } else {
           node.next = {
             type: 'cond',
@@ -1027,7 +975,7 @@ export function cfgToDot(nodes: Map<number, CFGNode>): string {
                 return `${sequence.value} = _`;
             }
           });
-          dot.push(`  ${id} [label="${id}: ${sequences.join('\n')}"];`);
+          dot.push(`  ${id} [label="${id}\n ${sequences.join('\n')}"];`);
         } else {
           dot.push(`  ${id} [label=""];`);
         }
@@ -1069,40 +1017,65 @@ export async function generatePNG(
 
 // Example usage
 async function main() {
-  const code0 = `
-  function isFunction(obj) {
-    Symbol('JSCA_31_33');
-    return (
-      typeof obj === 'function' &&
-      typeof obj.nodeType !== 'number' &&
-      typeof obj.item !== 'function'
-    );
-  };`;
-  const code1 = `
-  function a(e) {
-      return (
-        Symbol('JSCA_31_33'),
-        'function' == typeof e &&
-          'number' != typeof e.nodeType &&
-          'function' != typeof e.item
-      );
-    }`;
+  const code0 = `function a(id, context) {
+          Symbol('JSCA_568_587');
+          if (typeof context.getElementById !== 'undefined' && documentIsHTML) {
+            var node,
+              i,
+              elems,
+              elem = context.getElementById(id);
+            if (elem) {
+              node = elem.getAttributeNode('id');
+              if (node && node.value === id) {
+                return [elem];
+              }
+              elems = context.getElementsByName(id);
+              i = 0;
+              while ((elem = elems[i++])) {
+                node = elem.getAttributeNode('id');
+                if (node && node.value === id) {
+                  return [elem];
+                }
+              }
+            }
+            return [];
+          }
+        };`;
+  const code1 = `function a(e, t) {
+                if (
+                  (Symbol('JSCA_568_587'), void 0 !== t.getElementById && p)
+                ) {
+                  var n,
+                    o,
+                    r,
+                    i = t.getElementById(e);
+                  if (i) {
+                    if ((n = i.getAttributeNode('id')) && n.value === e)
+                      return [i];
+                    for (r = t.getElementsByName(e), o = 0; (i = r[o++]); )
+                      if ((n = i.getAttributeNode('id')) && n.value === e)
+                        return [i];
+                  }
+                  return [];
+                }
+              }`;
   const code2 = `
-  function example() {
-  _.init
-   while( _.cond1) {
-    if(!_.cond2) break;
-    _.body;
-   }
-    _.after;
-  }`;
+  function aa(seed, matches) {
+                  Symbol('JSCA_887_893');
+                  var idx,
+                    matched = fn(seed, argument),
+                    i = matched.length;
+                  while (i--) {
+                    idx = indexOf.call(seed, matched[i]);
+                    seed[idx] = !(matches[idx] = matched[i]);
+                  }
+                }`;
   const code3 = `
-  function example() {
-    for(_.init;_.cond1;_.body) {
-      if(!_.cond2) break;
-    }
-    _.after;
-  }`;
+function aa(e, n) {
+                      Symbol('JSCA_887_893');
+                      for (var o, i = r(e, t), l = i.length; l--; )
+                        e[(a.call(e, i[l]))];
+                    }`;
 
   for await (const c of [
     [code0, 'cfg0'],
