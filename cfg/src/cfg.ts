@@ -2,7 +2,6 @@ import { exec } from 'child_process';
 import { existsSync } from 'fs';
 import { writeFile } from 'fs/promises';
 import { ESTree, parse } from 'meriyah';
-import { RegExpLiteral } from 'meriyah/dist/src/estree';
 import { promisify } from 'util';
 import {
   CFG,
@@ -139,8 +138,7 @@ function visit(node: ESTree.Node): void {
       mergeSubgraph(createNormalSubgraph(node));
       break;
     default:
-      Object.keys(node).forEach((key) => {
-        const value = (node as any)[key];
+      Object.entries(node).forEach(([key, value]) => {
         if (value && typeof value === 'object') {
           if (Array.isArray(value)) {
             for (let i = 0; i < value.length; i++) {
@@ -160,26 +158,23 @@ function visit(node: ESTree.Node): void {
 function createNormalSubgraph(node: ESTree.Expression): SubgraphNormal {
   switch (node.type) {
     case 'Identifier':
-      return emptySubgraph('normal') as SubgraphNormal;
+      return emptySubgraph('normal');
     case 'Literal':
       // if (typeof node.value === 'string' && !node.value.startsWith('JSCA_')) {
       //   cfgState.literals.push(node.value);
       // }
-      if ('regex' in node && 'pattern' in (node.regex as any)) {
-        cfgState.literals.add(
-          (node as RegExpLiteral).regex.pattern +
-            (node as RegExpLiteral).regex.flags
-        );
+      if (isRegexpLiteral(node)) {
+        cfgState.literals.add(node.regex.pattern + node.regex.flags);
       }
-      return emptySubgraph('normal') as SubgraphNormal;
+      return emptySubgraph('normal');
 
     case 'ThisExpression':
-      return emptySubgraph('normal') as SubgraphNormal;
+      return emptySubgraph('normal');
 
     case 'ArrayExpression': {
       const elements = node.elements.filter((el) => el !== null);
       if (elements.length === 0) {
-        return emptySubgraph('normal') as SubgraphNormal;
+        return emptySubgraph('normal');
       }
       for (const ele of elements) {
         const subgraph = createNormalSubgraph(ele);
@@ -197,7 +192,7 @@ function createNormalSubgraph(node: ESTree.Expression): SubgraphNormal {
             );
         }
       }
-      return emptySubgraph('normal') as SubgraphNormal;
+      return emptySubgraph('normal');
     }
     case 'ObjectExpression': {
       const properties = node.properties
@@ -208,8 +203,7 @@ function createNormalSubgraph(node: ESTree.Expression): SubgraphNormal {
               prop.value.type
             )
         );
-      if (properties.length === 0)
-        return emptySubgraph('normal') as SubgraphNormal;
+      if (properties.length === 0) return emptySubgraph('normal');
 
       for (const prop of properties) {
         const subgraph = createNormalSubgraph(prop.value as ESTree.Expression);
@@ -244,7 +238,7 @@ function createNormalSubgraph(node: ESTree.Expression): SubgraphNormal {
         }
       }
 
-      return emptySubgraph('normal') as SubgraphNormal;
+      return emptySubgraph('normal');
     }
 
     case 'FunctionExpression':
@@ -267,8 +261,8 @@ function createNormalSubgraph(node: ESTree.Expression): SubgraphNormal {
     case 'AssignmentExpression': {
       const { left, right } = node;
       const leftSubgraph = createNormalSubgraph(left);
-      const isEmpty = isSubgraphEmpty(leftSubgraph);
-      const rightSubgraph = isEmpty
+      const isLeftEmpty = isSubgraphEmpty(leftSubgraph);
+      const rightSubgraph = isLeftEmpty
         ? createNormalSubgraph(right)
         : returnNormalSubgraph(right, leftSubgraph.root, leftSubgraph.next);
       const sequence =
@@ -284,7 +278,7 @@ function createNormalSubgraph(node: ESTree.Expression): SubgraphNormal {
 
       return {
         type: 'normal',
-        root: isEmpty ? rightSubgraph.root : leftSubgraph.root,
+        root: isLeftEmpty ? rightSubgraph.root : leftSubgraph.root,
         next: sequence ?? rightSubgraph.next,
       };
     }
@@ -310,7 +304,7 @@ function createNormalSubgraph(node: ESTree.Expression): SubgraphNormal {
         node.object.type === 'Identifier' &&
         SKIP_BUILTIN.includes(node.object.name)
       ) {
-        return emptySubgraph('normal') as SubgraphNormal;
+        return emptySubgraph('normal');
       }
       const objectSubgraph = createNormalSubgraph(node.object);
       let msequence;
@@ -354,10 +348,10 @@ function createNormalSubgraph(node: ESTree.Expression): SubgraphNormal {
           }
         }
       }
-      return emptySubgraph('normal') as SubgraphNormal;
+      return emptySubgraph('normal');
     case 'ConditionalExpression': {
       if (is_typeof(node)) {
-        return emptySubgraph('normal') as SubgraphNormal;
+        return emptySubgraph('normal');
       }
 
       const testSubgraph = createCondSubgraph(node.test);
@@ -398,7 +392,7 @@ function createNormalSubgraph(node: ESTree.Expression): SubgraphNormal {
             );
         }
       }
-      return emptySubgraph('normal') as SubgraphNormal;
+      return emptySubgraph('normal');
     }
     case 'SequenceExpression': {
       for (const expr of node.expressions) {
@@ -417,33 +411,30 @@ function createNormalSubgraph(node: ESTree.Expression): SubgraphNormal {
             );
         }
       }
-      return emptySubgraph('normal') as SubgraphNormal;
+      return emptySubgraph('normal');
     }
   }
-  return emptySubgraph('normal') as SubgraphNormal;
+  return emptySubgraph('normal');
 }
 
 function createCondSubgraph(node: ESTree.Expression): SubgraphCond {
   switch (node.type) {
     case 'Identifier':
-      return emptySubgraph('cond') as SubgraphCond;
+      return emptySubgraph('cond');
     case 'Literal':
       // if (typeof node.value === 'string' && !node.value.startsWith('JSCA_')) {
       //   cfgState.literals.push(node.value);
       // }
-      if ('regex' in node && 'pattern' in (node.regex as any)) {
-        cfgState.literals.add(
-          (node as RegExpLiteral).regex.pattern +
-            (node as RegExpLiteral).regex.flags
-        );
+      if (isRegexpLiteral(node)) {
+        cfgState.literals.add(node.regex.pattern + node.regex.flags);
       }
-      return emptySubgraph('cond') as SubgraphCond;
+      return emptySubgraph('cond');
     case 'ThisExpression':
       break;
     case 'ArrayExpression': {
       const elements = node.elements.filter((el) => el !== null);
 
-      if (elements.length === 0) return emptySubgraph('cond') as SubgraphCond;
+      if (elements.length === 0) return emptySubgraph('cond');
 
       for (const el of elements) {
         const subgraph = createNormalSubgraph(el);
@@ -468,7 +459,7 @@ function createCondSubgraph(node: ESTree.Expression): SubgraphCond {
           };
         }
       }
-      return emptySubgraph('cond') as SubgraphCond;
+      return emptySubgraph('cond');
     }
     case 'ObjectExpression': {
       const properties = node.properties
@@ -479,7 +470,7 @@ function createCondSubgraph(node: ESTree.Expression): SubgraphCond {
               prop.value.type
             )
         );
-      if (properties.length === 0) return emptySubgraph('cond') as SubgraphCond;
+      if (properties.length === 0) return emptySubgraph('cond');
 
       for (const prop of properties) {
         const subgraph = createNormalSubgraph(prop.value as ESTree.Expression);
@@ -520,7 +511,7 @@ function createCondSubgraph(node: ESTree.Expression): SubgraphCond {
         }
       }
 
-      return emptySubgraph('cond') as SubgraphCond;
+      return emptySubgraph('cond');
     }
 
     case 'FunctionExpression':
@@ -656,7 +647,7 @@ function createCondSubgraph(node: ESTree.Expression): SubgraphCond {
           );
         }
       }
-      return emptySubgraph('cond') as SubgraphCond;
+      return emptySubgraph('cond');
 
     case 'ConditionalExpression':
       const testSubgraph = createCondSubgraph(node.test);
@@ -695,7 +686,7 @@ function createCondSubgraph(node: ESTree.Expression): SubgraphCond {
           };
         }
       }
-      return emptySubgraph('cond') as SubgraphCond;
+      return emptySubgraph('cond');
     }
 
     case 'SequenceExpression': {
@@ -727,7 +718,7 @@ function createCondSubgraph(node: ESTree.Expression): SubgraphCond {
       return createCondSubgraph(node.expressions.at(-1)!);
     }
   }
-  return emptySubgraph('cond') as SubgraphCond;
+  return emptySubgraph('cond');
 }
 
 function extractCFG(node: ESTree.Node): CFGState {
@@ -800,7 +791,9 @@ function normalToCond(next: PrevId[], context: boolean): PrevId[] {
     .filter(([id, ctx]) => ctx === context);
 }
 
-function emptySubgraph(type: string): Subgraph {
+function emptySubgraph(type: 'normal'): SubgraphNormal;
+function emptySubgraph(type: 'cond'): SubgraphCond;
+function emptySubgraph(type: 'normal' | 'cond'): Subgraph {
   const node = createNode();
   if (type === 'normal') {
     return {
@@ -941,6 +934,11 @@ function connect(to: number, from: PrevId[] = cfgState.prevIds): void {
     }
   });
 }
+
+function isRegexpLiteral(node: ESTree.Literal): node is ESTree.RegExpLiteral {
+  return 'regex' in node;
+}
+
 //-----------------------------------------------------------------------------------------------------
 export function cfgToDot(nodes: Map<number, CFGNode>): string {
   const dot = ['digraph G {', '  rankdir=TB;', '  node [shape=box];'];
@@ -1019,36 +1017,24 @@ export async function generatePNG(
 async function main() {
   const code0 = `function a(id, context) {
           Symbol('JSCA_568_587');
-          if (typeof context.getElementById !== 'undefined' && documentIsHTML) {
-            var node,
-              i,
-              elems,
-              elem = context.getElementById(id);
-            if (elem) {
+          if (elem) {
+            node = elem.getAttributeNode('id');
+            if (node && node.value === id) {
+              return [elem];
+            }
+            elems = context.getElementsByName(id);
+            i = 0;
+            while ((elem = elems[i++])) {
               node = elem.getAttributeNode('id');
               if (node && node.value === id) {
                 return [elem];
               }
-              elems = context.getElementsByName(id);
-              i = 0;
-              while ((elem = elems[i++])) {
-                node = elem.getAttributeNode('id');
-                if (node && node.value === id) {
-                  return [elem];
-                }
-              }
             }
-            return [];
           }
+          return [];
         };`;
   const code1 = `function a(e, t) {
-                if (
-                  (Symbol('JSCA_568_587'), void 0 !== t.getElementById && p)
-                ) {
-                  var n,
-                    o,
-                    r,
-                    i = t.getElementById(e);
+                  Symbol('JSCA_568_587');
                   if (i) {
                     if ((n = i.getAttributeNode('id')) && n.value === e)
                       return [i];
@@ -1057,7 +1043,6 @@ async function main() {
                         return [i];
                   }
                   return [];
-                }
               }`;
   const code2 = `
   function aa(seed, matches) {
