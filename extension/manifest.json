@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "JSCA",
+  "version": "0.1.0",
+  "description": "Javascript Software Composition Analysis for Web Apps",
+  "icons": {
+    "16": "assets/logo/favicon-16x16.png",
+    "32": "assets/logo/favicon-32x32.png",
+    "48": "assets/logo/favicon-48x48.png",
+    "128": "assets/logo/favicon-128x128.png"
+  },
+  "permissions": ["tabs", "scripting", "activeTab"],
+  "background": {
+    "service_worker": "src/worker/background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "JSCA",
+    "default_popup": "src/popup/index.html",
+    "default_icon": {
+      "16": "assets/logo/favicon-16x16.png",
+      "32": "assets/logo/favicon-32x32.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/browser/content-script.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "matches": ["<all_urls>"],
+      "resources": ["src/browser/browser.js"]
+    }
+  ]
+}

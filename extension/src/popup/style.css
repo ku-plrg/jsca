@@ -1,0 +1,26 @@
+div#div-container {
+  width: 520px;
+}
+
+button#btn-analyze {
+  background-color: #2a408e;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+div.div-table-title {
+  font-size: 20px;
+  font-weight: bold;
+}
+div.div-table-title.detected {
+  cursor: pointer;
+}
+
+.table {
+  display: none;
+}
+.table.visible {
+  display: block;
+}
